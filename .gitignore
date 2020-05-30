@@ -1,3 +1,6 @@
 glew/
 glm/
 freeglut/
+.vscode/
+Debug/
+.vs/
