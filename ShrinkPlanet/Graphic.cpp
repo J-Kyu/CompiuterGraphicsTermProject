@@ -362,7 +362,12 @@ void Graphic::LoadObj(const char* filename, const char* basedir, attrib_t& attri
 	is_obj_valid = load_obj(filename, basedir, vertices, normals, vertex_map, material_map, attrib, shapes, materials, scale);
 }
 
-void Graphic::GetVertices() {
+
+vector<GLfloat> Graphic::GetVertices() {
+	return vertices;
+}
+
+void Graphic::CalVertices() {
 	cout << "GetVertices: None graphic object is assigned...." << endl;
 }
 

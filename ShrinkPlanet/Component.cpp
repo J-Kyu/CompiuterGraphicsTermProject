@@ -26,3 +26,9 @@ void Component::LoadTexture(const char* basedir, const vector<real_t>& texcoords
 void Component::LoadObj(const char* filename, const char* basedir, attrib_t& attrib, real_t scale) {
 	cout << "This object is not Graphic Component....Please use this function on TYPE Graphic" << endl;
 }
+
+vector<GLfloat> Component::GetVertices() {
+	vector<GLfloat> temp;
+	cout << "This object is not Graphic Component....Please use this function on TYPE Graphic" << endl;
+	return  temp;
+}

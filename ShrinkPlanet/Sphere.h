@@ -20,7 +20,7 @@ protected:
 
 	//virtual void InitGraphic() override;
 	virtual void RenderGraphic() override;
-	virtual void GetVertices() override;
+	virtual void CalVertices() override;
 	virtual void BindElements() override;
 private:
 	void get_sphere_3d(vector<GLfloat>& p);

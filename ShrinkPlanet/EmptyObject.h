@@ -29,7 +29,7 @@ public:
 	void RotatingYAxis(float);
 	void SetPerspectiveMatrix(mat4);
 	void SetViewMatrix(mat4);
-	
+	void SetObjectT(mat4);
 private:
 	
 	mat4 perspectiveT = mat4(1.0f);

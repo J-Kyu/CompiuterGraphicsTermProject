@@ -1,7 +1,7 @@
 #include "Sphere.h"
 
 
-void Sphere::GetVertices() {
+void Sphere::CalVertices() {
 	get_sphere_3d(vertices);
 }
 

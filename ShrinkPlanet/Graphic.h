@@ -34,11 +34,11 @@ protected:
 
 	virtual void RenderGraphic();
 	virtual void InitGraphic();
-	virtual void GetVertices();
+	virtual void CalVertices();
 	virtual void BindElements();
 	virtual void LoadTexture(const char* basedir, const vector<real_t>& texcoords, GLint min_filter= GL_LINEAR_MIPMAP_LINEAR, GLint mag_filter= GL_LINEAR_MIPMAP_LINEAR) override final;
 	virtual void LoadObj(const char* filename, const char* basedir, attrib_t& attrib, real_t scale)override final;
-
+	virtual vector<GLfloat> GetVertices() override final;
 	GLuint* element_buffs;
 	GLuint vao;
 	GLuint vbo[4];

@@ -4,3 +4,5 @@ freeglut/
 .vscode/
 Debug/
 .vs/
+*tar.gz
+ode-0.16.1/

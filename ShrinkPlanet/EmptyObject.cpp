@@ -94,4 +94,7 @@ void EmptyObject::SetPerspectiveMatrix(mat4 T) {
 void EmptyObject::SetViewMatrix(mat4 T) {
 	viewT = T;
 }
+void EmptyObject::SetObjectT(mat4 m) {
+	objectT = m;
+}
 
