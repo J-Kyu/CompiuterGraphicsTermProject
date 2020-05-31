@@ -37,7 +37,7 @@ Camera* mainCamera = new Camera();
 static dWorldID ode_world; // simulation world
 static dSpaceID ode_space; // collision space
 static dJointGroupID ode_contactgroup; // a group of contact joints
-static bool pause = true;
+static bool pause = false;
 
 static dBodyID ode_sphere_body;
 static dGeomID ode_sphere_geom;
@@ -143,11 +143,11 @@ void ODEInit()
 	dWorldSetGravity(ode_world, 0, -9.8, 0); // Set gravity.
 
 	// Generate the plane geometry.
-	ode_plane_geom = dCreatePlane(ode_space, 0, -3, 0, 0);
+	ode_plane_geom = dCreatePlane(ode_space, 0, 1, 0, 0);
 
 	//sphere
 	ode_sphere_body = dBodyCreate(ode_world);
-	dBodySetPosition(ode_sphere_body, 0, 2, 0);
+	dBodySetPosition(ode_sphere_body, 2, 10, 0);
 	dBodySetRotation(ode_sphere_body, R);
 	dBodySetLinearVel(ode_sphere_body, 0, 0, 0);
 	dBodySetAngularVel(ode_sphere_body, 0, 0, 0);
@@ -199,6 +199,8 @@ void ODEDisplay()
 	double dt = dsElapsedTime();
 
 	int no_of_steps = (int)ceilf(dt / stepsize);
+	
+	cout << no_of_steps << endl;
 	for (int i = 0; !pause && i < no_of_steps; ++i)
 	{
 		dSpaceCollide(ode_space, 0, &nearCallback);
@@ -208,10 +210,9 @@ void ODEDisplay()
 	mat4 Ms = compute_modelling_transf(ode_sphere_body);
 	mat4 Mt = compute_modelling_transf(ode_trimesh_body);
 
-	cout << glm::to_string(Ms) << endl;
-
 	earthObj->SetObjectT(Mt);
 	moonObj->SetObjectT(Ms);
+	cout << glm::to_string(Ms) << endl;
 }
 
 glm::mat4 compute_modelling_transf(dBodyID body)
