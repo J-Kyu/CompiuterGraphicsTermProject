@@ -98,3 +98,7 @@ void EmptyObject::SetObjectT(mat4 m) {
 	objectT = m;
 }
 
+mat4 EmptyObject::GetObjectT() {
+	return objectT;
+}
+

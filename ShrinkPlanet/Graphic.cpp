@@ -101,7 +101,7 @@ void Graphic::InitGraphic() {
 	
 
 	program = BuildProgram();
-	GetVertices();
+	CalVertices();
 	CalColor(colors, vertices);
 	//SetColor(1.0f, 0.5f, 0.0f);
 

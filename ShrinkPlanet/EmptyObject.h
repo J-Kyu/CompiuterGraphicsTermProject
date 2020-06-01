@@ -30,6 +30,7 @@ public:
 	void SetPerspectiveMatrix(mat4);
 	void SetViewMatrix(mat4);
 	void SetObjectT(mat4);
+	mat4 GetObjectT();
 private:
 	
 	mat4 perspectiveT = mat4(1.0f);
