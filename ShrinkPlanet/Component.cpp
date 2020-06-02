@@ -32,3 +32,11 @@ vector<GLfloat> Component::GetVertices() {
 	cout << "This object is not Graphic Component....Please use this function on TYPE Graphic" << endl;
 	return  temp;
 }
+
+//void Component::SetEO(EmptyObject* eo) {
+//	eo = eo;
+//}
+
+void Component::SetTopT(mat4* t) {
+	topT = t;
+}

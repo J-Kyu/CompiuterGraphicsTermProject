@@ -138,6 +138,7 @@
     <ClCompile Include="LoadShaders.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Rigidbody3D.cpp" />
+    <ClCompile Include="RigidBodyWorld.cpp" />
     <ClCompile Include="Sphere.cpp" />
     <ClCompile Include="tiny_obj_loader.cc" />
   </ItemGroup>
@@ -150,6 +151,7 @@
     <ClInclude Include="loadobj.h" />
     <ClInclude Include="LoadShaders.h" />
     <ClInclude Include="Rigidbody3D.h" />
+    <ClInclude Include="RigidBodyWorld.h" />
     <ClInclude Include="Sphere.h" />
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="tiny_obj_loader.h" />

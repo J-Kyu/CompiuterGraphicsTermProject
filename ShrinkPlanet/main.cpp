@@ -1,8 +1,6 @@
-#define dDOUBLE
-
 //#pragma commnet(lib,"winmm.lib");
 
-#define dEpsilon 0.0016
+
 #include <iostream>
 #include <GL/glew.h> 
 #include <GL/glut.h> 
@@ -12,13 +10,11 @@
 #include "EmptyObject.h"
 #include "Sphere.h"
 #include "Camera.h"
-#include <ode/ode.h>
-#include <drawstuff/drawstuff.h>
-#include <windows.h>
-#include <timeapi.h>
 #include "glm/gtx/string_cast.hpp"
 #include "Cube.h"
 #include <cmath>
+#include "Rigidbody3D.h"
+#include "RigidBodyWorld.h"
 
 using namespace std;
 using namespace glm;
@@ -33,29 +29,12 @@ Component* moonGraphic;
 Component* sphere;
 Component* cubeGraphic;
 
+Rigidbody3D* sphere_1RigidBody;
+Rigidbody3D* sphere_2RigidBody;
+
 
 
 Camera* mainCamera = new Camera();
-
-static dWorldID ode_world; // simulation world
-static dSpaceID ode_space; // collision space
-static dJointGroupID ode_contactgroup; // a group of contact joints
-static bool pause = false;
-
-static dBodyID ode_gravity_body;
-static dGeomID ode_gravity_geom;
-
-static dBodyID ode_sphere_body;
-static dGeomID ode_sphere_geom;
-
-
-static dGeomID ode_plane_geom;
-
-static dBodyID ode_trimesh_body;
-static dGeomID ode_trimesh_geom;
-
-static dTriMeshDataID ode_trimesh_data;
-static std::vector<dTriIndex> ode_trimesh_index;
 
 
 void init();
@@ -64,13 +43,14 @@ void Render(int color_mode = 0);
 void mouse(int button, int state, int x, int y);
 void motion(int x, int y);
 void mouseWheel(int wheel, int dir, int x, int y);
-glm::mat4 compute_modelling_transf(dBodyID body);
-void ODEInit();
-void ODEDisplay();
-static void nearCallback(void* data, dGeomID o1, dGeomID o2);
-double dsElapsedTime();
+
+
 void keyboardSpecial(int key, int x, int y);
 
+dWorldID RigidBodyWorld::ode_world;
+dSpaceID RigidBodyWorld::ode_space;
+dJointGroupID RigidBodyWorld::ode_contactgroup;
+bool RigidBodyWorld::pause;
 
 void main(int argc, char** argv)
 {
@@ -90,7 +70,7 @@ void main(int argc, char** argv)
 	}
 
 	init();
-	ODEInit();
+	//ODEInit();
 	glutDisplayFunc(display);
 	glutMouseFunc(mouse);
 	glutMotionFunc(motion);
@@ -101,7 +81,7 @@ void main(int argc, char** argv)
 }
 
 void init() {
-
+	//graphic
 	sphere = new Sphere(.5f,16,16);
 	cubeGraphic = new Cube();
 	earthGraphic = new Graphic();
@@ -111,10 +91,24 @@ void init() {
 	moonGraphic->kyu = 2;
 	sphere->kyu = 3;
 
+
+	//rigid body
+
+	sphere_1RigidBody = new Rigidbody3D();
+	sphere_1RigidBody->SphereRigidBodyInit();
+
+	sphere_2RigidBody = new Rigidbody3D();
+	sphere_2RigidBody->SphereRigidBodyInit();
+
+
 	earthObj = new EmptyObject(earthGraphic);
 	moonObj = new EmptyObject(moonGraphic);
 	sphereObj = new EmptyObject(sphere);
 	cubeObj = new EmptyObject(cubeGraphic);
+
+	earthObj->AddComponent(sphere_1RigidBody);
+	moonObj->AddComponent(sphere_2RigidBody);
+
 
 	sphereObj->MoveObject(vec3(1.0f, 2.0f, 0.0f));
 	earthObj->MoveObject(vec3(.50f, 1.0f, 0.0f));
@@ -140,155 +134,11 @@ void init() {
 	glDepthFunc(GL_LESS);
 }
 
-void ODEInit()
-{
-	/* ¡¦¡¦ OpenGL initialization ¡¦¡¦ */
-	dMatrix3 R;
-	dMass m;
-	dRSetIdentity(R);
-
-	dInitODE2(0);
-	ode_world = dWorldCreate(); // Make a simulation world.
-	ode_space = dSimpleSpaceCreate(0); // Make a collision space.
-	ode_contactgroup = dJointGroupCreate(0); // Make a contact group.
-	//dWorldSetGravity(ode_world, 0, -9.8, 0); // Set gravity.
-	//dWorldSetGravity(ode_world, 0, -9.8, 0); // Set gravity.
-
-	// Generate the plane geometry.
-	ode_plane_geom = dCreatePlane(ode_space, 0, 1, 0, 0);
-
-	//sphere
-	ode_sphere_body = dBodyCreate(ode_world);
-	dBodySetPosition(ode_sphere_body, 2, 10, 0);
-	dBodySetRotation(ode_sphere_body, R);
-	dBodySetLinearVel(ode_sphere_body, 0, 0, 0);
-	dBodySetAngularVel(ode_sphere_body, 0, 0, 0);
-	ode_sphere_geom = dCreateSphere(ode_space, 0.2f);
-	dGeomSetBody(ode_sphere_geom, ode_sphere_body);
-	dMassSetSphereTotal(&m, 20, .2f);
-	dBodySetMass(ode_sphere_body, &m);
 
 
-	//trim
-	ode_trimesh_body = dBodyCreate(ode_world);
-	dBodySetPosition(ode_trimesh_body, -1, 5, 0);
-	dBodySetRotation(ode_trimesh_body, R);
-	dBodySetLinearVel(ode_trimesh_body, 0, 0, 0);
-	dBodySetAngularVel(ode_trimesh_body, 0, 0, 0);
-
-	ode_trimesh_geom = dCreateSphere(ode_space, .5f);
-	dGeomSetBody(ode_trimesh_geom, ode_trimesh_body);
-	dMassSetSphereTotal(&m, 20, .5f);
-	dBodySetMass(ode_trimesh_body, &m);
-
-	dBodySetKinematic(ode_trimesh_body);
 
 
-	
-	//trim
 
-/*
-	ode_trimesh_body = dBodyCreate(ode_world);
-
-	dBodySetPosition(ode_trimesh_body, 0, 0, 0);
-	dBodySetRotation(ode_trimesh_body, R);
-	dBodySetLinearVel(ode_trimesh_body, 0, 0, 0);
-	dBodySetAngularVel(ode_trimesh_body, 0, 0, 0);
-
-	int n = (int)(cubeGraphic->GetVertices().size() / 3);
-
-	ode_trimesh_index.resize(n);
-	for (int i = 0; i < n; ++i) {
-		ode_trimesh_index[i] = i;
-	}
-
-	ode_trimesh_data = dGeomTriMeshDataCreate();
-	dGeomTriMeshDataBuildSingle(ode_trimesh_data, cubeGraphic->GetVertices().data(), 3 * sizeof(float), n, ode_trimesh_index.data(), n, 3 * sizeof(dTriIndex));
-	ode_trimesh_geom = dCreateTriMesh(ode_space, ode_trimesh_data, 0, 0, 0);
-	dGeomSetBody(ode_trimesh_geom, ode_trimesh_body);
-	dMassSetTrimeshTotal(&m, 21, ode_trimesh_geom);	//mass  ¾ø´Ù
-	dBodySetMass(ode_trimesh_body, &m);	//bug
-*/
-	
-}
-
-void ODEDisplay()
-{
-	double stepsize = 0.005; // 5ms simulation step size
-	double dt = dsElapsedTime();
-
-	int no_of_steps = (int)ceilf(dt / stepsize);
-	
-	for (int i = 0; !pause && i < no_of_steps; ++i)
-	{
-		dSpaceCollide(ode_space, 0, &nearCallback);
-		dWorldQuickStep(ode_world, stepsize);
-		dJointGroupEmpty(ode_contactgroup); // remove all contact joints
-	}
-	
-
-	vec3 gravityUp = vec3(moonObj->GetObjectT()[3][0] - earthObj->GetObjectT()[3][0], moonObj->GetObjectT()[3][1] - earthObj->GetObjectT()[3][1], moonObj->GetObjectT()[3][2] - earthObj->GetObjectT()[3][2]);
-	
-	
-	gravityUp = normalize(gravityUp);
-
-	if (!isnan(gravityUp.x)){
-		double gravityCoe = -13;
-		dBodyAddForce(ode_sphere_body,(dReal)gravityUp.x*gravityCoe, (dReal)gravityUp.y*gravityCoe, (dReal)gravityUp.z*gravityCoe);
-	}
-	mat4 Ms = compute_modelling_transf(ode_sphere_body);
-	mat4 Mt = compute_modelling_transf(ode_trimesh_body);
-
-	earthObj->SetObjectT(Mt);
-	moonObj->SetObjectT(Ms);
-}
-
-glm::mat4 compute_modelling_transf(dBodyID body)
-{
-	mat4 M(1.0f);
-	const dReal* pos = dBodyGetPosition(body);
-	const dReal* rot = dBodyGetRotation(body);
-	M[3] = vec4(pos[0], pos[1], pos[2], 1.0f);
-	for (int i = 0; i < 3; ++i) // for each column
-		for (int j = 0; j < 3; ++j) // for each row
-			M[i][j] = rot[j * 4 + i];
-	return M;
-}
-
-
-static void nearCallback(void* data, dGeomID o1, dGeomID o2)
-{
-	const int N = 100;
-	dContact contact[N];
-	int n = dCollide(o1, o2, N, &(contact[0].geom), sizeof(dContact));
-	if (n > 0)
-	{
-		for (int i = 0; i < n; i++)
-		{
-			contact[i].surface.mode = dContactSoftERP | dContactSoftCFM;
-			contact[i].surface.mu = 0.8;
-			contact[i].surface.soft_erp = 0.9;
-			contact[i].surface.soft_cfm = 0.01;
-			dJointID c = dJointCreateContact(ode_world, ode_contactgroup, &contact[i]);
-			dBodyID body1 = dGeomGetBody(contact[i].geom.g1);
-			dBodyID body2 = dGeomGetBody(contact[i].geom.g2);
-			dJointAttach(c, body1, body2);
-		}
-	}
-}
-
-double dsElapsedTime()
-{
-	static double prev = 0.0;
-	double curr =  ::timeGetTime()/ 1000.0;
-	if (!prev)
-		prev = curr;
-	double retval = curr - prev;
-	prev = curr;
-	if (retval > 1.0) retval = 1.0;
-	if (retval < dEpsilon) retval = dEpsilon;
-	return retval;
-}
 
 void Render(int color_mode) {
 
@@ -328,7 +178,6 @@ void Render(int color_mode) {
 
 
 void display() {
-	ODEDisplay();
 	Render();
 
 	glFlush();
@@ -372,19 +221,19 @@ void keyboardSpecial(int key, int x, int y) {
 	switch (key) {
 	case GLUT_KEY_UP: {
 
-		dBodyAddForce(ode_sphere_body, 1,0,0);
+
 		break;
 	}
 	case GLUT_KEY_DOWN: {
-		dBodyAddForce(ode_sphere_body, -1, 0, 0);
+
 		break;
 	}
 	case GLUT_KEY_RIGHT: {
-		dBodyAddForce(ode_sphere_body, 0, 0, 1);
+
 		break;
 	}
 	case GLUT_KEY_LEFT: {
-		dBodyAddForce(ode_sphere_body, 0, 0, 1);
+
 		break;
 	}
 	case GLUT_KEY_HOME: {

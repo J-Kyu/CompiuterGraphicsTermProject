@@ -4,7 +4,12 @@
 #include <stdio.h> 
 #include <iostream>
 #include <vector>
-#include "Graphic.h"
+
+#define _USE_MATH_DEFINES
+#include <GL/glew.h> 
+#include <GL/glut.h> 
+
+#include "Component.h"
 
 
 class EmptyObject {
@@ -14,6 +19,7 @@ class EmptyObject {
 public:
 	EmptyObject(){}
 	EmptyObject(Component* cmp) {
+		cmp->SetTopT(&objectT);
 		components.push_back(cmp);
 	}
 
