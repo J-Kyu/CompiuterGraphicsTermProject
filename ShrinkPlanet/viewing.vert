@@ -15,6 +15,7 @@ out vec2 fTexcoord;
 
 uniform mat4 T;	// Additional transformation performed before modeling transformation
 uniform int ColorMode;
+uniform int ShadingMode;
 uniform mat4 M;
 uniform mat4 P;
 uniform mat4 V;
@@ -110,6 +111,23 @@ void phong_shading()
 void main()
 {
 	fColor = vColor;
+
+
+	switch(ShadingMode){
+		case 0:{
+			//phong shading
+			phong_shading();
+			break;
+		}
+		case 1:{
+			//default
+			gl_Position = V*M*T*vPosition;
+			fColor = vColor;
+			break;
+		}
+	}
+
+
 	switch(2)
 	{
 	case 0:	// use vertex color data

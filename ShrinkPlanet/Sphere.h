@@ -7,8 +7,8 @@ public:
 	Sphere() {
 		cout << "Sphere Constructor " << endl;
 		this->r = 1.0f;
-		this->subh = 8;
-		this->suba = 8;
+		this->subh = 16;
+		this->suba = 16;
 	}
 	Sphere(float r, int subh, int suba) {
 		cout << "Sphere Constructor " << endl;

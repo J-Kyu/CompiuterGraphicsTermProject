@@ -13,6 +13,8 @@ in vec2 fTexcoord;
 layout(location=1) uniform mat4 T;
 layout(location=2) uniform int mode;
 layout(location=3) uniform vec4 uColor;
+
+uniform int ShadingMode;
 uniform mat4 M;
 uniform mat4 P;
 uniform mat4 V;
@@ -118,9 +120,20 @@ void main()
 {
 
 
-
+	switch(ShadingMode){
+		case 0:{
+			//phong shading
+			phong_shading();
+			break;
+		}
+		case 1:{
+			//default
+			FragColor = fColor;
+			break;
+		}
+	}
 	
-	switch(2)
+	/*switch(2)
 	{
 	case 0:
 		default_shading();
@@ -136,5 +149,5 @@ void main()
 		FragColor = uColor; 	//for wireframe
 		break;
 	}
-	
+	*/
 }

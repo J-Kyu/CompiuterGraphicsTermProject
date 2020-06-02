@@ -1,4 +1,5 @@
 #define dDOUBLE
+
 //#pragma commnet(lib,"winmm.lib");
 
 #define dEpsilon 0.0016
@@ -16,11 +17,8 @@
 #include <windows.h>
 #include <timeapi.h>
 #include "glm/gtx/string_cast.hpp"
-
-
-
-//#include <Mmsystem.h>
-
+#include "Cube.h"
+#include <cmath>
 
 using namespace std;
 using namespace glm;
@@ -28,10 +26,12 @@ using namespace glm;
 EmptyObject* earthObj;
 EmptyObject* moonObj;
 EmptyObject* sphereObj;
+EmptyObject* cubeObj;;
 
 Component* earthGraphic;
 Component* moonGraphic;
 Component* sphere;
+Component* cubeGraphic;
 
 
 
@@ -68,6 +68,8 @@ glm::mat4 compute_modelling_transf(dBodyID body);
 void ODEInit();
 void ODEDisplay();
 static void nearCallback(void* data, dGeomID o1, dGeomID o2);
+double dsElapsedTime();
+void keyboardSpecial(int key, int x, int y);
 
 
 void main(int argc, char** argv)
@@ -93,13 +95,15 @@ void main(int argc, char** argv)
 	glutMouseFunc(mouse);
 	glutMotionFunc(motion);
 	glutMouseWheelFunc(mouseWheel);
+	glutSpecialFunc(keyboardSpecial);
 	glutMainLoop();
 
 }
 
 void init() {
 
-	sphere = new Sphere();
+	sphere = new Sphere(.5f,16,16);
+	cubeGraphic = new Cube();
 	earthGraphic = new Graphic();
 	moonGraphic = new Graphic();
 
@@ -110,13 +114,12 @@ void init() {
 	earthObj = new EmptyObject(earthGraphic);
 	moonObj = new EmptyObject(moonGraphic);
 	sphereObj = new EmptyObject(sphere);
+	cubeObj = new EmptyObject(cubeGraphic);
 
-	//sphereObj->MoveObject(vec3(1.0f, 2.0f, 0.0f));
-
+	sphereObj->MoveObject(vec3(1.0f, 2.0f, 0.0f));
+	earthObj->MoveObject(vec3(.50f, 1.0f, 0.0f));
 
 	//earthObj->AddChildren(moonObj);
-
-
 
 	attrib_t attrib_1;
 
@@ -132,7 +135,7 @@ void init() {
 	earthObj->Init();
 	moonObj->Init();
 	sphereObj->Init();
-
+	cubeObj->Init();
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
 }
@@ -162,35 +165,37 @@ void ODEInit()
 	dBodySetAngularVel(ode_sphere_body, 0, 0, 0);
 	ode_sphere_geom = dCreateSphere(ode_space, 0.2f);
 	dGeomSetBody(ode_sphere_geom, ode_sphere_body);
-	dMassSetSphereTotal(&m, 20, 1.f);
+	dMassSetSphereTotal(&m, 20, .2f);
 	dBodySetMass(ode_sphere_body, &m);
 
 
-	/*
 	//trim
 	ode_trimesh_body = dBodyCreate(ode_world);
-	dBodySetPosition(ode_trimesh_body, 0, 1, 0);
+	dBodySetPosition(ode_trimesh_body, -1, 5, 0);
 	dBodySetRotation(ode_trimesh_body, R);
 	dBodySetLinearVel(ode_trimesh_body, 0, 0, 0);
 	dBodySetAngularVel(ode_trimesh_body, 0, 0, 0);
 
-	ode_trimesh_geom = dCreateSphere(ode_space, 0.2f);
+	ode_trimesh_geom = dCreateSphere(ode_space, .5f);
 	dGeomSetBody(ode_trimesh_geom, ode_trimesh_body);
-	dMassSetSphereTotal(&m, 20, 1.2f);
+	dMassSetSphereTotal(&m, 20, .5f);
 	dBodySetMass(ode_trimesh_body, &m);
-	*/
 
+	dBodySetKinematic(ode_trimesh_body);
 
 
 	
 	//trim
+
+/*
 	ode_trimesh_body = dBodyCreate(ode_world);
+
 	dBodySetPosition(ode_trimesh_body, 0, 0, 0);
 	dBodySetRotation(ode_trimesh_body, R);
 	dBodySetLinearVel(ode_trimesh_body, 0, 0, 0);
 	dBodySetAngularVel(ode_trimesh_body, 0, 0, 0);
 
-	int n = (int)(sphere->GetVertices().size() / 3);
+	int n = (int)(cubeGraphic->GetVertices().size() / 3);
 
 	ode_trimesh_index.resize(n);
 	for (int i = 0; i < n; ++i) {
@@ -198,14 +203,12 @@ void ODEInit()
 	}
 
 	ode_trimesh_data = dGeomTriMeshDataCreate();
-	dGeomTriMeshDataBuildSingle(ode_trimesh_data, sphere->GetVertices().data(), 3 * sizeof(float), n, ode_trimesh_index.data(), n, 3 * sizeof(dTriIndex));
-
+	dGeomTriMeshDataBuildSingle(ode_trimesh_data, cubeGraphic->GetVertices().data(), 3 * sizeof(float), n, ode_trimesh_index.data(), n, 3 * sizeof(dTriIndex));
 	ode_trimesh_geom = dCreateTriMesh(ode_space, ode_trimesh_data, 0, 0, 0);
 	dGeomSetBody(ode_trimesh_geom, ode_trimesh_body);
-	cout << "mass: " << (m.mass) << endl;
 	dMassSetTrimeshTotal(&m, 21, ode_trimesh_geom);	//mass  ¾ø´Ù
 	dBodySetMass(ode_trimesh_body, &m);	//bug
-
+*/
 	
 }
 
@@ -222,21 +225,22 @@ void ODEDisplay()
 		dWorldQuickStep(ode_world, stepsize);
 		dJointGroupEmpty(ode_contactgroup); // remove all contact joints
 	}
-
-	vec3 gravityUp = vec3(moonObj->GetObjectT()[3][0] - earthObj->GetObjectT()[3][0], moonObj->GetObjectT()[3][1] - earthObj->GetObjectT()[3][0], moonObj->GetObjectT()[3][2] - earthObj->GetObjectT()[3][2]);
 	
-	//gravityUp = normalize(gravityUp);
-	double gravityCoe = -1;
-	//cout << gravityUp.x << "\t" << gravityUp.y <<"\t" << gravityUp.z << endl;
-	dBodyAddForce(ode_sphere_body,gravityUp.x*gravityCoe, gravityUp.y*gravityCoe,gravityUp.z*gravityCoe);
 
+	vec3 gravityUp = vec3(moonObj->GetObjectT()[3][0] - earthObj->GetObjectT()[3][0], moonObj->GetObjectT()[3][1] - earthObj->GetObjectT()[3][1], moonObj->GetObjectT()[3][2] - earthObj->GetObjectT()[3][2]);
+	
+	
+	gravityUp = normalize(gravityUp);
+
+	if (!isnan(gravityUp.x)){
+		double gravityCoe = -13;
+		dBodyAddForce(ode_sphere_body,(dReal)gravityUp.x*gravityCoe, (dReal)gravityUp.y*gravityCoe, (dReal)gravityUp.z*gravityCoe);
+	}
 	mat4 Ms = compute_modelling_transf(ode_sphere_body);
-	//mat4 Mt = compute_modelling_transf(ode_trimesh_body);
+	mat4 Mt = compute_modelling_transf(ode_trimesh_body);
 
-	//earthObj->SetObjectT(Mt);
-	sphereObj->SetObjectT(Ms);
-	//moonObj->SetObjectT(Ms);
-//	cout << glm::to_string(Ms) << endl;
+	earthObj->SetObjectT(Mt);
+	moonObj->SetObjectT(Ms);
 }
 
 glm::mat4 compute_modelling_transf(dBodyID body)
@@ -308,9 +312,14 @@ void Render(int color_mode) {
 	sphereObj->SetPerspectiveMatrix(mainCamera->GetProjection(aspect));
 	sphereObj->SetViewMatrix(mainCamera->GetViewing());
 
+	cubeObj->SetPerspectiveMatrix(mainCamera->GetProjection(aspect));
+	cubeObj->SetViewMatrix(mainCamera->GetViewing());
+
 	earthObj->Activate(color_mode);
 	moonObj->Activate(color_mode);
 	sphereObj->Activate(color_mode);
+	cubeObj->Activate(color_mode);
+
 
 	if (color_mode != 2) {
 		glutSwapBuffers();
@@ -352,4 +361,41 @@ void motion(int x, int y) {
 
 void mouseWheel(int wheel, int dir, int x, int y) {
 	mainCamera->MouseWheel(wheel, dir, x, y);
+}
+
+
+
+void keyboardSpecial(int key, int x, int y) {
+
+	GLfloat radian = M_PI / 180;
+
+	switch (key) {
+	case GLUT_KEY_UP: {
+
+		dBodyAddForce(ode_sphere_body, 1,0,0);
+		break;
+	}
+	case GLUT_KEY_DOWN: {
+		dBodyAddForce(ode_sphere_body, -1, 0, 0);
+		break;
+	}
+	case GLUT_KEY_RIGHT: {
+		dBodyAddForce(ode_sphere_body, 0, 0, 1);
+		break;
+	}
+	case GLUT_KEY_LEFT: {
+		dBodyAddForce(ode_sphere_body, 0, 0, 1);
+		break;
+	}
+	case GLUT_KEY_HOME: {
+	
+		break;
+	}
+	case GLUT_KEY_INSERT: {
+
+		break;
+	}
+	}
+
+
 }

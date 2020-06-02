@@ -38,12 +38,12 @@ protected:
 	virtual void BindElements();
 	virtual void LoadTexture(const char* basedir, const vector<real_t>& texcoords, GLint min_filter= GL_LINEAR_MIPMAP_LINEAR, GLint mag_filter= GL_LINEAR_MIPMAP_LINEAR) override final;
 	virtual void LoadObj(const char* filename, const char* basedir, attrib_t& attrib, real_t scale)override final;
-	virtual vector<GLfloat> GetVertices() override final;
+	virtual vector<tinyobj::real_t> GetVertices() override final;
 	GLuint* element_buffs;
 	GLuint vao;
 	GLuint vbo[4];
 
-	vector<GLfloat> vertices;
+	vector<tinyobj::real_t> vertices;
 	vector<GLfloat> colors;
 	vector<GLfloat> normals;
 	vector<vector<size_t>> vertex_map;
@@ -56,8 +56,6 @@ protected:
 private:
 	int program;
 
-	//GLchar* attri_name[3] = { (GLchar*)"vPosition",(GLchar*)"vNormal",(GLchar*)"vColor" };
-	
 	int BuildProgram();
 
 	void CalColor(vector<GLfloat>& c, vector<GLfloat>& p);

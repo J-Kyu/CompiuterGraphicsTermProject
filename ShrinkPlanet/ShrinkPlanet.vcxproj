@@ -70,8 +70,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <IncludePath>../ode-0.16.1/include;$(IncludePath)</IncludePath>
-    <LibraryPath>../ode-0.16.1/lib/DebugDoubleDLL;$(LibraryPath)</LibraryPath>
+    <IncludePath>$(IncludePath)</IncludePath>
+    <LibraryPath>$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -79,13 +79,12 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>../freeglut/include;../glew/include;../glm</AdditionalIncludeDirectories>
-      <AdditionalOptions>-dDOUBLE %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalIncludeDirectories>../ode-0.16.1/include;../freeglut/include;../glew/include;../glm</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
-      <AdditionalLibraryDirectories>../glew/lib/Release/Win32;../freeglut/lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>freeglut.lib;glew32.lib;ode_doubled.lib;drawstuffd.lib;winmm.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>../glew/lib/Release/Win32;../ode-0.16.1/lib/DebugDoubleDLL;../freeglut/lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>freeglut.lib;glew32.lib;..\ode-0.16.1\lib\DebugDoubleDLL\ode_doubled.lib;..\ode-0.16.1\lib\DebugDoubleDLL\drawstuffd.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -132,21 +131,25 @@
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Component.cpp" />
+    <ClCompile Include="Cube.cpp" />
     <ClCompile Include="EmptyObject.cpp" />
     <ClCompile Include="Graphic.cpp" />
     <ClCompile Include="loadobj.cpp" />
     <ClCompile Include="LoadShaders.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Rigidbody3D.cpp" />
     <ClCompile Include="Sphere.cpp" />
     <ClCompile Include="tiny_obj_loader.cc" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Component.h" />
+    <ClInclude Include="Cube.h" />
     <ClInclude Include="EmptyObject.h" />
     <ClInclude Include="Graphic.h" />
     <ClInclude Include="loadobj.h" />
     <ClInclude Include="LoadShaders.h" />
+    <ClInclude Include="Rigidbody3D.h" />
     <ClInclude Include="Sphere.h" />
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="tiny_obj_loader.h" />

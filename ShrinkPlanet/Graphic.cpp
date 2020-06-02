@@ -5,18 +5,14 @@
 
 void Graphic::ActivateGraphic( mat4 p, mat4 v, mat4 m) {
 	mat4 I(1.0f);
-
+	glBindVertexArray(vao);
 	SetShaderValue(program, "M", m);
 	SetShaderValue(program, "V", v);
 	SetShaderValue(program, "P", p);
 	SetShaderValue(program, "T", I);
 
-	glUniform1i(glGetUniformLocation(program, "ColorMode"), 7);
+	glUniform1i(glGetUniformLocation(program, "ShadingMode"), 1);
 
-	glUniform1f(glGetUniformLocation(program, "n"), 10.0f);
-	glUniform3f(glGetUniformLocation(program, "Ka"), 0.3f, 0.3f, 0.3f);
-	glUniform3f(glGetUniformLocation(program, "Kd"), 1.0f, 1.0f, 1.0f);
-	glUniform3f(glGetUniformLocation(program, "Ks"), 0.8f, 0.8f, 0.8f);
 
 	RenderGraphic();
 }
@@ -38,7 +34,7 @@ void Graphic::ActivateComponent(int colorMode,mat4 p, mat4 v, mat4 m) {
 
 
 	//cout << colorMode << endl;
-
+	glUniform1i(glGetUniformLocation(program, "ShadingMode"), 0);
 	glUniform1i(glGetUniformLocation(program, "ColorMode"), colorMode);
 	glUniform1i(glGetUniformLocation(program, "ObjectCode"), kyu);
 
@@ -127,14 +123,12 @@ void Graphic::BindCBuffersCV() {
 		bind vertex array
 		and bind bffers for vertex and colors
 	*/
-
 	glBindVertexArray(vao);
 	glGenBuffers(4, vbo);
 	BindBuffer(vbo[0], vertices, program, "vPosition", 3);
 	BindBuffer(vbo[1], normals, program, "vNormal", 3);
 	BindBuffer(vbo[2], colors, program, "vColor", 3);
 	BindBuffer(vbo[3], texcoords, program, "vTexcoord", 2);
-
 
 }
 

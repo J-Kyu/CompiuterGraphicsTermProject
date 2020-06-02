@@ -38,6 +38,6 @@ public:
 	//virtual void LoadTexture(const char* basedir, vector<real_t> texcoords_out, map<string, size_t> texmap_out, const vector<real_t> texcoords, const vector<shape_t> shapes, const vector<material_t> materials, GLint min_filter, GLint mag_filter);
 	virtual void LoadTexture(const char* basedir , const vector<real_t>& texcoords, GLint min_filter= GL_LINEAR_MIPMAP_LINEAR, GLint mag_filter= GL_LINEAR_MIPMAP_LINEAR);
 	virtual void LoadObj(const char* filename, const char* basedir, attrib_t& attrib, real_t scale);
-	virtual vector<GLfloat> GetVertices();
+	virtual vector<tinyobj::real_t> GetVertices();
 };
 
