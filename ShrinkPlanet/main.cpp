@@ -16,23 +16,19 @@
 #include "Rigidbody3D.h"
 #include "RigidBodyWorld.h"
 
+
+
+
+#include "GravityAttractor.h"
+#include "GravityDependent.h"
+
+
+
 using namespace std;
 using namespace glm;
 
-EmptyObject* earthObj;
-EmptyObject* moonObj;
-EmptyObject* sphereObj;
-EmptyObject* cubeObj;;
-
-Component* earthGraphic;
-Component* moonGraphic;
-Component* sphere;
-Component* cubeGraphic;
-
-Rigidbody3D* sphere_1RigidBody;
-Rigidbody3D* sphere_2RigidBody;
-
-
+GravityAttractor* earth;
+GravityDependent* character;
 
 Camera* mainCamera = new Camera();
 
@@ -50,7 +46,10 @@ void keyboardSpecial(int key, int x, int y);
 dWorldID RigidBodyWorld::ode_world;
 dSpaceID RigidBodyWorld::ode_space;
 dJointGroupID RigidBodyWorld::ode_contactgroup;
-bool RigidBodyWorld::pause;
+bool RigidBodyWorld::pause = false;
+
+dGeomID RigidBodyWorld::ode_plane_geom;
+
 
 void main(int argc, char** argv)
 {
@@ -70,7 +69,6 @@ void main(int argc, char** argv)
 	}
 
 	init();
-	//ODEInit();
 	glutDisplayFunc(display);
 	glutMouseFunc(mouse);
 	glutMotionFunc(motion);
@@ -81,55 +79,15 @@ void main(int argc, char** argv)
 }
 
 void init() {
-	//graphic
-	sphere = new Sphere(.5f,16,16);
-	cubeGraphic = new Cube();
-	earthGraphic = new Graphic();
-	moonGraphic = new Graphic();
-
-	earthGraphic->kyu = 1;
-	moonGraphic->kyu = 2;
-	sphere->kyu = 3;
 
 
-	//rigid body
+	RigidBodyWorld::WorldInit();
+	
+	
+	earth = new GravityAttractor("models/earth.obj", "models/", 5.0f,2.5f,20.0f,0.0f,0.0f,0.0f);
+	character = new GravityDependent(earth->mainEntity, "models/moon.obj", "models/", 0.2f,0.1f,15.0f,5.0f,5.0f,0.0f);
+	
 
-	sphere_1RigidBody = new Rigidbody3D();
-	sphere_1RigidBody->SphereRigidBodyInit();
-
-	sphere_2RigidBody = new Rigidbody3D();
-	sphere_2RigidBody->SphereRigidBodyInit();
-
-
-	earthObj = new EmptyObject(earthGraphic);
-	moonObj = new EmptyObject(moonGraphic);
-	sphereObj = new EmptyObject(sphere);
-	cubeObj = new EmptyObject(cubeGraphic);
-
-	earthObj->AddComponent(sphere_1RigidBody);
-	moonObj->AddComponent(sphere_2RigidBody);
-
-
-	sphereObj->MoveObject(vec3(1.0f, 2.0f, 0.0f));
-	earthObj->MoveObject(vec3(.50f, 1.0f, 0.0f));
-
-	//earthObj->AddChildren(moonObj);
-
-	attrib_t attrib_1;
-
-	earthGraphic->LoadObj("models/earth.obj", "models/", attrib_1, 1.0f);
-	glActiveTexture(GL_TEXTURE0);
-	earthGraphic->LoadTexture("models/", attrib_1.texcoords);
-
-	attrib_t attrib_2;
-	moonGraphic->LoadObj("models/moon.obj", "models/", attrib_2, .3f);
-	glActiveTexture(GL_TEXTURE0);
-	moonGraphic->LoadTexture("models/", attrib_2.texcoords);
-
-	earthObj->Init();
-	moonObj->Init();
-	sphereObj->Init();
-	cubeObj->Init();
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
 }
@@ -150,26 +108,10 @@ void Render(int color_mode) {
 	int height = glutGet(GLUT_WINDOW_HEIGHT);
 	double aspect = 1.0 * width / height;
 
-	//earthObj->RotatingYAxis(1.0f);
-	//moonObj->RotatingYAxis(-3.0f);
 
-	earthObj->SetPerspectiveMatrix(mainCamera->GetProjection(aspect));
-	earthObj->SetViewMatrix(mainCamera->GetViewing());
 
-	moonObj->SetPerspectiveMatrix(mainCamera->GetProjection(aspect));
-	moonObj->SetViewMatrix(mainCamera->GetViewing());
-
-	sphereObj->SetPerspectiveMatrix(mainCamera->GetProjection(aspect));
-	sphereObj->SetViewMatrix(mainCamera->GetViewing());
-
-	cubeObj->SetPerspectiveMatrix(mainCamera->GetProjection(aspect));
-	cubeObj->SetViewMatrix(mainCamera->GetViewing());
-
-	earthObj->Activate(color_mode);
-	moonObj->Activate(color_mode);
-	sphereObj->Activate(color_mode);
-	cubeObj->Activate(color_mode);
-
+	earth->Activate(mainCamera->GetProjection(aspect), mainCamera->GetViewing(),color_mode);
+	character->Activate(mainCamera->GetProjection(aspect), mainCamera->GetViewing(), color_mode);
 
 	if (color_mode != 2) {
 		glutSwapBuffers();
@@ -178,6 +120,7 @@ void Render(int color_mode) {
 
 
 void display() {
+	RigidBodyWorld::CheckCollision();
 	Render();
 
 	glFlush();

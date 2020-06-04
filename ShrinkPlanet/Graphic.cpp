@@ -100,7 +100,7 @@ void Graphic::InitGraphic() {
 	CalVertices();
 	CalColor(colors, vertices);
 	//SetColor(1.0f, 0.5f, 0.0f);
-
+	BindElements();
 	RegisterVertexArray();
 	BindCBuffersCV();
 }
@@ -145,17 +145,6 @@ int Graphic::BuildProgram() {
 	GLuint program = LoadShaders(shaders);
 	glUseProgram(program);
 	return program;
-}
-
-void Graphic::SetColor(GLfloat r, GLfloat g, GLfloat b) {
-	colors.resize(vertices.size());
-
-
-	for (int i = 0; i < colors.size() / 3; i++) {
-		colors[i * 3] = r;
-		colors[i * 3 + 1] = g;
-		colors[i * 3 + 2] = b;
-	}
 }
 
 
@@ -359,6 +348,19 @@ void Graphic::LoadObj(const char* filename, const char* basedir, attrib_t& attri
 
 vector<GLfloat> Graphic::GetVertices() {
 	return vertices;
+}
+
+
+void Graphic::SetColor(GLfloat r, GLfloat g, GLfloat b) {
+	colors.resize(vertices.size() * 3);
+
+
+	for (int i = 0; i < colors.size() / 3; i++) {
+		colors[i * 3] = r;
+		colors[i * 3 + 1] = g;
+		colors[i * 3 + 2] = b;
+	}
+	BindCBuffersCV();
 }
 
 void Graphic::CalVertices() {

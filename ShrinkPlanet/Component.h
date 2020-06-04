@@ -15,7 +15,9 @@
 #include "LoadShaders.h"
 #include "loadobj.h"
 #include "tiny_obj_loader.h"
-
+#define dDOUBLE
+#include <ode/ode.h>
+#include <drawstuff/drawstuff.h>
 
 using namespace tinyobj;
 
@@ -31,6 +33,8 @@ public:
 	int kyu;
 	void SetTopT(mat4*);
 
+	virtual dBodyID GetRigidBodyID();
+
 	virtual void ActivateComponent(mat4);
 	virtual void ActivateComponent(int,mat4,mat4,mat4);
 	virtual void InitComponent();
@@ -40,6 +44,6 @@ public:
 	virtual vector<tinyobj::real_t> GetVertices();
 
 protected:
-	mat4* topT;
+	mat4* topT = new mat4(1.0f);
 };
 

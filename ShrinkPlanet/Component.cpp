@@ -40,3 +40,9 @@ vector<GLfloat> Component::GetVertices() {
 void Component::SetTopT(mat4* t) {
 	topT = t;
 }
+
+dBodyID Component::GetRigidBodyID() {
+
+	cout << "This object is not Rigidbody Component....Please use this function on TYPE Rigidbody" << endl;
+	return NULL;
+}

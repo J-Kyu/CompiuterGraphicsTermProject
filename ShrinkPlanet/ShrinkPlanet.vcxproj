@@ -131,9 +131,13 @@
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Component.cpp" />
+    <ClCompile Include="Coordinate.cpp" />
     <ClCompile Include="Cube.cpp" />
+    <ClCompile Include="Cylinder.cpp" />
     <ClCompile Include="EmptyObject.cpp" />
     <ClCompile Include="Graphic.cpp" />
+    <ClCompile Include="GravityAttractor.cpp" />
+    <ClCompile Include="GravityDependent.cpp" />
     <ClCompile Include="loadobj.cpp" />
     <ClCompile Include="LoadShaders.cpp" />
     <ClCompile Include="main.cpp" />
@@ -145,9 +149,13 @@
   <ItemGroup>
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Component.h" />
+    <ClInclude Include="Coordinate.h" />
     <ClInclude Include="Cube.h" />
+    <ClInclude Include="Cylinder.h" />
     <ClInclude Include="EmptyObject.h" />
     <ClInclude Include="Graphic.h" />
+    <ClInclude Include="GravityAttractor.h" />
+    <ClInclude Include="GravityDependent.h" />
     <ClInclude Include="loadobj.h" />
     <ClInclude Include="LoadShaders.h" />
     <ClInclude Include="Rigidbody3D.h" />

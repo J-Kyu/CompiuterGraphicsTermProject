@@ -1,31 +1,19 @@
 #include "Rigidbody3D.h"
 
 
-void Rigidbody3D::ActivateComponent() {
+
+void Rigidbody3D::ActivateComponent(mat4) {
+	RigidBodyActivate();
+}
+void Rigidbody3D::ActivateComponent(int, mat4, mat4, mat4) {
 	RigidBodyActivate();
 }
 
 
+
 void Rigidbody3D::SphereRigidBodyInit() {
 
-
-	dMatrix3 R;
-	dMass m;
-	dRSetIdentity(R);
-
-
-	//sphere
-
-	body = dBodyCreate(RigidBodyWorld::ode_world);
-	dBodySetPosition(body, 2, 10, 0);
-	dBodySetRotation(body, R);
-	dBodySetLinearVel(body, 0, 0, 0);
-	dBodySetAngularVel(body, 0, 0, 0);
-	geom = dCreateSphere(RigidBodyWorld::ode_space, 0.2f);
-	dGeomSetBody(geom, body);
-	dMassSetSphereTotal(&m, 20, .2f);
-	dBodySetMass(body, &m);
-
+	SphereRigidBodyInit(1.0f,20.0f, 0.0f, 0.0f, 0.0f);
 
 }
 
@@ -49,11 +37,18 @@ void Rigidbody3D::SphereRigidBodyInit(float radius, float mass, float x, float y
 	dMassSetSphereTotal(&m, mass, radius);
 	dBodySetMass(body, &m);
 
+	//*topT = compute_modelling_transf(body);
+
 }
 
-void Rigidbody3D::SetKinematic() {
-
-	dBodySetKinematic(body);
+void Rigidbody3D::SetKinematic(bool is) {
+	
+	if (is) {
+		dBodySetKinematic(body);
+	}
+	else {
+		dBodySetDynamic(body);
+	}
 }
 
 void Rigidbody3D::RigidBodyActivate() {
@@ -70,4 +65,26 @@ mat4 Rigidbody3D::compute_modelling_transf(dBodyID body)
 		for (int j = 0; j < 3; ++j) // for each row
 			M[i][j] = rot[j * 4 + i];
 	return M;
+}
+dBodyID Rigidbody3D::GetRigidBodyID() {
+	return body;
+}
+
+
+void Rigidbody3D::RotateRigidbody(float angle, vec3 vec) {
+	
+	GLfloat radian = M_PI / 180;
+	dMatrix3 k;
+	mat4 r;
+	r = rotate(r, angle* radian, vec);
+
+	for (int i = 0; i < 3; i++) {
+		for (int j = 0; j < 3; j++) {
+			k[3*i+j] = (dReal)r[i][j];
+		}
+	}
+
+	dBodySetRotation(body,k);
+
+
 }

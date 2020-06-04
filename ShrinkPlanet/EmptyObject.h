@@ -37,14 +37,16 @@ public:
 	void SetViewMatrix(mat4);
 	void SetObjectT(mat4);
 	mat4 GetObjectT();
+
+	vector<Component*> components;
+	vector<EmptyObject*> children;
 private:
 	
 	mat4 perspectiveT = mat4(1.0f);
 	mat4 viewT = mat4(1.0f);
 	mat4 objectT = mat4(1.0f); //initinal matrix
 	mat4 rotateT = mat4(1.0f); //real time rotating matrix
-	vector<Component*> components;
-	vector<EmptyObject*> children;
+
 
 };
 

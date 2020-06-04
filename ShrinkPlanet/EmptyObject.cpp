@@ -47,6 +47,7 @@ void EmptyObject::Activate(mat4 parentT) {
 }
 
 void EmptyObject::AddComponent(Component* cmp) {
+	cmp->SetTopT(&objectT);
 	components.push_back(cmp);
 }
 
