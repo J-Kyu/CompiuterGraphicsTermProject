@@ -32,7 +32,7 @@ void GravityDependent::AttractToAttractor() {
 		double gravityCoe = -20;
 		dBodyAddForce(mainEntity->components[1]->GetRigidBodyID(), (dReal)gravityUp.x * gravityCoe, (dReal)gravityUp.y * gravityCoe, (dReal)gravityUp.z * gravityCoe);
 		//dBodySetRotation(mainEntity->components[1]->GetRigidBodyID(), R);
-		//dBodyAddForce(mainEntity->components[1]->GetRigidBodyID(), 1.0f,0.0f,0.0f);
+		dBodyAddForce(mainEntity->components[1]->GetRigidBodyID(), 1.0f,0.0f,0.0f);
 
 		//from to
 		/*
@@ -40,6 +40,7 @@ void GravityDependent::AttractToAttractor() {
 			//body.rotation = Quaternion.Slerp(body.rotation, targetRotation,500f*Time.deltaTime);
 			body.rotation = targetRotation;
 			//https://stackoverflow.com/questions/51549366/what-is-the-math-behind-fromtorotation-unity3d
+			quaternion (w,x,y,z) 순이다...그리고 cross으로 인해서 axis가 음수가 될 수 있는데.....이거 주의하자!
 		*/
 
 
@@ -48,13 +49,8 @@ void GravityDependent::AttractToAttractor() {
 
 		vec3 localUp = vec3(mainEntity->GetObjectT()[0][1], mainEntity->GetObjectT()[1][1], mainEntity->GetObjectT()[2][1]);
 
-
-		//cout << "localUp: " << to_string(localUp) <<"\tgravityUp: "<< to_string(gravityUp) << endl;
-
-
 		vec3 axis = abs(normalize(cross(localUp,gravityUp)));
 
-		//cout << "axis: " << to_string(axis) <<"\tgravityUp: "<< to_string(gravityUp) << endl;
 		
 
 		float phi = angle(localUp, gravityUp);
@@ -64,21 +60,11 @@ void GravityDependent::AttractToAttractor() {
 
 		axis *= sin(rad);
 
-		//dQuaternion targetQ = { axis[0],axis[1],axis[2],cos(rad) };
+
 		dQuaternion targetQ = { cos(rad),axis[0],axis[1],axis[2] };
-	//	cout <<"targetQ:\t\t"<< targetQ[0] <<"\t" << targetQ[1] << "\t" << targetQ[2] << "\t" << targetQ[3]  << endl;
-		//여기까지는 다 맞음
+
 
 		const dReal* qr = dBodyGetQuaternion(mainEntity->components[1]->GetRigidBodyID());
-//		cout <<"q_____r:\t\t" <<qr[0] <<"\t" << qr[1] << "\t" << qr[2] << "\t" << qr[3]  << endl;
-
-
-		//dQuaternion calculatedQ = {
-		//	{ targetQ[3] * qr[0] + targetQ[0] * qr[3] + targetQ[1] * qr[2] - targetQ[2] * qr[1]},
-		//	{ targetQ[3] * qr[1] - targetQ[0] * qr[2] + targetQ[1] * qr[3] + targetQ[2] * qr[0]},
-		//	{ targetQ[3] * qr[2] + targetQ[0] * qr[1] - targetQ[1] * qr[0] + targetQ[2] * qr[3]},
-		//	{ targetQ[3] * qr[3] - targetQ[0] * qr[0] - targetQ[1] * qr[1] - targetQ[2] * qr[2]}
-		//};
 
 		dQuaternion calculatedQ = {
 			{ targetQ[0] * qr[0] - targetQ[1] * qr[1] - targetQ[2] * qr[2] - targetQ[3] * qr[3]},
@@ -87,26 +73,9 @@ void GravityDependent::AttractToAttractor() {
 			{ targetQ[0] * qr[3] + targetQ[1] * qr[2] - targetQ[2] * qr[1] + targetQ[3] * qr[0]}
 		};
 
-	//	cout << "calculatedQ:\t\t"<<calculatedQ[0] << "\t" << calculatedQ[1] << "\t" << calculatedQ[2] << "\t" << calculatedQ[3] << endl;
-
-
-		//cout << calculatedQ[0] <<"\t" << calculatedQ[1] << "\t" << calculatedQ[2] << "\t" << calculatedQ[3]  << endl;
-
-		//cout << calculatedQ[0] <<"\t" << calculatedQ[1] << "\t" << calculatedQ[2] << "\t" << calculatedQ[3]  << endl;
-
-		//dQFromAxisAndAngle(targetQ, axis[0], axis[1], axis[2],phi);
-
-		//cout << targetQ[3] << "\t" << cos(phi / 2) << endl;
 		if (!isnan(calculatedQ[1])) {
 
 			dBodySetQuaternion(mainEntity->components[1]->GetRigidBodyID(), calculatedQ);
-			//mainEntity->components[1]->ActivateComponent(mat4(1.0f));
-			//const dReal* qrt = dBodyGetQuaternion(mainEntity->components[1]->GetRigidBodyID());
-			//cout << "qr___t:\t\t" << qrt[0] << "\t" << qrt[1] << "\t" << qrt[2] << "\t" << qrt[3] << endl;
-
-		//	cout <<"Final Locat UP:\t\t" <<to_string(vec3(mainEntity->GetObjectT()[0][1], mainEntity->GetObjectT()[1][1], mainEntity->GetObjectT()[2][1])) << endl;
-			//exit(0);
-
 			return;
 		}
 
