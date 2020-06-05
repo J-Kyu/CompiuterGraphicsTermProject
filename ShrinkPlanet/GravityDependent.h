@@ -35,27 +35,27 @@ public:
 		mainGraphic->LoadTexture(path, attrib.texcoords);
 		mainGraphic->kyu = 1;
 		mainEntity->MoveObject(vec3(0.0f, 0.0f, 5.0f));
-		mainEntity->RotateObject(90, vec3(0.0f, 0.0f, 1.0f));
+		//mainEntity->RotateObject(90, vec3(0.0f, 0.0f, 1.0f));
 		mainEntity->AddComponent(mainGraphic);
 
 
-		vec3 localUp = vec3(mainEntity->GetObjectT()[0][1], mainEntity-> GetObjectT()[1][1], mainEntity->GetObjectT()[2][1]);
-		vec3 localLeft = vec3(mainEntity->GetObjectT()[0][0], mainEntity->GetObjectT()[1][0], mainEntity->GetObjectT()[2][0]);
-		vec3 localRight = vec3(mainEntity->GetObjectT()[0][2], mainEntity->GetObjectT()[1][2], mainEntity->GetObjectT()[2][2]);
+		//vec3 localUp = vec3(mainEntity->GetObjectT()[1][0], mainEntity-> GetObjectT()[1][1], mainEntity->GetObjectT()[1][2]);
+		//vec3 localLeft = vec3(mainEntity->GetObjectT()[0][0], mainEntity->GetObjectT()[0][1], mainEntity->GetObjectT()[0][2]);
+		//vec3 localRight = vec3(mainEntity->GetObjectT()[2][0], mainEntity->GetObjectT()[2][1], mainEntity->GetObjectT()[2][2]);
 
 
-		cout << "X:\t" << to_string(localLeft) << endl;
+	/*	cout << "X:\t" << to_string(localLeft) << endl;
 		cout << "Y:\t" << to_string(localUp) << endl;
-		cout << "Z:\t" << to_string(localRight) << endl;
+		cout << "Z:\t" << to_string(localRight) << endl;*/
 
 		cout << endl;
 		cout << to_string(mainEntity->GetObjectT()) << endl;
 
-	//	Rigidbody3D* mainRD = new Rigidbody3D();
-	//	mainRD->SphereRigidBodyInit(radius, mass, x, y, z);
-	//	mainEntity->AddComponent(mainRD);
+		Rigidbody3D* mainRD = new Rigidbody3D();
+		mainRD->SphereRigidBodyInit(radius, mass, x, y, z);
+		mainEntity->AddComponent(mainRD);
 		//mainRD->SetKinematic(true);
-		//mainRD->RotateRigidbody(90, vec3(1.0f, 0.0f, 0.0f));
+		mainRD->RotateRigidbody(90, vec3(1.0f, 0.0f, 0.0f));
 
 		Coordinate* coord = new Coordinate();
 		mainEntity->AddComponent(coord);

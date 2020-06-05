@@ -13,7 +13,7 @@ void GravityDependent::Activate(mat4 p, mat4 v, int color_mode) {
 		cout << "Attracor is not assigned   !" << endl;
 		exit(0);
 	}
-	//AttractToAttractor();
+	AttractToAttractor();
 	mainEntity->SetPerspectiveMatrix(p);
 	mainEntity->SetViewMatrix(v);
 	mainEntity->Activate(color_mode);
@@ -56,7 +56,8 @@ void GravityDependent::AttractToAttractor() {
 		*/
 		//vec3 localUp = vec3(mainEntity->GetObjectT()[0][1], mainEntity->GetObjectT()[1][1], mainEntity->GetObjectT()[2][1]);
 		//compute_modelling_transf
-		vec3 localUp = vec3(mainEntity->components[1]->GetRigidBodyTrans()[0][1], mainEntity->components[1]->GetRigidBodyTrans()[1][1], mainEntity->components[1]->GetRigidBodyTrans()[2][1]);
+		//vec3 localUp = vec3(mainEntity->components[1]->GetRigidBodyTrans()[1][0], mainEntity->components[1]->GetRigidBodyTrans()[1][1], mainEntity->components[1]->GetRigidBodyTrans()[1][2]);
+		 vec3 localUp = vec3(mainEntity->GetObjectT()[1][0], mainEntity->GetObjectT()[1][1], mainEntity->GetObjectT()[1][2]);
 	/*	vec3 localLeft = vec3(mainEntity->components[1]->GetRigidBodyTrans()[0][0], mainEntity->components[1]->GetRigidBodyTrans()[1][0], mainEntity->components[1]->GetRigidBodyTrans()[2][0]);
 		vec3 localRight = vec3(mainEntity->components[1]->GetRigidBodyTrans()[0][2], mainEntity->components[1]->GetRigidBodyTrans()[1][2], mainEntity->components[1]->GetRigidBodyTrans()[2][2]);*/
 
@@ -68,7 +69,7 @@ void GravityDependent::AttractToAttractor() {
 
 		vec3 axis = normalize(cross(localUp,gravityUp));
 
-		if (wow > 0) {
+		if (wow > 10) {
 			return;
 		}
 		cout << "INDEX: " <<wow << endl;
@@ -112,8 +113,8 @@ void GravityDependent::AttractToAttractor() {
 
 			dBodySetQuaternion(mainEntity->components[1]->GetRigidBodyID(), calculatedQ);
 
-			vec3 localUp = vec3(mainEntity->components[1]->GetRigidBodyTrans()[0][1], mainEntity->components[1]->GetRigidBodyTrans()[1][1], mainEntity->components[1]->GetRigidBodyTrans()[2][1]);
-			
+			//vec3 localUp = vec3(mainEntity->components[1]->GetRigidBodyTrans()[1][0], mainEntity->components[1]->GetRigidBodyTrans()[1][1], mainEntity->components[1]->GetRigidBodyTrans()[1][2]);
+			vec3 localUp = vec3(mainEntity->GetObjectT()[1][0], mainEntity->GetObjectT()[1][1], mainEntity->GetObjectT()[1][2]);
 			//vec3 localUp = vec3(0.0f, 1.0f, 0.0f);
 
 
