@@ -34,13 +34,26 @@ public:
 		glActiveTexture(GL_TEXTURE0);
 		mainGraphic->LoadTexture(path, attrib.texcoords);
 		mainGraphic->kyu = 1;
-
+		mainEntity->MoveObject(vec3(0.0f, 0.0f, 5.0f));
+		mainEntity->RotateObject(90, vec3(0.0f, 0.0f, 1.0f));
 		mainEntity->AddComponent(mainGraphic);
 
 
-		Rigidbody3D* mainRD = new Rigidbody3D();
-		mainRD->SphereRigidBodyInit(radius, mass, x, y, z);
-		mainEntity->AddComponent(mainRD);
+		vec3 localUp = vec3(mainEntity->GetObjectT()[0][1], mainEntity-> GetObjectT()[1][1], mainEntity->GetObjectT()[2][1]);
+		vec3 localLeft = vec3(mainEntity->GetObjectT()[0][0], mainEntity->GetObjectT()[1][0], mainEntity->GetObjectT()[2][0]);
+		vec3 localRight = vec3(mainEntity->GetObjectT()[0][2], mainEntity->GetObjectT()[1][2], mainEntity->GetObjectT()[2][2]);
+
+
+		cout << "X:\t" << to_string(localLeft) << endl;
+		cout << "Y:\t" << to_string(localUp) << endl;
+		cout << "Z:\t" << to_string(localRight) << endl;
+
+		cout << endl;
+		cout << to_string(mainEntity->GetObjectT()) << endl;
+
+	//	Rigidbody3D* mainRD = new Rigidbody3D();
+	//	mainRD->SphereRigidBodyInit(radius, mass, x, y, z);
+	//	mainEntity->AddComponent(mainRD);
 		//mainRD->SetKinematic(true);
 		//mainRD->RotateRigidbody(90, vec3(1.0f, 0.0f, 0.0f));
 
@@ -48,11 +61,12 @@ public:
 		mainEntity->AddComponent(coord);
 
 		mainEntity->Init();
+		wow = 0;
 	}
 
 	EmptyObject* mainEntity;
 	EmptyObject* attractor;
-
+	int wow;
 
 	void Activate();
 	void Activate(mat4 p, mat4 v, int color_mode = 0);

@@ -18,13 +18,14 @@ public:
 	void virtual ActivateComponent(mat4) override final;
 	void virtual ActivateComponent(int,mat4,mat4, mat4) override final;
 	virtual dBodyID GetRigidBodyID() override final;
+	virtual mat4 GetRigidBodyTrans() override final;
 private:
 
 	dBodyID body;
 	dGeomID geom;
 
 
-	mat4 compute_modelling_transf(dBodyID body);
+	mat4 compute_modelling_transf();
 	void RigidBodyActivate();
 
 };

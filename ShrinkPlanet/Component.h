@@ -34,6 +34,7 @@ public:
 	void SetTopT(mat4*);
 
 	virtual dBodyID GetRigidBodyID();
+	virtual mat4 GetRigidBodyTrans();
 
 	virtual void ActivateComponent(mat4);
 	virtual void ActivateComponent(int,mat4,mat4,mat4);

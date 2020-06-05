@@ -52,10 +52,10 @@ void Rigidbody3D::SetKinematic(bool is) {
 }
 
 void Rigidbody3D::RigidBodyActivate() {
-	*topT = compute_modelling_transf(body);
+	*topT = compute_modelling_transf();
 }
 
-mat4 Rigidbody3D::compute_modelling_transf(dBodyID body)
+mat4 Rigidbody3D::compute_modelling_transf()
 {
 	mat4 M(1.0f);
 	const dReal* pos = dBodyGetPosition(body);
@@ -87,4 +87,8 @@ void Rigidbody3D::RotateRigidbody(float angle, vec3 vec) {
 	dBodySetRotation(body,k);
 
 
+}
+
+mat4 Rigidbody3D::GetRigidBodyTrans() {
+	return compute_modelling_transf();
 }

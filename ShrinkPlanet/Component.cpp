@@ -46,3 +46,8 @@ dBodyID Component::GetRigidBodyID() {
 	cout << "This object is not Rigidbody Component....Please use this function on TYPE Rigidbody" << endl;
 	return NULL;
 }
+
+mat4 Component::GetRigidBodyTrans() {
+	cout << "This object is not Rigidbody Component....Please use this function on TYPE Rigidbody" << endl;
+	return 	mat4(0);
+}
