@@ -48,7 +48,7 @@ dSpaceID RigidBodyWorld::ode_space;
 dJointGroupID RigidBodyWorld::ode_contactgroup;
 bool RigidBodyWorld::pause = false;
 
-dGeomID RigidBodyWorld::ode_plane_geom;
+//dGeomID RigidBodyWorld::ode_plane_geom;
 
 
 void main(int argc, char** argv)
@@ -85,7 +85,7 @@ void init() {
 	
 	
 	earth = new GravityAttractor("models/earth.obj", "models/", 5.0f,2.5f,20.0f,0.0f,0.0f,0.0f);
-	character = new GravityDependent(earth->mainEntity, "models/moon.obj", "models/", 0.2f,0.1f,15.0f,0.0f,0.0f,5.0f);
+	character = new GravityDependent(earth->mainEntity, "models/moon.obj", "models/", 0.2f,0.1f,15.0f,0.0f,-5.0f,5.0f);
 	
 
 	glEnable(GL_DEPTH_TEST);

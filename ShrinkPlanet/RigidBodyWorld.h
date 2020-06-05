@@ -5,7 +5,7 @@
 #include <drawstuff/drawstuff.h>
 #include <windows.h>
 #include <timeapi.h>
-#define dEpsilon 0.016
+#define dEpsilon 0.0016
 
 
 class RigidBodyWorld :public Component{
@@ -18,7 +18,7 @@ public:
 	static dWorldID ode_world; // simulation world
 	static dSpaceID ode_space; // collision space
 	static dJointGroupID ode_contactgroup; // a group of contact joints
-	static dGeomID ode_plane_geom;
+	//static dGeomID ode_plane_geom;
 
 
 	static void CheckCollision();
