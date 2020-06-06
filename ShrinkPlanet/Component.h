@@ -35,6 +35,7 @@ public:
 
 	virtual dBodyID GetRigidBodyID();
 	virtual mat4 GetRigidBodyTrans();
+	virtual void RotateRigidBody(float,vec3);
 
 	virtual void ActivateComponent(mat4);
 	virtual void ActivateComponent(int,mat4,mat4,mat4);

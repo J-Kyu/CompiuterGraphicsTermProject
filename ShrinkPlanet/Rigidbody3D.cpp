@@ -71,16 +71,22 @@ dBodyID Rigidbody3D::GetRigidBodyID() {
 }
 
 
-void Rigidbody3D::RotateRigidbody(float angle, vec3 vec) {
+void Rigidbody3D::RotateRigidBody(float speedR, vec3 vec) {
 	
-	GLfloat radian = M_PI / 180;
-	dMatrix3 k;
-	mat4 r;
-	r = rotate(r, angle* radian, vec);
+	//GLfloat radian = M_PI / 180;
 
+	mat4 r = compute_modelling_transf();
+
+
+
+	r = rotate(r, speedR * (float)RigidBodyWorld::dsElapsedTime(), vec);
+
+
+
+	dMatrix3 k;
 	for (int i = 0; i < 3; i++) {
 		for (int j = 0; j < 3; j++) {
-			k[3*i+j] = (dReal)r[i][j];
+			k[i + 4*j] = r[i][j];
 		}
 	}
 

@@ -43,7 +43,7 @@ public:
 		mainRD->SphereRigidBodyInit(radius, mass, x, y, z);
 		mainEntity->AddComponent(mainRD);
 		//mainRD->SetKinematic(true);
-		mainRD->RotateRigidbody(90, vec3(1.0f, 0.0f, 0.0f));
+		//mainRD->RotateRigidbody(90, vec3(1.0f, 0.0f, 0.0f));
 
 		Coordinate* coord = new Coordinate();
 		mainEntity->AddComponent(coord);

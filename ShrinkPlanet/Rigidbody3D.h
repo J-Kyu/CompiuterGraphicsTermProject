@@ -13,8 +13,8 @@ public:
 	void SphereRigidBodyInit();
 	void SphereRigidBodyInit(float radius, float mass, float x, float y, float z);
 	void SetKinematic(bool);
-	void RotateRigidbody(float, vec3);
 
+	virtual void RotateRigidBody(float angle, vec3 vc) override final;
 	void virtual ActivateComponent(mat4) override final;
 	void virtual ActivateComponent(int,mat4,mat4, mat4) override final;
 	virtual dBodyID GetRigidBodyID() override final;

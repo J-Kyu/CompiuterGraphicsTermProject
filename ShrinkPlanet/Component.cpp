@@ -51,3 +51,9 @@ mat4 Component::GetRigidBodyTrans() {
 	cout << "This object is not Rigidbody Component....Please use this function on TYPE Rigidbody" << endl;
 	return 	mat4(0);
 }
+
+void Component::RotateRigidBody(float angle, vec3 vc) {
+	cout << "This object is not Rigidbody Component....Please use this function on TYPE Rigidbody" << endl;
+	return;
+
+}
