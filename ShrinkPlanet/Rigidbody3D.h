@@ -19,6 +19,7 @@ public:
 	void virtual ActivateComponent(int,mat4,mat4, mat4) override final;
 	virtual dBodyID GetRigidBodyID() override final;
 	virtual mat4 GetRigidBodyTrans() override final;
+	virtual void SetRigidBodyTrans(mat4) override final;
 private:
 
 	dBodyID body;

@@ -66,6 +66,25 @@ mat4 Rigidbody3D::compute_modelling_transf()
 			M[i][j] = rot[j * 4 + i];
 	return M;
 }
+
+void Rigidbody3D::SetRigidBodyTrans(mat4 t)
+{
+
+
+	dMatrix3 rot;
+	for (int i = 0; i < 3; i++) {
+		for (int j = 0; j < 3; j++) {
+			rot[i + 4 * j] = t[i][j];
+		}
+	}
+	cout << "1" << endl;
+	dBodySetPosition(body, t[3][0], t[3][1], t[3][2]);
+	cout << "2" << endl;
+	dBodySetRotation(body, rot);
+	cout << "3\n" << endl;
+
+
+}
 dBodyID Rigidbody3D::GetRigidBodyID() {
 	return body;
 }

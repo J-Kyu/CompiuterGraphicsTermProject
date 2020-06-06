@@ -88,3 +88,8 @@ dBodyID RigidBodyWorld::GetRigidBodyID(){
 void RigidBodyWorld::RotateRigidBody(float angle, vec3 vc) {
 	cout << "This is RigidBody World Virtual Clss.....should not be called" << endl;
 }
+
+void RigidBodyWorld::SetRigidBodyTrans(mat4) {
+	cout << "This is RigidBody World Virtual Clss.....should not be called" << endl;
+}
+

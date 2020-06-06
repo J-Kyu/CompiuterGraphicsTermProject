@@ -57,3 +57,7 @@ void Component::RotateRigidBody(float angle, vec3 vc) {
 	return;
 
 }
+
+void Component::SetRigidBodyTrans(mat4) {
+	cout << "This object is not Rigidbody Component....Please use this function on TYPE Rigidbody" << endl;
+}

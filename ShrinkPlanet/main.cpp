@@ -84,9 +84,9 @@ void init() {
 	RigidBodyWorld::WorldInit();
 	
 	
-	earth = new GravityAttractor("models/earth.obj", "models/", 5.0f,2.5f,20.0f,0.0f,0.0f,0.0f);
-	character = new GravityDependent(earth->mainEntity, "models/moon.obj", "models/", 0.2f,0.1f,10.0f,5.0f,0.0f,0.0f);
-	
+	earth = new GravityAttractor("models/earth.obj", "models/", 5.0f,2.5f,20.0f);
+	character = new GravityDependent(earth->mainEntity, "models/moon.obj", "models/", 0.2f,0.1f,10.0f, 0.0f, 3.0f, 0.0f);
+	//character->mainEntity->MoveObject(vec3(.0f, 3.0f, 0.0f));
 
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);

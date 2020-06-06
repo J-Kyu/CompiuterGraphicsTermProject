@@ -34,7 +34,7 @@ public:
 		glActiveTexture(GL_TEXTURE0);
 		mainGraphic->LoadTexture(path, attrib.texcoords);
 		mainGraphic->kyu = 1;
-		mainEntity->MoveObject(vec3(0.0f, 0.0f, 5.0f));
+		//mainEntity->MoveObject(vec3(0.0f, 0.0f, 5.0f));
 		//mainEntity->RotateObject(90, vec3(0.0f, 0.0f, 1.0f));
 		mainEntity->AddComponent(mainGraphic);
 
@@ -59,7 +59,7 @@ public:
 	void Activate();
 	void Activate(mat4 p, mat4 v, int color_mode = 0);
 private:
-	void AttractToAttractor();
+	void CalculateRigidbody();
 
 };
 
