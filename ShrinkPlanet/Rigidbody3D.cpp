@@ -125,3 +125,49 @@ void Rigidbody3D::RotateRigidBody(float speedR, vec3 vec) {
 mat4 Rigidbody3D::GetRigidBodyTrans() {
 	return compute_modelling_transf();
 }
+
+
+void Rigidbody3D::CheckCollision() {
+
+
+	double stepsize = 0.005; // 5ms simulation step size
+	double dt = dsElapsedTime();
+
+	int no_of_steps = (int)ceilf(dt / stepsize);
+
+	for (int i = 0; !RigidBodyWorld::pause && i < no_of_steps; ++i)
+	{
+
+		dSpaceCollide(RigidBodyWorld::ode_space, 0, &nearCallback);
+		dWorldQuickStep(RigidBodyWorld::ode_world, stepsize);
+		dJointGroupEmpty(RigidBodyWorld::ode_contactgroup); // remove all contact joints
+	}
+
+	//cout << endl;
+}
+
+
+void Rigidbody3D::nearCallback(void* data, dGeomID o1, dGeomID o2) {
+	
+	
+	//cout << "Collided:\t " << o1 << "\t" << o2 << "\n"<<endl;
+	const int N = 100;
+	dContact contact[N];
+	int n = dCollide(o1, o2, N, &(contact[0].geom), sizeof(dContact));
+
+	if (n > 0)
+	{
+		for (int i = 0; i < n; i++)
+		{
+			contact[i].surface.mode = dContactSoftERP | dContactSoftCFM;
+			contact[i].surface.mu = 0.1;
+			contact[i].surface.soft_erp = 0.9;
+			contact[i].surface.soft_cfm = 0.01;
+
+			dJointID c = dJointCreateContact(RigidBodyWorld::ode_world, RigidBodyWorld::ode_contactgroup, &contact[i]);
+			dBodyID body1 = dGeomGetBody(contact[i].geom.g1);
+			dBodyID body2 = dGeomGetBody(contact[i].geom.g2);
+			dJointAttach(c, body1, body2);
+		}
+	}
+}

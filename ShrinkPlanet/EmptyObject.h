@@ -33,6 +33,7 @@ public:
 	void SetViewMatrix(mat4);
 	void SetObjectT(mat4);
 	mat4 GetObjectT();
+	mat4 GetRotateT();
 
 	vector<EmptyObject*> children;
 

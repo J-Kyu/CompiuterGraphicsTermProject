@@ -120,7 +120,6 @@ void Render(int color_mode) {
 
 
 void display() {
-	RigidBodyWorld::CheckCollision();
 	Render();
 
 	glFlush();

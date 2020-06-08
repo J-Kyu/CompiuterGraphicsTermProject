@@ -16,7 +16,10 @@ void GravityDependent::Activate(mat4 p, mat4 v, int color_mode) {
 		cout << "Attracor is not assigned   !" << endl;
 		exit(0);
 	}
+
+	mainEntity->rigidbody->CheckCollision();
 	CalculateRigidbody();
+
 	mainEntity->SetPerspectiveMatrix(p);
 	mainEntity->SetViewMatrix(v);
 	mainEntity->Activate(color_mode);
@@ -39,6 +42,7 @@ void GravityDependent::CalculateRigidbody() {
 
 	const mat4 mainT = mainEntity->GetObjectT();
 	const mat4 attT = attractor->GetObjectT();
+	const mat4 rotateT = mainEntity->GetRotateT();
 
 	const dReal* mainRigidbodyPos = dBodyGetPosition(mainEntity->rigidbody->GetRigidBodyID());
 
@@ -47,41 +51,45 @@ void GravityDependent::CalculateRigidbody() {
 	const mat4 rigidbodyT = mainEntity->rigidbody->GetRigidBodyTrans();
 
 
-	const mat4 bodyT = rigidbodyT*mainT;
+	const mat4 bodyT = rigidbodyT*(mainT* rotateT);
 	const dReal* newMainRigidbodyPos = dBodyGetPosition(mainEntity->rigidbody->GetRigidBodyID());
-	//cout << "B__4:\t" << newMainRigidbodyPos[0] << "\t" << newMainRigidbodyPos[1] << "\t" << newMainRigidbodyPos[2] << endl;
-	vec3 forward = (float)RigidBodyWorld::dsElapsedTime() * normalize(vec3(bodyT[2][0],bodyT[2][1], bodyT[2][2]));
-	//vec3 forward = (float)RigidBodyWorld::dsElapsedTime() * vec3(0.0f, 100.0f, 0.0f);
-	//vec3 forward = vec3(0.0f, 0.00001f, 0.0f);
-	//dBodySetPosition(mainEntity->rigidbody->GetRigidBodyID(), mainRigidbodyPos[0] + forward.x, mainRigidbodyPos[1] + forward.y, mainRigidbodyPos[2] + forward.z);
 	
-
-	//cout << "Forward:\t" << forward.x << "\t" << forward.y << "\t" << forward.z << endl;
-	//cout << "A__4:\t" << newMainRigidbodyPos[0] << "\t" << newMainRigidbodyPos[1] << "\t" << newMainRigidbodyPos[2] << endl;
+	vec3 forward = (float)RigidBodyWorld::dsElapsedTime() * normalize(vec3(bodyT[2][0],bodyT[2][1], bodyT[2][2]));
+	//vec3 right = (float)RigidBodyWorld::dsElapsedTime() * normalize(vec3(bodyT[0][0], bodyT[0][1], bodyT[0][2]));
+	dBodySetPosition(mainEntity->rigidbody->GetRigidBodyID(), mainRigidbodyPos[0] + forward.x, mainRigidbodyPos[1] + forward.y, mainRigidbodyPos[2] + forward.z);	
+	//dBodySetPosition(mainEntity->rigidbody->GetRigidBodyID(), mainRigidbodyPos[0] + right.x, mainRigidbodyPos[1] + right.y, mainRigidbodyPos[2] + right.z);
 
 	//quaternion
-
 	const dReal* attRigidbodyPos = dBodyGetPosition(attractor->rigidbody->GetRigidBodyID());
 
 	vec3 gravityUp = vec3(newMainRigidbodyPos[0] - attRigidbodyPos[0], newMainRigidbodyPos[1] - attRigidbodyPos[1], newMainRigidbodyPos[2] - attRigidbodyPos[2]);
+
 	gravityUp = normalize(gravityUp);
 
 	vec3 localUp = vec3(bodyT[1][0], bodyT[1][1], bodyT[1][2]);
 	localUp = normalize(localUp);
 
+	cout << "localUp: " << to_string(localUp) << endl;
+	cout << "\n" << endl;
+
+
 	vec3 axis = normalize(cross(localUp, gravityUp));
 
 
-	//float dotPhi = dot(localUp, gravityUp);
-	//float phi = acos(dotPhi);
 	float phi = angle(localUp, gravityUp);
 
 
 	float rad = phi / 2;
 	axis *= sin(rad);
 
-	//dqauternion은 w,x,y,z
-	quat targetQ = { cos(rad),axis.x,axis.y,axis.z };
+	//quat[i]의 순은 w,x,y,z이다
+
+	quat targetQ;
+	targetQ.w = cos(rad);
+	targetQ.x = axis.x;
+	targetQ.y = axis.y;
+	targetQ.z = axis.z;
+
 	for (int i = 0; i < 4; i++) {
 		if (isnan(targetQ[i])) {
 			targetQ[i] = 0;
@@ -96,7 +104,7 @@ void GravityDependent::CalculateRigidbody() {
 	
 	*/
 
-	cout << "mainT:\t" << to_string(mainT) << endl;
+
 
 	//quat는 (x,y,z,w) 순이다........qQuaternion과 순서가 다르다는 점을 이해하자!!
 	quat qr = quat_cast(mainT);
@@ -104,16 +112,18 @@ void GravityDependent::CalculateRigidbody() {
 	//quat (x,y,z,w)
 	quat calculatedQ = HemiltonProduct(targetQ, qr);
 
-	//cout << "calculatedQ:\t" << to_string(calculatedQ) << endl;
-
-	
 	mat4 calculatedQT = QuatToMat4(calculatedQ);
+
 	mainEntity->SetObjectT(calculatedQT);
+	//cout << "----------------------------------??-----------------" << endl;
+	//PrintMatrix(rigidbodyT*calculatedQT);
+	//PrintMatrix();
+	//cout << "----------------------------------??-----------------" << endl;
 
 
 	//gravity apply
-	double gravityCoe = -20;
-	dBodyAddForce(mainEntity->rigidbody->GetRigidBodyID(), (dReal)gravityUp.x * gravityCoe, (dReal)gravityUp.y * gravityCoe, (dReal)gravityUp.z * gravityCoe);
+	double gravityCoe = -1;
+	//dBodyAddForce(mainEntity->rigidbody->GetRigidBodyID(), (dReal)gravityUp.x * gravityCoe, (dReal)gravityUp.y * gravityCoe, (dReal)gravityUp.z * gravityCoe);
 }
 
 
@@ -192,5 +202,21 @@ void GravityDependent::MoveDamObject(int a) {
 
 
 	
+
+}
+
+void GravityDependent::PrintMatrix(mat4 m) {
+
+	cout << "---------------matrix------- " << endl;
+
+	for (int i = 0; i < 4; i++) {
+		cout << "|";
+		for (int j = 0; j < 4; j++) {
+			cout << "\t" << m[i][j];
+		}
+		cout << "\t|" << endl;
+	}
+
+	cout << "\n" << endl;
 
 }

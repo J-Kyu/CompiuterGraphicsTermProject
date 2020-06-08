@@ -20,6 +20,12 @@ public:
 	virtual dBodyID GetRigidBodyID() override final;
 	virtual mat4 GetRigidBodyTrans() override final;
 	virtual void SetRigidBodyTrans(mat4) override final;
+
+
+
+
+	virtual void CheckCollision()override final;
+	static void nearCallback(void* data, dGeomID o1, dGeomID o2);
 private:
 
 	dBodyID body;

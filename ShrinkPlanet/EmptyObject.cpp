@@ -19,9 +19,9 @@ void EmptyObject::Activate(int colorMode){
 
 
 //	cout << "obejct T: \t" << to_string(objectT) << endl;
-	graphic->ActivateComponent(colorMode, perspectiveT, viewT,  rigidbody->GetRigidBodyTrans()* objectT );
+	graphic->ActivateComponent(colorMode, perspectiveT, viewT,  rigidbody->GetRigidBodyTrans()* objectT * rotateT);
 	//rigidbody->ActivateComponent(colorMode, perspectiveT, viewT, objectT * rotateT);
-	coordinate->ActivateComponent(colorMode, perspectiveT, viewT, rigidbody->GetRigidBodyTrans() * objectT);
+	coordinate->ActivateComponent(colorMode, perspectiveT, viewT, rigidbody->GetRigidBodyTrans() * objectT* rotateT);
 
 	for (int i = children.size() - 1; i >= 0; i--) {
 		children[i]->Activate(colorMode, perspectiveT, viewT, objectT * rotateT);
@@ -66,7 +66,7 @@ void EmptyObject::MoveObject(vec3 pos) {
 
 void EmptyObject::RotateObject(float angle,vec3 axis) {
 	GLfloat radian = M_PI / 180;
-	(objectT) = rotate(objectT, radian*angle, axis);
+	(rotateT) = rotate(rotateT, radian*angle, axis);
 }
 
 void EmptyObject::RotatingYAxis() {
@@ -105,5 +105,8 @@ void EmptyObject::SetObjectT(mat4 m) {
 
 mat4 EmptyObject::GetObjectT() {
 	return objectT;
+}
+mat4 EmptyObject::GetRotateT() {
+	return rotateT;
 }
 

@@ -46,7 +46,7 @@ public:
 	virtual void LoadObj(const char* filename, const char* basedir, attrib_t& attrib, real_t scale);
 	virtual vector<tinyobj::real_t> GetVertices();
 
-
+	virtual void CheckCollision();
 protected:
 	mat4* topT = new mat4(1.0f);
 };

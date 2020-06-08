@@ -38,7 +38,7 @@ public:
 
 
 		Rigidbody3D* mainRD = new Rigidbody3D();
-		mainRD->SphereRigidBodyInit(radius, mass, 0.0, 5.0,0.0);
+		mainRD->SphereRigidBodyInit(radius, mass, -1.0, 0.0,-3.0);
 		//mainRD->RotateRigidBody(90, vec3(0.0f, 1.0f, 0.0f));
 		//mainRD->ActivateComponent(mat4(1.0f));
 		mainEntity->rigidbody = mainRD;
@@ -65,6 +65,6 @@ private:
 	void CalculateRigidbody();
 	quat HemiltonProduct(quat v1, quat v2);
 	mat4 QuatToMat4(quat q);
-
+	void PrintMatrix(mat4);
 };
 

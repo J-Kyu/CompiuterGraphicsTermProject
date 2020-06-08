@@ -21,8 +21,8 @@ public:
 	//static dGeomID ode_plane_geom;
 
 
-	static void CheckCollision();
-	static void nearCallback(void* data, dGeomID o1, dGeomID o2);
+	virtual void CheckCollision() override;
+
 
 	static bool pause;
 

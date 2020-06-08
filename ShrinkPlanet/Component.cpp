@@ -61,3 +61,7 @@ void Component::RotateRigidBody(float angle, vec3 vc) {
 void Component::SetRigidBodyTrans(mat4) {
 	cout << "This object is not Rigidbody Component....Please use this function on TYPE Rigidbody" << endl;
 }
+
+void Component::CheckCollision() {
+	cout << "This is RigidBody World Virtual Clss.....should not be called" << endl;
+}
