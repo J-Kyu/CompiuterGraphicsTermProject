@@ -41,6 +41,10 @@ void mouse(int button, int state, int x, int y);
 void motion(int x, int y);
 void mouseWheel(int wheel, int dir, int x, int y);
 
+void TempMakeMoon();
+void TempMakeMoon2();
+void TempMakeMoon3();
+
 
 void keyboardSpecial(int key, int x, int y);
 
@@ -88,13 +92,8 @@ void init() {
 	earth = new GravityAttractor("models/earth.obj", "models/", 5.0f,2.5f,20.0f);
 
 	
-	//characters.push_back(new GravityDependent(earth->mainEntity, "models/moon.obj", "models/", 0.2f, 0.1f, 1.0f, 0.0f, 5.0f, 0.0f));
-	//characters.push_back(new GravityDependent(earth->mainEntity, "models/moon.obj", "models/", 0.2f, 0.1f, 10.0f, 5.0f, 0.0f, 0.0f));
-	//characters.push_back(new GravityDependent(earth->mainEntity, "models/moon.obj", "models/", 0.2f, 0.1f, 10.0f, 0.0f, 0.0f, 5.0f));
 
 	characters.push_back(new GravityDependent(earth->mainEntity, "models/moon.obj", "models/", 0.2f, 0.1f, 10.0f, 0.0f, -5.0f, 0.0f));
-	//characters.push_back(new GravityDependent(earth->mainEntity, "models/moon.obj", "models/", 0.2f, 0.1f, 10.0f, -5.0f, 0.0f, 0.0f));
-	//characters.push_back(new GravityDependent(earth->mainEntity, "models/moon.obj", "models/", 0.2f, 0.1f, 10.0f, 0.0f, 0.0f, -5.0f));
 
 
 
@@ -180,15 +179,17 @@ void keyboardSpecial(int key, int x, int y) {
 
 	switch (key) {
 	case GLUT_KEY_UP: {
-
+		TempMakeMoon();
 		//character->MoveDamObject(15);
 		break;
 	}
 	case GLUT_KEY_DOWN: {
+		TempMakeMoon2();
 		//character->MoveDamObject(-15);
 		break;
 	}
 	case GLUT_KEY_RIGHT: {
+		TempMakeMoon3();
 		//character->mainEntity->rigidbody->RotateRigidBody(50, vec3(0.0f, -1.0f, 0.0f));
 		//character->mainEntity->RotateObject(10, vec3(0.0f, 1.0f, 0.0f));
 		break;
@@ -209,4 +210,17 @@ void keyboardSpecial(int key, int x, int y) {
 	}
 
 
+}
+
+
+void TempMakeMoon() {
+	characters.push_back(new GravityDependent(earth->mainEntity, "models/moon.obj", "models/", 0.2f, 0.1f, 10.0f, 0.0f, 5.0f, 0.0f));
+}
+
+void TempMakeMoon2() {
+	characters.push_back(new GravityDependent(earth->mainEntity, "models/moon.obj", "models/", 0.2f, 0.1f, 10.0f, 0.0f, 5.0f, 0.1f));
+}
+
+void TempMakeMoon3() {
+	characters.push_back(new GravityDependent(earth->mainEntity, "models/moon.obj", "models/", 0.2f, 0.1f, 10.0f, 0.0f, 5.0f, 0.2f));
 }
