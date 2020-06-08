@@ -18,16 +18,12 @@ class EmptyObject {
 
 public:
 	EmptyObject(){}
-	EmptyObject(Component* cmp) {
-		cmp->SetTopT(&objectT);
-		components.push_back(cmp);
-	}
 
 	void Init();
 	void Activate(int colorMode  = 0);
 	void Activate(mat4);
 	void Activate(int,mat4,mat4,mat4);
-	void AddComponent(Component* cmp);
+
 	void AddChildren(EmptyObject* eo);
 	void MoveObject(vec3);
 	void RotateObject(float, vec3);
@@ -38,8 +34,13 @@ public:
 	void SetObjectT(mat4);
 	mat4 GetObjectT();
 
-	vector<Component*> components;
 	vector<EmptyObject*> children;
+
+	Component* graphic;
+	Component* rigidbody;
+	Component* coordinate;
+
+
 private:
 	
 	mat4 perspectiveT = mat4(1.0f);

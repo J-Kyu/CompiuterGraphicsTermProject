@@ -53,7 +53,7 @@ void RigidBodyWorld::nearCallback(void* data, dGeomID o1, dGeomID o2){
 			dJointID c = dJointCreateContact(RigidBodyWorld::ode_world, RigidBodyWorld::ode_contactgroup, &contact[i]);
 			dBodyID body1 = dGeomGetBody(contact[i].geom.g1);
 			dBodyID body2 = dGeomGetBody(contact[i].geom.g2);
-			dJointAttach(c, body1, body2);
+			//dJointAttach(c, body1, body2);
 		}
 	}
 }

@@ -34,19 +34,20 @@ public:
 		glActiveTexture(GL_TEXTURE0);
 		mainGraphic->LoadTexture(path, attrib.texcoords);
 		mainGraphic->kyu = 1;
-		//mainEntity->MoveObject(vec3(0.0f, 0.0f, 5.0f));
-		//mainEntity->RotateObject(90, vec3(0.0f, 0.0f, 1.0f));
-		mainEntity->AddComponent(mainGraphic);
+		mainEntity->graphic = mainGraphic;
 
 
 		Rigidbody3D* mainRD = new Rigidbody3D();
-		mainRD->SphereRigidBodyInit(radius, mass, x, y, z);
-		mainEntity->AddComponent(mainRD);
+		mainRD->SphereRigidBodyInit(radius, mass, 0.0, 5.0,0.0);
+		//mainRD->RotateRigidBody(90, vec3(0.0f, 1.0f, 0.0f));
+		//mainRD->ActivateComponent(mat4(1.0f));
+		mainEntity->rigidbody = mainRD;
+
 		//mainRD->SetKinematic(true);
-		//mainRD->RotateRigidbody(90, vec3(1.0f, 0.0f, 0.0f));
+
 
 		Coordinate* coord = new Coordinate();
-		mainEntity->AddComponent(coord);
+		mainEntity->coordinate = coord;
 
 		mainEntity->Init();
 		wow = 0;
@@ -58,8 +59,12 @@ public:
 
 	void Activate();
 	void Activate(mat4 p, mat4 v, int color_mode = 0);
+
+	void MoveDamObject(int);
 private:
 	void CalculateRigidbody();
+	quat HemiltonProduct(quat v1, quat v2);
+	mat4 QuatToMat4(quat q);
 
 };
 

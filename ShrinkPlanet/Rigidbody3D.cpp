@@ -52,7 +52,8 @@ void Rigidbody3D::SetKinematic(bool is) {
 }
 
 void Rigidbody3D::RigidBodyActivate() {
-	*topT = compute_modelling_transf();
+	//cout << "WOW" << endl;
+	//(*topT) *= compute_modelling_transf();
 }
 
 mat4 Rigidbody3D::compute_modelling_transf()
@@ -96,13 +97,20 @@ void Rigidbody3D::RotateRigidBody(float speedR, vec3 vec) {
 
 	mat4 r = compute_modelling_transf();
 
-
+	//cout << "WOW" << endl;
 
 	r = rotate(r, speedR * (float)RigidBodyWorld::dsElapsedTime(), vec);
+	//r = rotate(r, speedR* radian, vec);
 
 
+
+	const dReal* bodyRot = dBodyGetRotation(body);
 
 	dMatrix3 k;
+	for (int i = 0; i < 12; i++) {
+		k[i] = bodyRot[i];
+	}
+
 	for (int i = 0; i < 3; i++) {
 		for (int j = 0; j < 3; j++) {
 			k[i + 4*j] = r[i][j];

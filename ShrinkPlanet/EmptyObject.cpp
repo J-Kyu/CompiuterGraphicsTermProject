@@ -1,10 +1,11 @@
 #include "EmptyObject.h"
-
+#include "glm/gtx/string_cast.hpp"
 
 void EmptyObject::Init() {
-	for (int i = 0; i < components.size(); i++) {
-		components[i]->InitComponent();
-	}
+
+	graphic->InitComponent();
+	rigidbody->InitComponent();
+	coordinate->InitComponent();
 
 	for (int i = 0; i < children.size(); i++) {
 		children[i]->Init();
@@ -16,21 +17,17 @@ void EmptyObject::Activate(int colorMode){
 	Top paretn Activate
 	*/
 
-	for (int i = components.size() - 1; i >= 0; i--) {
-		/*components[i]->ActivateComponent(*objectT);*/
-		components[i]->ActivateComponent(colorMode,perspectiveT,viewT,objectT* rotateT);
-	}
+
+//	cout << "obejct T: \t" << to_string(objectT) << endl;
+	graphic->ActivateComponent(colorMode, perspectiveT, viewT,  rigidbody->GetRigidBodyTrans()* objectT );
+	//rigidbody->ActivateComponent(colorMode, perspectiveT, viewT, objectT * rotateT);
+	coordinate->ActivateComponent(colorMode, perspectiveT, viewT, rigidbody->GetRigidBodyTrans() * objectT);
+
 	for (int i = children.size() - 1; i >= 0; i--) {
 		children[i]->Activate(colorMode, perspectiveT, viewT, objectT * rotateT);
 	}
 
-
-	//for (int i = 0; i < components.size(); i++) {
-	//	components[i]->ActivateComponent(colorMode,perspectiveT,viewT,objectT* rotateT);
-	//}
-	//for (int i = 0; i < children.size(); i++) {
-	//	children[i]->Activate(colorMode,perspectiveT,viewT,objectT*rotateT);
-	//}
+	//objectT = mat4(1.0f);
 
 }
 
@@ -40,10 +37,11 @@ void EmptyObject::Activate(int colorMode,mat4 p,mat4 v, mat4 parentT) {
 	/*
 	Chil Object Activate
 	*/
-	for (int i = 0; i < components.size(); i++) {
-		/*components[i]->ActivateComponent(*objectT);*/
-		components[i]->ActivateComponent(colorMode,p, v, parentT * objectT * rotateT);
-	}
+
+	graphic-> ActivateComponent(colorMode, p, v, parentT * objectT * rotateT* rigidbody->GetRigidBodyTrans());
+	//rigidbody-> ActivateComponent(colorMode, p, v, parentT * objectT * rotateT);
+	coordinate-> ActivateComponent(colorMode, p, v, parentT * objectT * rotateT* rigidbody->GetRigidBodyTrans());
+
 	for (int i = 0; i < children.size(); i++) {
 		children[i]->Activate(colorMode,p,v,parentT * objectT * rotateT * objectT);
 	}
@@ -56,10 +54,6 @@ void EmptyObject::Activate(mat4 parentT) {
 
 }
 
-void EmptyObject::AddComponent(Component* cmp) {
-	cmp->SetTopT(&objectT);
-	components.push_back(cmp);
-}
 
 void EmptyObject::AddChildren(EmptyObject* eo) {
 	children.push_back(eo);

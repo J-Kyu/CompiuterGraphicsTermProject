@@ -85,7 +85,7 @@ void init() {
 	
 	
 	earth = new GravityAttractor("models/earth.obj", "models/", 5.0f,2.5f,20.0f);
-	character = new GravityDependent(earth->mainEntity, "models/moon.obj", "models/", 0.2f,0.1f,10.0f, 0.0f, 3.0f, 0.0f);
+	character = new GravityDependent(earth->mainEntity, "models/moon.obj", "models/", 0.2f,0.1f,10.0f);
 	//character->mainEntity->MoveObject(vec3(.0f, 3.0f, 0.0f));
 
 	glEnable(GL_DEPTH_TEST);
@@ -164,19 +164,21 @@ void keyboardSpecial(int key, int x, int y) {
 	switch (key) {
 	case GLUT_KEY_UP: {
 
-
+		character->MoveDamObject(15);
 		break;
 	}
 	case GLUT_KEY_DOWN: {
-
+		character->MoveDamObject(-15);
 		break;
 	}
 	case GLUT_KEY_RIGHT: {
-		character->mainEntity->components[1]->RotateRigidBody(50, vec3(0.0f, -1.0f, 0.0f));
+		//character->mainEntity->rigidbody->RotateRigidBody(50, vec3(0.0f, -1.0f, 0.0f));
+		character->mainEntity->RotateObject(10, vec3(0.0f, 1.0f, 0.0f));
 		break;
 	}
 	case GLUT_KEY_LEFT: {
-		character->mainEntity->components[1]->RotateRigidBody(50, vec3(0.0f, 1.0f, 0.0f));
+		//character->mainEntity->rigidbody->RotateRigidBody(50, vec3(0.0f, 1.0f, 0.0f));
+		character->mainEntity->RotateObject(10, vec3(0.0f, -1.0f, 0.0f));
 		break;
 	}
 	case GLUT_KEY_HOME: {

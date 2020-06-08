@@ -10,6 +10,7 @@
 #include "Graphic.h"
 #include <string>
 #include "Rigidbody3D.h"
+#include "Coordinate.h"
 
 using namespace std;
 using namespace glm;
@@ -32,14 +33,18 @@ public:
 		mainGraphic->LoadTexture(path, attrib.texcoords);
 		mainGraphic->kyu = 1;
 
-		mainEntity->AddComponent(mainGraphic);
+		mainEntity->graphic = mainGraphic;
 
 
 		Rigidbody3D* mainRD = new Rigidbody3D();
 		mainRD->SphereRigidBodyInit(radius, mass, x, y, z);
 		mainRD->SetKinematic(true);
 		//mainRD->RotateRigidbody(90, vec3(0.0f, 1.0f, 0.0f));
-		mainEntity->AddComponent(mainRD);
+		mainEntity->rigidbody = mainRD;
+
+
+		Coordinate* coord = new Coordinate();
+		mainEntity->coordinate = coord;
 
 		mainEntity->Init();
 	}
