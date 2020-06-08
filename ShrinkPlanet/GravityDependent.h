@@ -38,7 +38,7 @@ public:
 
 
 		Rigidbody3D* mainRD = new Rigidbody3D();
-		mainRD->SphereRigidBodyInit(radius, mass, -1.0, 0.0,-3.0);
+		mainRD->SphereRigidBodyInit(radius, mass, x, y,z);
 		//mainRD->RotateRigidBody(90, vec3(0.0f, 1.0f, 0.0f));
 		//mainRD->ActivateComponent(mat4(1.0f));
 		mainEntity->rigidbody = mainRD;
@@ -51,6 +51,7 @@ public:
 
 		mainEntity->Init();
 		wow = 0;
+		elapsedTime = 0;
 	}
 
 	EmptyObject* mainEntity;
@@ -62,6 +63,8 @@ public:
 
 	void MoveDamObject(int);
 private:
+
+	float elapsedTime;
 	void CalculateRigidbody();
 	quat HemiltonProduct(quat v1, quat v2);
 	mat4 QuatToMat4(quat q);

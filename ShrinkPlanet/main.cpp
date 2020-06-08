@@ -28,7 +28,8 @@ using namespace std;
 using namespace glm;
 
 GravityAttractor* earth;
-GravityDependent* character;
+
+vector< GravityDependent*> characters;
 
 Camera* mainCamera = new Camera();
 
@@ -79,13 +80,26 @@ void main(int argc, char** argv)
 }
 
 void init() {
-
+	GravityDependent* character;
 
 	RigidBodyWorld::WorldInit();
 	
 	
 	earth = new GravityAttractor("models/earth.obj", "models/", 5.0f,2.5f,20.0f);
-	character = new GravityDependent(earth->mainEntity, "models/moon.obj", "models/", 0.2f,0.1f,10.0f);
+
+	
+	//characters.push_back(new GravityDependent(earth->mainEntity, "models/moon.obj", "models/", 0.2f, 0.1f, 1.0f, 0.0f, 5.0f, 0.0f));
+	//characters.push_back(new GravityDependent(earth->mainEntity, "models/moon.obj", "models/", 0.2f, 0.1f, 10.0f, 5.0f, 0.0f, 0.0f));
+	//characters.push_back(new GravityDependent(earth->mainEntity, "models/moon.obj", "models/", 0.2f, 0.1f, 10.0f, 0.0f, 0.0f, 5.0f));
+
+	characters.push_back(new GravityDependent(earth->mainEntity, "models/moon.obj", "models/", 0.2f, 0.1f, 10.0f, 0.0f, -5.0f, 0.0f));
+	//characters.push_back(new GravityDependent(earth->mainEntity, "models/moon.obj", "models/", 0.2f, 0.1f, 10.0f, -5.0f, 0.0f, 0.0f));
+	//characters.push_back(new GravityDependent(earth->mainEntity, "models/moon.obj", "models/", 0.2f, 0.1f, 10.0f, 0.0f, 0.0f, -5.0f));
+
+
+
+
+	//character = new GravityDependent(earth->mainEntity, "models/moon.obj", "models/", 0.2f,0.1f,10.0f);
 	//character->mainEntity->MoveObject(vec3(.0f, 3.0f, 0.0f));
 
 	glEnable(GL_DEPTH_TEST);
@@ -111,7 +125,11 @@ void Render(int color_mode) {
 
 
 	earth->Activate(mainCamera->GetProjection(aspect), mainCamera->GetViewing(),color_mode);
-	character->Activate(mainCamera->GetProjection(aspect), mainCamera->GetViewing(), color_mode);
+
+	for (int i = 0; i < characters.size(); i++) {
+		characters[i]->Activate(mainCamera->GetProjection(aspect), mainCamera->GetViewing(), color_mode);
+	}
+	//character->Activate(mainCamera->GetProjection(aspect), mainCamera->GetViewing(), color_mode);
 
 	if (color_mode != 2) {
 		glutSwapBuffers();
@@ -163,21 +181,21 @@ void keyboardSpecial(int key, int x, int y) {
 	switch (key) {
 	case GLUT_KEY_UP: {
 
-		character->MoveDamObject(15);
+		//character->MoveDamObject(15);
 		break;
 	}
 	case GLUT_KEY_DOWN: {
-		character->MoveDamObject(-15);
+		//character->MoveDamObject(-15);
 		break;
 	}
 	case GLUT_KEY_RIGHT: {
 		//character->mainEntity->rigidbody->RotateRigidBody(50, vec3(0.0f, -1.0f, 0.0f));
-		character->mainEntity->RotateObject(10, vec3(0.0f, 1.0f, 0.0f));
+		//character->mainEntity->RotateObject(10, vec3(0.0f, 1.0f, 0.0f));
 		break;
 	}
 	case GLUT_KEY_LEFT: {
 		//character->mainEntity->rigidbody->RotateRigidBody(50, vec3(0.0f, 1.0f, 0.0f));
-		character->mainEntity->RotateObject(10, vec3(0.0f, -1.0f, 0.0f));
+		//character->mainEntity->RotateObject(10, vec3(0.0f, -1.0f, 0.0f));
 		break;
 	}
 	case GLUT_KEY_HOME: {

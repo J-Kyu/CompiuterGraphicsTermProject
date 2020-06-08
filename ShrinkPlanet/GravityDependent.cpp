@@ -30,13 +30,13 @@ void GravityDependent::CalculateRigidbody() {
 
 
 
-	//if (wow % 600 == 0) {
-	//	MoveDamObject(-5);
-	//}
+	elapsedTime += (float)RigidBodyWorld::dsElapsedTime();
 
-
-	wow++;
-
+	if (elapsedTime > 5.0f) {
+		cout << "Passed 5 secs" << endl;
+		elapsedTime = 0.0f;
+		//dBodyDestroy(mainEntity->rigidbody->GetRigidBodyID());
+	}
 
 	//move position
 
@@ -54,9 +54,9 @@ void GravityDependent::CalculateRigidbody() {
 	const mat4 bodyT = rigidbodyT*(mainT* rotateT);
 	const dReal* newMainRigidbodyPos = dBodyGetPosition(mainEntity->rigidbody->GetRigidBodyID());
 	
-	vec3 forward = (float)RigidBodyWorld::dsElapsedTime() * normalize(vec3(bodyT[2][0],bodyT[2][1], bodyT[2][2]));
+	//vec3 forward = (5)*(float)RigidBodyWorld::dsElapsedTime() * normalize(vec3(bodyT[2][0],bodyT[2][1], bodyT[2][2]));
 	//vec3 right = (float)RigidBodyWorld::dsElapsedTime() * normalize(vec3(bodyT[0][0], bodyT[0][1], bodyT[0][2]));
-	dBodySetPosition(mainEntity->rigidbody->GetRigidBodyID(), mainRigidbodyPos[0] + forward.x, mainRigidbodyPos[1] + forward.y, mainRigidbodyPos[2] + forward.z);	
+	//dBodySetPosition(mainEntity->rigidbody->GetRigidBodyID(), mainRigidbodyPos[0] + forward.x, mainRigidbodyPos[1] + forward.y, mainRigidbodyPos[2] + forward.z);	
 	//dBodySetPosition(mainEntity->rigidbody->GetRigidBodyID(), mainRigidbodyPos[0] + right.x, mainRigidbodyPos[1] + right.y, mainRigidbodyPos[2] + right.z);
 
 	//quaternion
@@ -69,8 +69,7 @@ void GravityDependent::CalculateRigidbody() {
 	vec3 localUp = vec3(bodyT[1][0], bodyT[1][1], bodyT[1][2]);
 	localUp = normalize(localUp);
 
-	cout << "localUp: " << to_string(localUp) << endl;
-	cout << "\n" << endl;
+
 
 
 	vec3 axis = normalize(cross(localUp, gravityUp));
@@ -123,7 +122,7 @@ void GravityDependent::CalculateRigidbody() {
 
 	//gravity apply
 	double gravityCoe = -1;
-	//dBodyAddForce(mainEntity->rigidbody->GetRigidBodyID(), (dReal)gravityUp.x * gravityCoe, (dReal)gravityUp.y * gravityCoe, (dReal)gravityUp.z * gravityCoe);
+	dBodyAddForce(mainEntity->rigidbody->GetRigidBodyID(), (dReal)gravityUp.x * gravityCoe, (dReal)gravityUp.y * gravityCoe, (dReal)gravityUp.z * gravityCoe);
 }
 
 
@@ -193,11 +192,11 @@ void GravityDependent::MoveDamObject(int a) {
 	const mat4 rigidbodyT = mainEntity->rigidbody->GetRigidBodyTrans();
 	const mat4 mainT = mainEntity->GetObjectT();
 	const dReal* mainRigidbodyPos = dBodyGetPosition(mainEntity->rigidbody->GetRigidBodyID());
+	const mat4 rotateT = mainEntity->GetRotateT();
 
-	const mat4 bodyT = rigidbodyT * mainT;
+
+	const mat4 bodyT = rigidbodyT * (mainT * rotateT);
 	vec3 forward =(a) *(float)RigidBodyWorld::dsElapsedTime() * normalize(vec3(bodyT[2][0], bodyT[2][1], bodyT[2][2]));
-	//vec3 forward = (float)RigidBodyWorld::dsElapsedTime() * vec3(0.0f, 100.0f, 0.0f);
-	//vec3 forward = vec3(0.0f, 0.00001f, 0.0f);
 	dBodySetPosition(mainEntity->rigidbody->GetRigidBodyID(), mainRigidbodyPos[0] + forward.x, mainRigidbodyPos[1] + forward.y, mainRigidbodyPos[2] + forward.z);
 
 
