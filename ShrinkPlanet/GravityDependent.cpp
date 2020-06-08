@@ -121,7 +121,7 @@ void GravityDependent::CalculateRigidbody() {
 
 
 	//gravity apply
-	double gravityCoe = -1;
+	double gravityCoe = -5;
 	dBodyAddForce(mainEntity->rigidbody->GetRigidBodyID(), (dReal)gravityUp.x * gravityCoe, (dReal)gravityUp.y * gravityCoe, (dReal)gravityUp.z * gravityCoe);
 }
 
