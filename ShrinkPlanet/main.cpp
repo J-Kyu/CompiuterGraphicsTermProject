@@ -15,7 +15,7 @@
 #include <cmath>
 #include "Rigidbody3D.h"
 #include "RigidBodyWorld.h"
-
+#include "Satellite.h"
 
 
 
@@ -28,7 +28,7 @@ using namespace std;
 using namespace glm;
 
 GravityAttractor* earth;
-
+Satellite* satellite;
 vector< GravityDependent*> characters;
 
 Camera* mainCamera = new Camera();
@@ -91,15 +91,11 @@ void init() {
 	
 	earth = new GravityAttractor("models/earth.obj", "models/", 5.0f,2.5f,20.0f);
 
-	
+	satellite = new Satellite(earth->mainEntity,4.0f,0.0f,4.0f,0.0f);
 
-	characters.push_back(new GravityDependent(earth->mainEntity, "models/moon.obj", "models/", 0.2f, 0.1f, 10.0f, 0.0f, -5.0f, 0.0f));
+	characters.push_back(new GravityDependent(earth->mainEntity, "models/moon.obj", "models/", 0.2f, 0.1f, 5.0f, 0.0f, -5.0f, 0.0f));
 
-
-
-
-	//character = new GravityDependent(earth->mainEntity, "models/moon.obj", "models/", 0.2f,0.1f,10.0f);
-	//character->mainEntity->MoveObject(vec3(.0f, 3.0f, 0.0f));
+\
 
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
@@ -124,7 +120,7 @@ void Render(int color_mode) {
 
 
 	earth->Activate(mainCamera->GetProjection(aspect), mainCamera->GetViewing(),color_mode);
-
+	satellite->Activate(mainCamera->GetProjection(aspect), mainCamera->GetViewing(), color_mode);
 	for (int i = 0; i < characters.size(); i++) {
 		characters[i]->Activate(mainCamera->GetProjection(aspect), mainCamera->GetViewing(), color_mode);
 	}

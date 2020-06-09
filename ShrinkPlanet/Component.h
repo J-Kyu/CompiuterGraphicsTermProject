@@ -47,6 +47,7 @@ public:
 	virtual vector<tinyobj::real_t> GetVertices();
 
 	virtual void CheckCollision();
+
 protected:
 	mat4* topT = new mat4(1.0f);
 };

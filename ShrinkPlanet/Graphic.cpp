@@ -12,7 +12,7 @@ void Graphic::ActivateGraphic( mat4 p, mat4 v, mat4 m) {
 	SetShaderValue(program, "T", I);
 
 	glUniform1i(glGetUniformLocation(program, "ShadingMode"), 1);
-
+	//cout << "wow" << endl;
 
 	RenderGraphic();
 }

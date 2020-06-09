@@ -37,8 +37,41 @@ void Rigidbody3D::SphereRigidBodyInit(float radius, float mass, float x, float y
 	dMassSetSphereTotal(&m, mass, radius);
 	dBodySetMass(body, &m);
 
-	//*topT = compute_modelling_transf(body);
 
+}
+
+
+void Rigidbody3D::TrimeshRigidbodyInit(vector<tinyobj::real_t>vertices, float mass, float x, float y, float z) {
+
+
+	dMatrix3 R;
+	dMass m;
+	dRSetIdentity(R);
+
+
+	body = dBodyCreate(RigidBodyWorld::ode_world);
+	dBodySetPosition(body, 0, 0, 0);
+	dBodySetRotation(body, R);
+	dBodySetLinearVel(body, 0, 0, 0);
+	dBodySetAngularVel(body, 0, 0, 0);
+
+	int n = (int)(vertices.size() / 3);
+	ode_trimesh_index.resize(n);
+	for (int i = 0; i < n; i++) {
+		ode_trimesh_index[i] = i;
+	}
+
+	ode_trimesh_data = dGeomTriMeshDataCreate();
+	dGeomTriMeshDataBuildSingle(ode_trimesh_data, vertices.data(), 3 * sizeof(float), n, ode_trimesh_index.data(),n, 3 * sizeof(dTriIndex));
+
+	geom = dCreateTriMesh(RigidBodyWorld::ode_space, ode_trimesh_data,0,0,0);
+	dGeomSetBody(geom, body);
+	dMassSetTrimeshTotal(&m, mass, geom);
+	dGeomSetPosition(geom, -m.c[0], -m.c[1], -m.c[2]);
+	dMassTranslate(&m, -m.c[0], -m.c[1], -m.c[2]);
+	dBodySetMass(body,&m);
+
+	dBodySetPosition(body, x, y, z);
 }
 
 void Rigidbody3D::SetKinematic(bool is) {

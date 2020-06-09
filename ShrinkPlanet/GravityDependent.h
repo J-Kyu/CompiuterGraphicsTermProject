@@ -39,8 +39,7 @@ public:
 
 		Rigidbody3D* mainRD = new Rigidbody3D();
 		mainRD->SphereRigidBodyInit(radius, mass, x, y,z);
-		//mainRD->RotateRigidBody(90, vec3(0.0f, 1.0f, 0.0f));
-		//mainRD->ActivateComponent(mat4(1.0f));
+		//mainRD->TrimeshRigidbodyInit(mainGraphic->GetVertices(),mass,x,y,z);
 		mainEntity->rigidbody = mainRD;
 
 		//mainRD->SetKinematic(true);

@@ -115,7 +115,7 @@ void GravityDependent::CalculateRigidbody() {
 
 	mainEntity->SetObjectT(calculatedQT);
 	//cout << "----------------------------------??-----------------" << endl;
-	//PrintMatrix(rigidbodyT*calculatedQT);
+	//PrintMatrix(rigidbodyT);
 	//PrintMatrix();
 	//cout << "----------------------------------??-----------------" << endl;
 

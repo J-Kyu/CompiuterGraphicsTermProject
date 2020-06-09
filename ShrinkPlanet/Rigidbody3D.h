@@ -12,6 +12,7 @@ public:
 
 	void SphereRigidBodyInit();
 	void SphereRigidBodyInit(float radius, float mass, float x, float y, float z);
+	void TrimeshRigidbodyInit(vector<tinyobj::real_t>,float , float , float , float );
 	void SetKinematic(bool);
 
 	virtual void RotateRigidBody(float angle, vec3 vc) override final;
@@ -30,6 +31,9 @@ private:
 
 	dBodyID body;
 	dGeomID geom;
+	dTriMeshDataID ode_trimesh_data;
+	vector<dTriIndex> ode_trimesh_index;
+
 
 
 	mat4 compute_modelling_transf();
