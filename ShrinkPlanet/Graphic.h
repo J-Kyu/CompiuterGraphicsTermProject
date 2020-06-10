@@ -31,31 +31,25 @@ public:
 	virtual void InitGraphic();
 	virtual void ActivateComponent(mat4) override final;
 	virtual void ActivateComponent(int, mat4, mat4, mat4) override final;
-
+	virtual vector<tinyobj::real_t> GetVertices() override final;
+	virtual void InitComponent() override final;
+	virtual void CopyGraphic(Component*) override final;
+	virtual void LoadTexture(const char* basedir, const vector<real_t>& texcoords, GLint min_filter = GL_LINEAR_MIPMAP_LINEAR, GLint mag_filter = GL_LINEAR_MIPMAP_LINEAR) override final;
+	virtual void LoadObj(const char* filename, const char* basedir, attrib_t& attrib, real_t scale)override final;
 
 protected:
-	virtual void InitComponent() override final;
+
 
 	virtual void RenderGraphic();
 
 	virtual void CalVertices();
 	virtual void BindElements();
-	virtual void LoadTexture(const char* basedir, const vector<real_t>& texcoords, GLint min_filter= GL_LINEAR_MIPMAP_LINEAR, GLint mag_filter= GL_LINEAR_MIPMAP_LINEAR) override final;
-	virtual void LoadObj(const char* filename, const char* basedir, attrib_t& attrib, real_t scale)override final;
-	virtual vector<tinyobj::real_t> GetVertices() override final;
+	virtual void TurnOnObjValid() override final;
+
 	GLuint* element_buffs;
 	GLuint vao;
 	GLuint vbo[4];
 
-	vector<tinyobj::real_t> vertices;
-	vector<GLfloat> colors;
-	vector<GLfloat> normals;
-	vector<vector<size_t>> vertex_map;
-	vector<vector<size_t>> material_map;
-	vector<shape_t> shapes;
-	vector<material_t> materials;
-	vector<real_t> texcoords;
-	map<string, size_t> texmap;
 
 private:
 	int program;

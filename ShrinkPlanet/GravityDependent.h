@@ -9,10 +9,11 @@
 #include <vector>
 #include "glm/gtx/string_cast.hpp"
 #include "Component.h"
-#include "Graphic.h"
+//#include "Graphic.h"
 #include <string>
 #include "Rigidbody3D.h"
 #include "Coordinate.h"
+#include <queue>
 
 class GravityDependent{
 
@@ -23,18 +24,23 @@ public:
 	}
 	GravityDependent(EmptyObject* attr, const char* objPath, const char* path, float scale = 1.0f, float radius = 1.0f, float mass = 20.0f, float x = 0.0f, float y = 0.0f, float z = 0.0f) {
 		attractor = attr;
+		this->mass = mass;
+		this->scale = scale;
+		this->radius = radius;
+
+		EmptyObject* mainEntity;
 
 		attrib_t attrib;
 		mainEntity = new EmptyObject();
 
-		Component* mainGraphic = new Graphic();
+		defaultGraphic = new Graphic();
 
 
-		mainGraphic->LoadObj(objPath, path, attrib, scale);
+		defaultGraphic->LoadObj(objPath, path, attrib, scale);
 		glActiveTexture(GL_TEXTURE0);
-		mainGraphic->LoadTexture(path, attrib.texcoords);
-		mainGraphic->kyu = 1;
-		mainEntity->graphic = mainGraphic;
+		defaultGraphic->LoadTexture(path, attrib.texcoords);
+		defaultGraphic->kyu = 1;
+		mainEntity->graphic = defaultGraphic;
 
 
 		Rigidbody3D* mainRD = new Rigidbody3D();
@@ -51,18 +57,38 @@ public:
 		mainEntity->Init();
 		wow = 0;
 		elapsedTime = 0;
+		blockMaxNum = 10;
+
+		blocks.push_back(mainEntity);
+
+
+		for (int i = 0; i < blockMaxNum; i++) {
+			readyBlock.push(CopyBlock());
+		}
+
 	}
 
-	EmptyObject* mainEntity;
+
 	EmptyObject* attractor;
+
+	vector <EmptyObject*> blocks;
 	int wow;
 
 	void Activate();
 	void Activate(mat4 p, mat4 v, int color_mode = 0);
+	void GenerateBlock(vec3);
 
-	void MoveDamObject(int);
 private:
+	queue<EmptyObject*> readyBlock;
 
+	float mass;
+	float scale;
+	float radius;
+	int blockMaxNum;
+
+	Component* defaultGraphic;
+	
+	EmptyObject* CopyBlock();
 	float elapsedTime;
 	void CalculateRigidbody();
 	quat HemiltonProduct(quat v1, quat v2);

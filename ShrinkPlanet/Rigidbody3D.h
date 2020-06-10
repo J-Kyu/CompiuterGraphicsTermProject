@@ -13,9 +13,10 @@ public:
 	void SphereRigidBodyInit();
 	void SphereRigidBodyInit(float radius, float mass, float x, float y, float z);
 	void TrimeshRigidbodyInit(vector<tinyobj::real_t>,float , float , float , float );
-	void SetKinematic(bool);
+
 
 	virtual void RotateRigidBody(float angle, vec3 vc) override final;
+	void SetKinematic(bool) override final;
 	void virtual ActivateComponent(mat4) override final;
 	void virtual ActivateComponent(int,mat4,mat4, mat4) override final;
 	virtual dBodyID GetRigidBodyID() override final;

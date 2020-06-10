@@ -15,8 +15,7 @@ public:
 
 		attractor = attr;
 
-		graphic = new Sphere();
-
+		graphic = new Sphere(0.1f,16,16);
 
 		rigidbody = new Rigidbody3D();
 		rigidbody->SphereRigidBodyInit(.5f, 10.f, x, y, z);
@@ -25,6 +24,8 @@ public:
 		coordinate = new Coordinate();
 
 		pTheta = 0;
+
+		Init();
 	}
 
 	void Init();
@@ -32,6 +33,7 @@ public:
 	void Activate(mat4 p, mat4 v, int colorMode);
 	void Activate(int, mat4, mat4, mat4);
 
+	vec3 GetPos();
 
 	vector<EmptyObject*> children;
 

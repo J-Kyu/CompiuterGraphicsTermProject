@@ -29,7 +29,7 @@ using namespace glm;
 
 GravityAttractor* earth;
 Satellite* satellite;
-vector< GravityDependent*> characters;
+GravityDependent* characters;
 
 Camera* mainCamera = new Camera();
 
@@ -40,10 +40,6 @@ void Render(int color_mode = 0);
 void mouse(int button, int state, int x, int y);
 void motion(int x, int y);
 void mouseWheel(int wheel, int dir, int x, int y);
-
-void TempMakeMoon();
-void TempMakeMoon2();
-void TempMakeMoon3();
 
 
 void keyboardSpecial(int key, int x, int y);
@@ -93,9 +89,8 @@ void init() {
 
 	satellite = new Satellite(earth->mainEntity,4.0f,0.0f,4.0f,0.0f);
 
-	characters.push_back(new GravityDependent(earth->mainEntity, "models/moon.obj", "models/", 0.2f, 0.1f, 5.0f, 0.0f, -5.0f, 0.0f));
+	characters = new GravityDependent(earth->mainEntity, "models/moon.obj", "models/", 0.2f, 0.1f, 5.0f, 0.0f, -5.0f, 0.0f);
 
-\
 
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
@@ -121,9 +116,9 @@ void Render(int color_mode) {
 
 	earth->Activate(mainCamera->GetProjection(aspect), mainCamera->GetViewing(),color_mode);
 	satellite->Activate(mainCamera->GetProjection(aspect), mainCamera->GetViewing(), color_mode);
-	for (int i = 0; i < characters.size(); i++) {
-		characters[i]->Activate(mainCamera->GetProjection(aspect), mainCamera->GetViewing(), color_mode);
-	}
+	characters->Activate(mainCamera->GetProjection(aspect), mainCamera->GetViewing(), color_mode);
+
+
 	//character->Activate(mainCamera->GetProjection(aspect), mainCamera->GetViewing(), color_mode);
 
 	if (color_mode != 2) {
@@ -175,24 +170,20 @@ void keyboardSpecial(int key, int x, int y) {
 
 	switch (key) {
 	case GLUT_KEY_UP: {
-		TempMakeMoon();
-		//character->MoveDamObject(15);
+		vec3 pos = satellite->GetPos();
+		characters->GenerateBlock(pos);
 		break;
 	}
 	case GLUT_KEY_DOWN: {
-		TempMakeMoon2();
-		//character->MoveDamObject(-15);
+
 		break;
 	}
 	case GLUT_KEY_RIGHT: {
-		TempMakeMoon3();
-		//character->mainEntity->rigidbody->RotateRigidBody(50, vec3(0.0f, -1.0f, 0.0f));
-		//character->mainEntity->RotateObject(10, vec3(0.0f, 1.0f, 0.0f));
+
 		break;
 	}
 	case GLUT_KEY_LEFT: {
-		//character->mainEntity->rigidbody->RotateRigidBody(50, vec3(0.0f, 1.0f, 0.0f));
-		//character->mainEntity->RotateObject(10, vec3(0.0f, -1.0f, 0.0f));
+
 		break;
 	}
 	case GLUT_KEY_HOME: {
@@ -206,17 +197,4 @@ void keyboardSpecial(int key, int x, int y) {
 	}
 
 
-}
-
-
-void TempMakeMoon() {
-	characters.push_back(new GravityDependent(earth->mainEntity, "models/moon.obj", "models/", 0.2f, 0.1f, 10.0f, 0.0f, 5.0f, 0.0f));
-}
-
-void TempMakeMoon2() {
-	characters.push_back(new GravityDependent(earth->mainEntity, "models/moon.obj", "models/", 0.2f, 0.1f, 10.0f, 0.0f, 5.0f, 0.1f));
-}
-
-void TempMakeMoon3() {
-	characters.push_back(new GravityDependent(earth->mainEntity, "models/moon.obj", "models/", 0.2f, 0.1f, 10.0f, 0.0f, 5.0f, 0.2f));
 }

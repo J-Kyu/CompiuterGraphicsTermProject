@@ -65,3 +65,17 @@ void Component::SetRigidBodyTrans(mat4) {
 void Component::CheckCollision() {
 	cout << "This is RigidBody World Virtual Clss.....should not be called" << endl;
 }
+
+
+void Component::CopyGraphic(Component*) {
+	cout << "This is not Graphic Type Object...Component Type.....should not be called" << endl;
+}
+
+
+void Component::TurnOnObjValid() {
+	cout << "This is not Graphic Type Object...Component Type.....should not be called" << endl;
+}
+
+void Component::SetKinematic(bool) {
+	cout << "This is not Rigidbody Type Object...Component Type.....should not be called" << endl;
+}

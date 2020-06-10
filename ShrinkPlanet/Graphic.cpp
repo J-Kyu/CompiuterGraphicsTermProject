@@ -17,6 +17,25 @@ void Graphic::ActivateGraphic( mat4 p, mat4 v, mat4 m) {
 	RenderGraphic();
 }
 
+void Graphic::CopyGraphic(Component* gp) {
+	//this->vertices.resize(gp->vertices.size());
+	//this->vertices.assign(gp->vertices.begin(), gp->vertices.end());
+
+	TurnOnObjValid();
+
+	this->vertices = gp->vertices;
+	this->colors = gp->colors;
+	this->normals=gp->normals;
+	this->vertex_map=gp->vertex_map;
+	this->material_map=gp->material_map;
+	this->shapes = gp->shapes;
+	this->materials=gp->materials;
+	this->texcoords=gp->texcoords;
+	this->texmap=gp->texmap;
+
+}
+
+
 void Graphic::ActivateComponent(int colorMode,mat4 p, mat4 v, mat4 m) {
 	if (!is_obj_valid) {
 
@@ -95,7 +114,6 @@ void Graphic::InitGraphic() {
 		cal nomral
 	*/
 	
-
 	program = BuildProgram();
 	CalVertices();
 	CalColor(colors, vertices);
@@ -374,5 +392,11 @@ void Graphic::BindElements() {
 
 void Graphic::RenderGraphic() {
 	cout << "RenderGraphic: None graphic object is assigned..." << endl;
+
+}
+
+
+void Graphic::TurnOnObjValid() {
+	is_obj_valid = true;
 
 }

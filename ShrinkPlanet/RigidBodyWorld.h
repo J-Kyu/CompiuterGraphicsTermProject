@@ -28,6 +28,8 @@ public:
 
 	static double dsElapsedTime();
 protected:
+	
+	void SetKinematic(bool) override;
 	virtual void ActivateComponent(mat4) override ;
 	virtual void ActivateComponent(int, mat4, mat4, mat4) override;
 	virtual dBodyID GetRigidBodyID() override;

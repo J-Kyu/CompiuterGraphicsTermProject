@@ -6,7 +6,7 @@
 
 void Satellite::Init() {
 
-	graphic->InitGraphic();
+	graphic->InitComponent();
 	rigidbody->InitComponent();
 	coordinate->InitComponent();
 
@@ -24,7 +24,7 @@ void Satellite::Activate(mat4 p, mat4 v, int colorMode){
 
 	pTheta += (float)RigidBodyWorld::dsElapsedTime();
 	pTheta = pTheta > 3.14f*2 ? 0 : pTheta;
-	//cout << pTheta << endl;
+	
 	CalculateRigidbody(pTheta);
 
 	graphic->ActivateComponent(colorMode, perspectiveT, viewT, rigidbody->GetRigidBodyTrans() * objectT * rotateT);
@@ -211,4 +211,10 @@ void Satellite::PrintMatrix(mat4 m) {
 
 	cout << "\n" << endl;
 
+}
+
+
+vec3 Satellite::GetPos() {
+	const dReal* pos = dBodyGetPosition(this->rigidbody->GetRigidBodyID());
+	return vec3(pos[0], pos[1], pos[2]);
 }

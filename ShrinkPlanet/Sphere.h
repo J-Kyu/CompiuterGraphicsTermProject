@@ -19,9 +19,9 @@ public:
 protected:
 
 	//virtual void InitGraphic() override;
-	virtual void RenderGraphic() override;
-	virtual void CalVertices() override;
-	virtual void BindElements() override;
+	virtual void RenderGraphic() override final;
+	virtual void CalVertices() override final;
+	virtual void BindElements() override final;
 private:
 	void get_sphere_3d(vector<GLfloat>& p);
 	float r;

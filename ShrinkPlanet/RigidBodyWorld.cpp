@@ -95,3 +95,7 @@ void RigidBodyWorld::SetRigidBodyTrans(mat4) {
 void RigidBodyWorld::CheckCollision() {
 	cout << "This is RigidBody World Virtual Clss.....should not be called" << endl;
 }
+
+void RigidBodyWorld::SetKinematic(bool) {
+	cout << "This is not Rigidbody3D Type Object...RigidBodyWorld Type.....should not be called" << endl;
+}

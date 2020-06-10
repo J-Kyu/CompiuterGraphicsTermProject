@@ -7,7 +7,10 @@
 //using namespace glm;
 
 void GravityDependent::Activate() {
-	mainEntity->Activate();
+
+	for (int i = 0; i < blocks.size(); i++) {
+		blocks[i]->Activate();
+	}
 }
 
 void GravityDependent::Activate(mat4 p, mat4 v, int color_mode) {
@@ -17,112 +20,139 @@ void GravityDependent::Activate(mat4 p, mat4 v, int color_mode) {
 		exit(0);
 	}
 
-	mainEntity->rigidbody->CheckCollision();
+
 	CalculateRigidbody();
 
-	mainEntity->SetPerspectiveMatrix(p);
-	mainEntity->SetViewMatrix(v);
-	mainEntity->Activate(color_mode);
-	//apply rigid body topT*rigidbodyT
+
+	for (int i = 0; i < blocks.size(); i++) {
+		blocks[i]->rigidbody->CheckCollision();
+		blocks[i]->SetPerspectiveMatrix(p);
+		blocks[i]->SetViewMatrix(v);
+		blocks[i]->Activate(color_mode);
+	}
+
+
+
+}
+
+EmptyObject* GravityDependent::CopyBlock() {
+
+	EmptyObject* mainEntity;
+
+	attrib_t attrib;
+	mainEntity = new EmptyObject();
+
+	Component* mainGraphic = new Graphic();
+
+
+	mainGraphic->CopyGraphic(defaultGraphic);
+	glActiveTexture(GL_TEXTURE0);
+
+	mainGraphic->kyu = 1;
+	mainEntity->graphic = mainGraphic;
+
+
+	Rigidbody3D* mainRD = new Rigidbody3D();
+	mainRD->SphereRigidBodyInit(radius, mass, 0, 0, 0);
+	mainEntity->rigidbody = mainRD;
+
+	mainRD->SetKinematic(true);
+
+
+	Coordinate* coord = new Coordinate();
+	mainEntity->coordinate = coord;
+
+	mainEntity->Init();
+	wow = 0;
+	elapsedTime = 0;
+
+	return mainEntity;
+
+
 }
 
 void GravityDependent::CalculateRigidbody() {
 
-
-
-	elapsedTime += (float)RigidBodyWorld::dsElapsedTime();
-
 	if (elapsedTime > 5.0f) {
 		cout << "Passed 5 secs" << endl;
 		elapsedTime = 0.0f;
-		//dBodyDestroy(mainEntity->rigidbody->GetRigidBodyID());
+		//dBodyDestroy(blocks[i]->rigidbody->GetRigidBodyID());
 	}
 
-	//move position
-
-	const mat4 mainT = mainEntity->GetObjectT();
-	const mat4 attT = attractor->GetObjectT();
-	const mat4 rotateT = mainEntity->GetRotateT();
-
-	const dReal* mainRigidbodyPos = dBodyGetPosition(mainEntity->rigidbody->GetRigidBodyID());
+	for (int i = 0; i < blocks.size(); i++) {
+		elapsedTime += (float)RigidBodyWorld::dsElapsedTime();
 
 
+		//move position
 
-	const mat4 rigidbodyT = mainEntity->rigidbody->GetRigidBodyTrans();
+		const mat4 mainT = blocks[i]->GetObjectT();
+		const mat4 attT = attractor->GetObjectT();
+		const mat4 rotateT = blocks[i]->GetRotateT();
 
-
-	const mat4 bodyT = rigidbodyT*(mainT* rotateT);
-	const dReal* newMainRigidbodyPos = dBodyGetPosition(mainEntity->rigidbody->GetRigidBodyID());
-	
-	//vec3 forward = (5)*(float)RigidBodyWorld::dsElapsedTime() * normalize(vec3(bodyT[2][0],bodyT[2][1], bodyT[2][2]));
-	//vec3 right = (float)RigidBodyWorld::dsElapsedTime() * normalize(vec3(bodyT[0][0], bodyT[0][1], bodyT[0][2]));
-	//dBodySetPosition(mainEntity->rigidbody->GetRigidBodyID(), mainRigidbodyPos[0] + forward.x, mainRigidbodyPos[1] + forward.y, mainRigidbodyPos[2] + forward.z);	
-	//dBodySetPosition(mainEntity->rigidbody->GetRigidBodyID(), mainRigidbodyPos[0] + right.x, mainRigidbodyPos[1] + right.y, mainRigidbodyPos[2] + right.z);
-
-	//quaternion
-	const dReal* attRigidbodyPos = dBodyGetPosition(attractor->rigidbody->GetRigidBodyID());
-
-	vec3 gravityUp = vec3(newMainRigidbodyPos[0] - attRigidbodyPos[0], newMainRigidbodyPos[1] - attRigidbodyPos[1], newMainRigidbodyPos[2] - attRigidbodyPos[2]);
-
-	gravityUp = normalize(gravityUp);
-
-	vec3 localUp = vec3(bodyT[1][0], bodyT[1][1], bodyT[1][2]);
-	localUp = normalize(localUp);
+		const dReal* mainRigidbodyPos = dBodyGetPosition(blocks[i]->rigidbody->GetRigidBodyID());
 
 
 
-
-	vec3 axis = normalize(cross(localUp, gravityUp));
-
-
-	float phi = angle(localUp, gravityUp);
+		const mat4 rigidbodyT = blocks[i]->rigidbody->GetRigidBodyTrans();
 
 
-	float rad = phi / 2;
-	axis *= sin(rad);
+		const mat4 bodyT = rigidbodyT * (mainT * rotateT);
+		const dReal* newMainRigidbodyPos = dBodyGetPosition(blocks[i]->rigidbody->GetRigidBodyID());
 
-	//quat[i]의 순은 w,x,y,z이다
+		//quaternion
+		const dReal* attRigidbodyPos = dBodyGetPosition(attractor->rigidbody->GetRigidBodyID());
 
-	quat targetQ;
-	targetQ.w = cos(rad);
-	targetQ.x = axis.x;
-	targetQ.y = axis.y;
-	targetQ.z = axis.z;
+		vec3 gravityUp = vec3(newMainRigidbodyPos[0] - attRigidbodyPos[0], newMainRigidbodyPos[1] - attRigidbodyPos[1], newMainRigidbodyPos[2] - attRigidbodyPos[2]);
 
-	for (int i = 0; i < 4; i++) {
-		if (isnan(targetQ[i])) {
-			targetQ[i] = 0;
+		gravityUp = normalize(gravityUp);
+
+		vec3 localUp = vec3(bodyT[1][0], bodyT[1][1], bodyT[1][2]);
+		localUp = normalize(localUp);
+
+
+
+
+		vec3 axis = normalize(cross(localUp, gravityUp));
+
+
+		float phi = angle(localUp, gravityUp);
+
+
+		float rad = phi / 2;
+		axis *= sin(rad);
+
+		//quat[i]의 순은 w,x,y,z이다
+
+		quat targetQ;
+		targetQ.w = cos(rad);
+		targetQ.x = axis.x;
+		targetQ.y = axis.y;
+		targetQ.z = axis.z;
+
+		for (int i = 0; i < 4; i++) {
+			if (isnan(targetQ[i])) {
+				targetQ[i] = 0;
+			}
 		}
+
+
+		//quat는 (x,y,z,w) 순이다........qQuaternion과 순서가 다르다는 점을 이해하자!!
+		quat qr = quat_cast(mainT);
+
+		//quat (x,y,z,w)
+		quat calculatedQ = HemiltonProduct(targetQ, qr);
+
+		mat4 calculatedQT = QuatToMat4(calculatedQ);
+
+		blocks[i]->SetObjectT(calculatedQT);
+
+
+		//gravity apply
+		double gravityCoe = -1;
+		dBodyAddForce(blocks[i]->rigidbody->GetRigidBodyID(), (dReal)gravityUp.x * gravityCoe, (dReal)gravityUp.y * gravityCoe, (dReal)gravityUp.z * gravityCoe);
 	}
 
-	/*
-	quaternion을 적용하지 않으면 잘 된다.....
-	근데 다른 것들은 어떡하지....?
-	quaternion 이 문제인 것같다.
 	
-	
-	*/
-
-
-
-	//quat는 (x,y,z,w) 순이다........qQuaternion과 순서가 다르다는 점을 이해하자!!
-	quat qr = quat_cast(mainT);
-
-	//quat (x,y,z,w)
-	quat calculatedQ = HemiltonProduct(targetQ, qr);
-
-	mat4 calculatedQT = QuatToMat4(calculatedQ);
-
-	mainEntity->SetObjectT(calculatedQT);
-	//cout << "----------------------------------??-----------------" << endl;
-	//PrintMatrix(rigidbodyT);
-	//PrintMatrix();
-	//cout << "----------------------------------??-----------------" << endl;
-
-
-	//gravity apply
-	double gravityCoe = -1;
-	dBodyAddForce(mainEntity->rigidbody->GetRigidBodyID(), (dReal)gravityUp.x * gravityCoe, (dReal)gravityUp.y * gravityCoe, (dReal)gravityUp.z * gravityCoe);
 }
 
 
@@ -187,23 +217,6 @@ mat4 GravityDependent::QuatToMat4(quat q) {
 }
 
 
-void GravityDependent::MoveDamObject(int a) {
-
-	const mat4 rigidbodyT = mainEntity->rigidbody->GetRigidBodyTrans();
-	const mat4 mainT = mainEntity->GetObjectT();
-	const dReal* mainRigidbodyPos = dBodyGetPosition(mainEntity->rigidbody->GetRigidBodyID());
-	const mat4 rotateT = mainEntity->GetRotateT();
-
-
-	const mat4 bodyT = rigidbodyT * (mainT * rotateT);
-	vec3 forward =(a) *(float)RigidBodyWorld::dsElapsedTime() * normalize(vec3(bodyT[2][0], bodyT[2][1], bodyT[2][2]));
-	dBodySetPosition(mainEntity->rigidbody->GetRigidBodyID(), mainRigidbodyPos[0] + forward.x, mainRigidbodyPos[1] + forward.y, mainRigidbodyPos[2] + forward.z);
-
-
-	
-
-}
-
 void GravityDependent::PrintMatrix(mat4 m) {
 
 	cout << "---------------matrix------- " << endl;
@@ -218,4 +231,18 @@ void GravityDependent::PrintMatrix(mat4 m) {
 
 	cout << "\n" << endl;
 
+}
+
+void GravityDependent::GenerateBlock(vec3 pos){
+	if (readyBlock.size() < 1) {
+		cout << "Block has been sold out~!" << endl;
+		return;
+	}
+	EmptyObject* tempObj = readyBlock.front();
+	readyBlock.pop();
+
+	//tempObj->rigidbody->SphereRigidBodyInit(radius, mass, 10, 10, 10);
+	dBodySetPosition(tempObj->rigidbody->GetRigidBodyID(), (0.7)*pos.x, (0.7) * pos.y, (0.7) * pos.z);
+	tempObj->rigidbody->SetKinematic(false);
+	blocks.push_back(tempObj);
 }
