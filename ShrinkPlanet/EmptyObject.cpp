@@ -3,9 +3,15 @@
 
 void EmptyObject::Init() {
 
-	graphic->InitComponent();
-	rigidbody->InitComponent();
-	coordinate->InitComponent();
+	if (graphic != NULL) {
+		graphic->InitComponent();
+	}
+	if (rigidbody != NULL) {
+		rigidbody->InitComponent();
+	}
+	if (coordinate != NULL) {
+		coordinate->InitComponent();
+	}
 
 	for (int i = 0; i < children.size(); i++) {
 		children[i]->Init();
@@ -17,11 +23,15 @@ void EmptyObject::Activate(int colorMode){
 	Top paretn Activate
 	*/
 
+	mat4 rdMat(1.0f);
+	if (rigidbody != NULL) {
+		rdMat = rigidbody->GetRigidBodyTrans();
+	}
 
-//	cout << "obejct T: \t" << to_string(objectT) << endl;
-	graphic->ActivateComponent(colorMode, perspectiveT, viewT,  rigidbody->GetRigidBodyTrans()* objectT * rotateT);
-	//rigidbody->ActivateComponent(colorMode, perspectiveT, viewT, objectT * rotateT);
-	coordinate->ActivateComponent(colorMode, perspectiveT, viewT, rigidbody->GetRigidBodyTrans() * objectT* rotateT);
+
+	graphic->ActivateComponent(colorMode, perspectiveT, viewT, rdMat * objectT * rotateT);
+
+	coordinate->ActivateComponent(colorMode, perspectiveT, viewT, rdMat * objectT* rotateT);
 
 	for (int i = children.size() - 1; i >= 0; i--) {
 		children[i]->Activate(colorMode, perspectiveT, viewT, objectT * rotateT);
@@ -38,9 +48,14 @@ void EmptyObject::Activate(int colorMode,mat4 p,mat4 v, mat4 parentT) {
 	Chil Object Activate
 	*/
 
-	graphic-> ActivateComponent(colorMode, p, v, parentT * objectT * rotateT* rigidbody->GetRigidBodyTrans());
+	mat4 rdMat(1.0f);
+	if (rigidbody != NULL) {
+		rdMat = rigidbody->GetRigidBodyTrans();
+	}
+
+	graphic-> ActivateComponent(colorMode, p, v, parentT * objectT * rotateT* rdMat);
 	//rigidbody-> ActivateComponent(colorMode, p, v, parentT * objectT * rotateT);
-	coordinate-> ActivateComponent(colorMode, p, v, parentT * objectT * rotateT* rigidbody->GetRigidBodyTrans());
+	coordinate-> ActivateComponent(colorMode, p, v, parentT * objectT * rotateT* rdMat);
 
 	for (int i = 0; i < children.size(); i++) {
 		children[i]->Activate(colorMode,p,v,parentT * objectT * rotateT * objectT);

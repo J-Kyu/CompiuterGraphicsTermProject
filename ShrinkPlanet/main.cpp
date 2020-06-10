@@ -23,7 +23,6 @@
 #include "GravityDependent.h"
 
 
-
 using namespace std;
 using namespace glm;
 
@@ -32,6 +31,7 @@ Satellite* satellite;
 GravityDependent* characters;
 
 Camera* mainCamera;
+EmptyObject* bg = new EmptyObject();;
 
 
 void init();
@@ -79,10 +79,24 @@ void main(int argc, char** argv)
 }
 
 void init() {
+
 	GravityDependent* character;
 
 	RigidBodyWorld::WorldInit();
-	
+
+	//backgroudn
+	attrib_t attrib;
+	bg->graphic = new Graphic();
+	bg->graphic->LoadObj("models/universe.obj", "models/", attrib, 100.0f);
+	glActiveTexture(GL_TEXTURE0);
+	bg->graphic->LoadTexture("models/", attrib.texcoords);
+	bg->graphic->kyu = 1;
+
+	Coordinate* coord = new Coordinate();
+	bg->coordinate = coord;
+
+	bg->Init();
+
 	
 	earth = new GravityAttractor("models/earth.obj", "models/", 10.0f,5.0f,20.0f);
 
@@ -112,6 +126,10 @@ void Render(int color_mode) {
 	int height = glutGet(GLUT_WINDOW_HEIGHT);
 	double aspect = 1.0 * width / height;
 
+
+	bg->SetPerspectiveMatrix(mainCamera->GetProjection(aspect));
+	bg->SetViewMatrix(mainCamera->GetViewing());
+	bg->Activate(color_mode);
 
 
 	earth->Activate(mainCamera->GetProjection(aspect), mainCamera->GetViewing(),color_mode);

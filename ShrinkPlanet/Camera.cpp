@@ -117,10 +117,14 @@ void Camera::MouseWheel(int wheel, int dir, int x, int y) {
 	}
 	else {
 		if (dir > 0) {
-			zoomFactor *= 0.95f;
+			if (zoomFactor > 0.5f){
+				zoomFactor *= 0.95f;
+			}
 		}
 		else {
-			zoomFactor *= 1.05f;
+			if (zoomFactor < 16.0f) {
+				zoomFactor *= 1.05f;
+			}
 		}
 	}
 
