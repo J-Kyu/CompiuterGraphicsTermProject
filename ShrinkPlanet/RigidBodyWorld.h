@@ -18,7 +18,7 @@ public:
 	static dWorldID ode_world; // simulation world
 	static dSpaceID ode_space; // collision space
 	static dJointGroupID ode_contactgroup; // a group of contact joints
-	//static dGeomID ode_plane_geom;
+	static dGeomID ode_plane_geom;
 
 
 	virtual void CheckCollision() override;

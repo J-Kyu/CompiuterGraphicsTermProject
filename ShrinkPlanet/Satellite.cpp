@@ -22,7 +22,7 @@ void Satellite::Activate(mat4 p, mat4 v, int colorMode){
 	SetPerspectiveMatrix(p);
 	SetViewMatrix(v);
 
-	pTheta += (float)RigidBodyWorld::dsElapsedTime();
+	pTheta += (float)RigidBodyWorld::dsElapsedTime()/4;
 	pTheta = pTheta > 3.14f*2 ? 0 : pTheta;
 	
 	CalculateRigidbody(pTheta);
@@ -217,4 +217,16 @@ void Satellite::PrintMatrix(mat4 m) {
 vec3 Satellite::GetPos() {
 	const dReal* pos = dBodyGetPosition(this->rigidbody->GetRigidBodyID());
 	return vec3(pos[0], pos[1], pos[2]);
+}
+
+
+mat4 Satellite::GetObjectMatrix() {
+
+	mat4 rdMat = rigidbody->GetRigidBodyTrans();
+	return rdMat * objectT;
+
+}
+
+void Satellite::IncreaseRadius(int inc) {
+	radius += inc;
 }

@@ -74,6 +74,29 @@ void Rigidbody3D::TrimeshRigidbodyInit(vector<tinyobj::real_t>vertices, float ma
 	dBodySetPosition(body, x, y, z);
 }
 
+void Rigidbody3D::BoxRigidBodyInit(vec3 length,vec3 pos, float mass) {
+	dMatrix3 R;
+	dMass m;
+	dRSetIdentity(R);
+
+
+	//box
+
+	body = dBodyCreate(RigidBodyWorld::ode_world);
+	dBodySetPosition(body, pos.x, pos.y, pos.z);
+	dBodySetRotation(body, R);
+	dBodySetLinearVel(body, 0, 0, 0);
+	dBodySetAngularVel(body, 0, 0, 0);
+
+	geom = dCreateBox(RigidBodyWorld::ode_space, length.x, length.y, length.z);
+	dGeomSetBody(geom, body);
+	dMassSetBoxTotal(&m, mass, length.x, length.y, length.z);
+	dBodySetMass(body, &m);
+
+}
+
+
+
 void Rigidbody3D::SetKinematic(bool is) {
 	
 	if (is) {
@@ -111,11 +134,9 @@ void Rigidbody3D::SetRigidBodyTrans(mat4 t)
 			rot[i + 4 * j] = t[i][j];
 		}
 	}
-	cout << "1" << endl;
+
 	dBodySetPosition(body, t[3][0], t[3][1], t[3][2]);
-	cout << "2" << endl;
 	dBodySetRotation(body, rot);
-	cout << "3\n" << endl;
 
 
 }
@@ -129,8 +150,6 @@ void Rigidbody3D::RotateRigidBody(float speedR, vec3 vec) {
 	//GLfloat radian = M_PI / 180;
 
 	mat4 r = compute_modelling_transf();
-
-	//cout << "WOW" << endl;
 
 	r = rotate(r, speedR * (float)RigidBodyWorld::dsElapsedTime(), vec);
 	//r = rotate(r, speedR* radian, vec);
@@ -162,7 +181,6 @@ mat4 Rigidbody3D::GetRigidBodyTrans() {
 
 void Rigidbody3D::CheckCollision() {
 
-
 	double stepsize = 0.005; // 5ms simulation step size
 	double dt = dsElapsedTime();
 
@@ -175,15 +193,11 @@ void Rigidbody3D::CheckCollision() {
 		dWorldQuickStep(RigidBodyWorld::ode_world, stepsize);
 		dJointGroupEmpty(RigidBodyWorld::ode_contactgroup); // remove all contact joints
 	}
-
-	//cout << endl;
 }
 
 
 void Rigidbody3D::nearCallback(void* data, dGeomID o1, dGeomID o2) {
 	
-	
-	//cout << "Collided:\t " << o1 << "\t" << o2 << "\n"<<endl;
 	const int N = 100;
 	dContact contact[N];
 	int n = dCollide(o1, o2, N, &(contact[0].geom), sizeof(dContact));
@@ -193,9 +207,9 @@ void Rigidbody3D::nearCallback(void* data, dGeomID o1, dGeomID o2) {
 		for (int i = 0; i < n; i++)
 		{
 			contact[i].surface.mode = dContactSoftERP | dContactSoftCFM;
-			contact[i].surface.mu = 0.1;
-			contact[i].surface.soft_erp = 0.9;
-			contact[i].surface.soft_cfm = 0.01;
+			contact[i].surface.mu = 0.9;
+			contact[i].surface.soft_erp = 0.001;
+			contact[i].surface.soft_cfm = 0.0001;
 
 			dJointID c = dJointCreateContact(RigidBodyWorld::ode_world, RigidBodyWorld::ode_contactgroup, &contact[i]);
 			dBodyID body1 = dGeomGetBody(contact[i].geom.g1);

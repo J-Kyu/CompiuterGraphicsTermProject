@@ -32,8 +32,10 @@ public:
 	void Activate(int colorMode = 0);
 	void Activate(mat4 p, mat4 v, int colorMode);
 	void Activate(int, mat4, mat4, mat4);
+	void IncreaseRadius(int inc = 1);
 
 	vec3 GetPos();
+	mat4 GetObjectMatrix();
 
 	vector<EmptyObject*> children;
 
@@ -61,5 +63,6 @@ private:
 
 	void SetPerspectiveMatrix(mat4);
 	void SetViewMatrix(mat4);
+
 };
 

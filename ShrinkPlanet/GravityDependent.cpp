@@ -53,7 +53,9 @@ EmptyObject* GravityDependent::CopyBlock() {
 
 
 	Rigidbody3D* mainRD = new Rigidbody3D();
-	mainRD->SphereRigidBodyInit(radius, mass, 0, 0, 0);
+	//mainRD->SphereRigidBodyInit(radius, mass, 0, 0, 0);
+	mainRD->BoxRigidBodyInit(vec3(0.5f, 0.5f, 0.5f),vec3(0,20,0), mass);
+	//mainRD->TrimeshRigidbodyInit(mainGraphic->GetVertices(),mass,0,0,0);
 	mainEntity->rigidbody = mainRD;
 
 	mainRD->SetKinematic(true);
@@ -72,7 +74,11 @@ EmptyObject* GravityDependent::CopyBlock() {
 }
 
 void GravityDependent::CalculateRigidbody() {
-
+	/*
+		Physic Engine:
+		* gravity
+		* quaternion
+	*/
 	if (elapsedTime > 5.0f) {
 		cout << "Passed 5 secs" << endl;
 		elapsedTime = 0.0f;
@@ -144,7 +150,7 @@ void GravityDependent::CalculateRigidbody() {
 
 		mat4 calculatedQT = QuatToMat4(calculatedQ);
 
-		blocks[i]->SetObjectT(calculatedQT);
+		//blocks[i]->SetObjectT(calculatedQT);
 
 
 		//gravity apply

@@ -3,7 +3,16 @@
 
 
 mat4 Camera::GetViewing() {
-	return lookAt(eye, center, up);
+	if (isSatellite) {
+		mat4 m = satellite->GetObjectMatrix();
+		vec3 satellEye = vec3(m[3][0]*(0.9), m[3][1] * (0.9), m[3][2] * (0.9));
+		/*vec3 satellUp = vec3(m[1][0], m[1][1], m[1][2]);*/
+		vec3 satellUp = vec3(0,1,0);
+		return lookAt(satellEye, center, satellUp);
+	}
+	else {
+		return lookAt(eye, center, up);
+	}
 }
 
 mat4 Camera::GetProjection(GLfloat aspect) {
@@ -117,4 +126,8 @@ void Camera::MouseWheel(int wheel, int dir, int x, int y) {
 
 	glutPostRedisplay();
 	
+}
+
+void Camera::ViewSatellite(bool is) {
+	isSatellite = is;
 }

@@ -31,7 +31,7 @@ GravityAttractor* earth;
 Satellite* satellite;
 GravityDependent* characters;
 
-Camera* mainCamera = new Camera();
+Camera* mainCamera;
 
 
 void init();
@@ -57,7 +57,6 @@ void main(int argc, char** argv)
 
 	//Display Setting
 	glutInit(&argc, argv);
-	//glutInitDisplayMode(GLUT_RGBA);
 	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE);
 	glutInitWindowSize(512, 512);
 	glutCreateWindow("VAO example");
@@ -85,12 +84,13 @@ void init() {
 	RigidBodyWorld::WorldInit();
 	
 	
-	earth = new GravityAttractor("models/earth.obj", "models/", 5.0f,2.5f,20.0f);
+	earth = new GravityAttractor("models/earth.obj", "models/", 10.0f,5.0f,20.0f);
 
-	satellite = new Satellite(earth->mainEntity,4.0f,0.0f,4.0f,0.0f);
+	satellite = new Satellite(earth->mainEntity,15.0f,0.0f,4.0f,0.0f);
 
-	characters = new GravityDependent(earth->mainEntity, "models/moon.obj", "models/", 0.2f, 0.1f, 5.0f, 0.0f, -5.0f, 0.0f);
+	characters = new GravityDependent(earth->mainEntity, "models/moon.obj", "models/", 1.0f, .5f, 5.0f, 0.0f, 11.0f, 0.0f);
 
+	mainCamera = new Camera(satellite);
 
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
@@ -172,6 +172,7 @@ void keyboardSpecial(int key, int x, int y) {
 	case GLUT_KEY_UP: {
 		vec3 pos = satellite->GetPos();
 		characters->GenerateBlock(pos);
+		satellite->IncreaseRadius();
 		break;
 	}
 	case GLUT_KEY_DOWN: {
@@ -187,11 +188,11 @@ void keyboardSpecial(int key, int x, int y) {
 		break;
 	}
 	case GLUT_KEY_HOME: {
-	
+		mainCamera->ViewSatellite(true);
 		break;
 	}
 	case GLUT_KEY_INSERT: {
-
+		mainCamera->ViewSatellite(false);
 		break;
 	}
 	}

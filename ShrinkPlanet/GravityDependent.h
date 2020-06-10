@@ -44,11 +44,12 @@ public:
 
 
 		Rigidbody3D* mainRD = new Rigidbody3D();
-		mainRD->SphereRigidBodyInit(radius, mass, x, y,z);
+		//mainRD->SphereRigidBodyInit(radius, mass, x, y,z);
+		mainRD->BoxRigidBodyInit(vec3(1.0f, 1.0f, 1.0f),vec3(0,5,0), mass);
 		//mainRD->TrimeshRigidbodyInit(mainGraphic->GetVertices(),mass,x,y,z);
 		mainEntity->rigidbody = mainRD;
 
-		//mainRD->SetKinematic(true);
+		mainRD->SetKinematic(true);
 
 
 		Coordinate* coord = new Coordinate();
