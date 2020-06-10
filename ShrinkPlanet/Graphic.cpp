@@ -55,7 +55,7 @@ void Graphic::ActivateComponent(int colorMode,mat4 p, mat4 v, mat4 m) {
 	//cout << colorMode << endl;
 	glUniform1i(glGetUniformLocation(program, "ShadingMode"), 0);
 	glUniform1i(glGetUniformLocation(program, "ColorMode"), colorMode);
-	glUniform1i(glGetUniformLocation(program, "ObjectCode"), kyu);
+	glUniform1i(glGetUniformLocation(program, "ObjectCode"), objectCode);
 
 
 	glBindVertexArray(vao);

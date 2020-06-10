@@ -28,16 +28,18 @@ void EmptyObject::Activate(int colorMode){
 		rdMat = rigidbody->GetRigidBodyTrans();
 	}
 
+	if (graphic != NULL) {
+		graphic->ActivateComponent(colorMode, perspectiveT, viewT, rdMat * objectT * rotateT);
+	}
 
-	graphic->ActivateComponent(colorMode, perspectiveT, viewT, rdMat * objectT * rotateT);
-
-	coordinate->ActivateComponent(colorMode, perspectiveT, viewT, rdMat * objectT* rotateT);
+	if (coordinate != NULL) {
+		coordinate->ActivateComponent(colorMode, perspectiveT, viewT, rdMat * objectT * rotateT);
+	}
 
 	for (int i = children.size() - 1; i >= 0; i--) {
 		children[i]->Activate(colorMode, perspectiveT, viewT, objectT * rotateT);
 	}
 
-	//objectT = mat4(1.0f);
 
 }
 

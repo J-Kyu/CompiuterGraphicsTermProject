@@ -31,7 +31,7 @@ public:
 
 	Component() {};
 
-	int kyu;
+	int objectCode;
 	void SetTopT(mat4*);
 
 	virtual dBodyID GetRigidBodyID();

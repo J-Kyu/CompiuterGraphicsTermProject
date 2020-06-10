@@ -6,9 +6,15 @@
 
 void Satellite::Init() {
 
-	graphic->InitComponent();
-	rigidbody->InitComponent();
-	coordinate->InitComponent();
+	if (graphic != NULL) {
+		graphic->InitComponent();
+	}
+	if (rigidbody != NULL) {
+		rigidbody->InitComponent();
+	}
+	if (coordinate != NULL) {
+		coordinate->InitComponent();
+	}
 
 	for (int i = 0; i < children.size(); i++) {
 		children[i]->Init();
@@ -25,10 +31,15 @@ void Satellite::Activate(mat4 p, mat4 v, int colorMode){
 	pTheta += (float)RigidBodyWorld::dsElapsedTime()/4;
 	pTheta = pTheta > 3.14f*2 ? 0 : pTheta;
 	
+
 	CalculateRigidbody(pTheta);
 
 	graphic->ActivateComponent(colorMode, perspectiveT, viewT, rigidbody->GetRigidBodyTrans() * objectT * rotateT);
-	coordinate->ActivateComponent(colorMode, perspectiveT, viewT, rigidbody->GetRigidBodyTrans() * objectT * rotateT);
+
+	if (coordinate != NULL) {
+		coordinate->ActivateComponent(colorMode, perspectiveT, viewT, rigidbody->GetRigidBodyTrans() * objectT * rotateT);
+	}
+
 
 	for (int i = children.size() - 1; i >= 0; i--) {
 		children[i]->Activate(colorMode, perspectiveT, viewT, objectT * rotateT);
@@ -76,7 +87,7 @@ void Satellite::CalculateRigidbody(float theta){
 	const mat4 rigidbodyT = rigidbody->GetRigidBodyTrans();
 
 
-	const mat4 bodyT = rigidbodyT * (mainT * rotateT);
+	const mat4 bodyT = rigidbodyT * (mainT);
 	const dReal* newMainRigidbodyPos = dBodyGetPosition(rigidbody->GetRigidBodyID());
 
 	//quaternion

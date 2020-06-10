@@ -39,7 +39,7 @@ public:
 		defaultGraphic->LoadObj(objPath, path, attrib, scale);
 		glActiveTexture(GL_TEXTURE0);
 		defaultGraphic->LoadTexture(path, attrib.texcoords);
-		defaultGraphic->kyu = 1;
+		defaultGraphic->objectCode = 1;
 		mainEntity->graphic = defaultGraphic;
 
 
@@ -58,7 +58,7 @@ public:
 		mainEntity->Init();
 		wow = 0;
 		elapsedTime = 0;
-		blockMaxNum = 10;
+		blockMaxNum = 1;
 
 		blocks.push_back(mainEntity);
 

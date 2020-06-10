@@ -48,7 +48,7 @@ EmptyObject* GravityDependent::CopyBlock() {
 	mainGraphic->CopyGraphic(defaultGraphic);
 	glActiveTexture(GL_TEXTURE0);
 
-	mainGraphic->kyu = 1;
+	mainGraphic->objectCode = 1;
 	mainEntity->graphic = mainGraphic;
 
 
@@ -127,7 +127,7 @@ void GravityDependent::CalculateRigidbody() {
 		float rad = phi / 2;
 		axis *= sin(rad);
 
-		//quat[i]ÀÇ ¼øÀº w,x,y,zÀÌ´Ù
+		//quat[i]ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ w,x,y,zï¿½Ì´ï¿½
 
 		quat targetQ;
 		targetQ.w = cos(rad);
@@ -142,7 +142,7 @@ void GravityDependent::CalculateRigidbody() {
 		}
 
 
-		//quat´Â (x,y,z,w) ¼øÀÌ´Ù........qQuaternion°ú ¼ø¼­°¡ ´Ù¸£´Ù´Â Á¡À» ÀÌÇØÇÏÀÚ!!
+		//quatï¿½ï¿½ (x,y,z,w) ï¿½ï¿½ï¿½Ì´ï¿½........qQuaternionï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ù¸ï¿½ï¿½Ù´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½!!
 		quat qr = quat_cast(mainT);
 
 		//quat (x,y,z,w)

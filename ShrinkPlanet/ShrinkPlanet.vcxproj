@@ -141,6 +141,7 @@
     <ClCompile Include="loadobj.cpp" />
     <ClCompile Include="LoadShaders.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Menu.cpp" />
     <ClCompile Include="Rigidbody3D.cpp" />
     <ClCompile Include="RigidBodyWorld.cpp" />
     <ClCompile Include="Satellite.cpp" />
@@ -159,6 +160,7 @@
     <ClInclude Include="GravityDependent.h" />
     <ClInclude Include="loadobj.h" />
     <ClInclude Include="LoadShaders.h" />
+    <ClInclude Include="Menu.h" />
     <ClInclude Include="Rigidbody3D.h" />
     <ClInclude Include="RigidBodyWorld.h" />
     <ClInclude Include="Satellite.h" />

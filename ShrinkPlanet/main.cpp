@@ -22,17 +22,15 @@
 #include "GravityAttractor.h"
 #include "GravityDependent.h"
 
+#include "Menu.h"
+
 
 using namespace std;
 using namespace glm;
 
-GravityAttractor* earth;
-Satellite* satellite;
-GravityDependent* characters;
 
-Camera* mainCamera;
-EmptyObject* bg = new EmptyObject();;
 
+enum State{MENU,PLAYING,DONE};
 
 void init();
 void display();
@@ -50,6 +48,16 @@ dJointGroupID RigidBodyWorld::ode_contactgroup;
 bool RigidBodyWorld::pause = false;
 
 //dGeomID RigidBodyWorld::ode_plane_geom;
+
+
+GravityAttractor* earth;
+Satellite* satellite;
+GravityDependent* characters;
+
+Camera* mainCamera;
+EmptyObject* bg = new EmptyObject();
+Menu* menu;
+State curState;
 
 
 void main(int argc, char** argv)
@@ -80,6 +88,8 @@ void main(int argc, char** argv)
 
 void init() {
 
+	curState = MENU;
+
 	GravityDependent* character;
 
 	RigidBodyWorld::WorldInit();
@@ -90,13 +100,17 @@ void init() {
 	bg->graphic->LoadObj("models/universe.obj", "models/", attrib, 100.0f);
 	glActiveTexture(GL_TEXTURE0);
 	bg->graphic->LoadTexture("models/", attrib.texcoords);
-	bg->graphic->kyu = 1;
+	bg->graphic->objectCode = 0;
 
-	Coordinate* coord = new Coordinate();
-	bg->coordinate = coord;
+	//Coordinate* coord = new Coordinate();
+	//bg->coordinate = coord;
 
 	bg->Init();
 
+
+	//Menu
+
+	menu = new Menu();
 	
 	earth = new GravityAttractor("models/earth.obj", "models/", 10.0f,5.0f,20.0f);
 
@@ -131,13 +145,31 @@ void Render(int color_mode) {
 	bg->SetViewMatrix(mainCamera->GetViewing());
 	bg->Activate(color_mode);
 
+	switch (curState) {
+	case MENU: {
+		menu->Activate(mainCamera->GetProjection(aspect), mainCamera->GetViewing(), color_mode);
+		break;
+	}
+	case PLAYING: {
 
-	earth->Activate(mainCamera->GetProjection(aspect), mainCamera->GetViewing(),color_mode);
-	satellite->Activate(mainCamera->GetProjection(aspect), mainCamera->GetViewing(), color_mode);
-	characters->Activate(mainCamera->GetProjection(aspect), mainCamera->GetViewing(), color_mode);
+		earth->Activate(mainCamera->GetProjection(aspect), mainCamera->GetViewing(), color_mode);
+		satellite->Activate(mainCamera->GetProjection(aspect), mainCamera->GetViewing(), color_mode);
+		characters->Activate(mainCamera->GetProjection(aspect), mainCamera->GetViewing(), color_mode);
 
 
-	//character->Activate(mainCamera->GetProjection(aspect), mainCamera->GetViewing(), color_mode);
+		break;
+	}
+	case DONE:{
+
+		break;
+	}
+	default: {
+
+		break;
+	}
+
+	}
+
 
 	if (color_mode != 2) {
 		glutSwapBuffers();
@@ -167,6 +199,16 @@ void mouse(int button, int state, int x, int y) {
 		{
 		case 1: printf("The earth is clicked!\n"); break;
 		case 2: printf("The moon is clicked!\n"); break;
+		case 100: {
+			printf("Start\n"); 
+			curState = PLAYING;
+			break;
+		}		
+		case 101: {
+			printf("End\n"); 
+			exit(0);
+			break;
+		}
 		}
 	}
 }
@@ -195,6 +237,8 @@ void keyboardSpecial(int key, int x, int y) {
 	}
 	case GLUT_KEY_DOWN: {
 
+		mainCamera->ResetEye();
+		curState = MENU;
 		break;
 	}
 	case GLUT_KEY_RIGHT: {

@@ -1,8 +1,16 @@
 #pragma once
+
+#include <GL/glew.h> 
+#include <GL/glut.h> 
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
+
 #include "EmptyObject.h"
 #include "Sphere.h"
 #include "Rigidbody3D.h"
 #include "Coordinate.h"
+
+using namespace glm;
 
 class Satellite
 {
@@ -12,16 +20,28 @@ public:
 
 	Satellite(EmptyObject* attr,float radius,float x,float y, float z) {
 
+		float radian = M_PI / 180;
 
 		attractor = attr;
 
-		graphic = new Sphere(0.1f,16,16);
+		graphic = new Graphic();
+
+		attrib_t attrib;
+
+		graphic->LoadObj("models/satellite.obj", "models/", attrib, 10.0f);
+		glActiveTexture(GL_TEXTURE0);
+		graphic->LoadTexture("models/", attrib.texcoords);
+		graphic->objectCode = 1;
+
+
+		rotateT = rotate(rotateT,-90 * radian, vec3(1,0,0));
+
 
 		rigidbody = new Rigidbody3D();
 		rigidbody->SphereRigidBodyInit(.5f, 10.f, x, y, z);
 		rigidbody->SetKinematic(true);
 		this->radius = radius;
-		coordinate = new Coordinate();
+		//coordinate = new Coordinate();
 
 		pTheta = 0;
 

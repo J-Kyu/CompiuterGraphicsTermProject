@@ -5,8 +5,7 @@
 mat4 Camera::GetViewing() {
 	if (isSatellite) {
 		mat4 m = satellite->GetObjectMatrix();
-		vec3 satellEye = vec3(m[3][0]*(0.9), m[3][1] * (0.9), m[3][2] * (0.9));
-		/*vec3 satellUp = vec3(m[1][0], m[1][1], m[1][2]);*/
+		vec3 satellEye = vec3(m[3][0], m[3][1], m[3][2] );
 		vec3 satellUp = vec3(0,1,0);
 		return lookAt(satellEye, center, satellUp);
 	}
@@ -119,10 +118,11 @@ void Camera::MouseWheel(int wheel, int dir, int x, int y) {
 		if (dir > 0) {
 			if (zoomFactor > 0.5f){
 				zoomFactor *= 0.95f;
+
 			}
 		}
 		else {
-			if (zoomFactor < 16.0f) {
+			if (zoomFactor < 4.0f) {
 				zoomFactor *= 1.05f;
 			}
 		}
@@ -134,4 +134,17 @@ void Camera::MouseWheel(int wheel, int dir, int x, int y) {
 
 void Camera::ViewSatellite(bool is) {
 	isSatellite = is;
+}
+
+
+void Camera::ResetEye(){
+
+	this->eye = vec3(0, 0, 40);
+	this->center = vec3(0, 0, 0);
+	this->up = vec3(0, 1, 0);
+	this->zoomFactor = 3.0f;
+	this->zNear = 0.01f;
+	this->zFar = 100.0f;
+	this->fovy = ((float)(M_PI / 180.0 * (30.0f)));
+	this->xRight = (1.2f);
 }

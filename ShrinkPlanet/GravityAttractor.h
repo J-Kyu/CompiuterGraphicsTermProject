@@ -31,7 +31,7 @@ public:
 		mainGraphic->LoadObj(objPath, path, attrib, scale);
 		glActiveTexture(GL_TEXTURE0);
 		mainGraphic->LoadTexture(path, attrib.texcoords);
-		mainGraphic->kyu = 1;
+		mainGraphic->objectCode = 1;
 
 		mainEntity->graphic = mainGraphic;
 
