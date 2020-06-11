@@ -31,6 +31,9 @@ class Camera{
 		
 		mat4 GetViewing();
 		mat4 GetProjection(GLfloat);
+		vec3 GetEye();
+		vec3 GetUp();
+
 		void Motion(int, int);
 		void Mouse(int button, int state, int x, int y);
 		void MouseWheel(int, int,int,int);
@@ -57,7 +60,7 @@ class Camera{
 
 		int button_pressed[3] = { GLUT_UP,GLUT_UP,GLUT_UP };
 		int mouse_pos[2] = { 0,0 };
-
+		
 
 		mat4 Parallel(double r, double aspect, double n, double f);
 

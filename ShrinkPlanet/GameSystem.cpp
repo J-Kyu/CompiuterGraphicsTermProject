@@ -48,11 +48,21 @@ void GameSystem::CollideCheck(dGeomID geom1, dGeomID geom2) {
 	if (geom1 == this->ground && geom2 != this->initiBlock){
 		if (!CheckDeadBlock(geom2)) {
 			deadBlock.insert(geom2);
+			UI::GetInstance()->PopScoreBoard();
 		}
 	}
 	else if (geom2 == this->ground && geom1 != this->initiBlock) {
 		if (!CheckDeadBlock(geom1)) {
 			deadBlock.insert(geom1);
+			UI::GetInstance()->PopScoreBoard();
 		}
 	}
+
+	towerBlock = 10 - deadBlock.size() - producedBlock;
+}
+
+
+
+void GameSystem::BlockProduced() {
+	producedBlock++;
 }

@@ -13,6 +13,7 @@
 #include <string>
 #include "Rigidbody3D.h"
 #include "Coordinate.h"
+#include "Rect2D.h"
 
 
 class Menu {
@@ -24,6 +25,7 @@ public:
 
 		attrib_t attrib;
 
+		//start
 		Graphic* startGraphic = new Graphic();
 
 		startGraphic->LoadObj("models/start.obj","models/", attrib, 1.0f);
@@ -37,6 +39,8 @@ public:
 		startObj->Init();
 
 
+
+		//end
 		endObj = new EmptyObject();
 
 
@@ -62,6 +66,7 @@ public:
 
 private:
 	bool isShown;
+
 	EmptyObject* startObj;
 	EmptyObject* endObj;
 };

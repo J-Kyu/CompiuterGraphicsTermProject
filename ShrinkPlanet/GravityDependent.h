@@ -15,6 +15,7 @@
 #include "Coordinate.h"
 #include <queue>
 #include "GameSystem.h"
+#include "UI.h"
 
 class GravityDependent{
 

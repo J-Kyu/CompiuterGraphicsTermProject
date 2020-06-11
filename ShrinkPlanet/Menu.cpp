@@ -3,9 +3,6 @@
 
 void Menu::Activate() {
 
-
-
-
 	startObj->Activate();
 	endObj->Activate();
 }
@@ -23,8 +20,7 @@ void Menu::Activate(mat4 p, mat4 v, int color_mode) {
 		endObj->SetViewMatrix(v);
 
 
-		GLfloat theta = 0.001 * clock();
-
+		
 
 		startObj->RotatingYAxis();
 		endObj->RotatingYAxis();

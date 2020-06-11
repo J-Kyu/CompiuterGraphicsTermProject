@@ -23,10 +23,10 @@ void GravityDependent::Activate(mat4 p, mat4 v, int color_mode) {
 
 	CalculateRigidbody();
 
-	blocks[0]->rigidbody->CheckCollision();
+	//blocks[0]->rigidbody->CheckCollision();
 
 	for (int i = 0; i < blocks.size(); i++) {
-		//blocks[i]->rigidbody->CheckCollision();
+		blocks[i]->rigidbody->CheckCollision();
 		blocks[i]->SetPerspectiveMatrix(p);
 		blocks[i]->SetViewMatrix(v);
 		blocks[i]->Activate(color_mode);
@@ -245,6 +245,9 @@ void GravityDependent::GenerateBlock(vec3 pos){
 		cout << "Block has been sold out~!" << endl;
 		return;
 	}
+
+	UI::GetInstance()->GenerateScoreBoard();
+	GameSystem::GetInstance()->BlockProduced();
 	EmptyObject* tempObj = readyBlock.front();
 	readyBlock.pop();
 

@@ -143,11 +143,13 @@
     <ClCompile Include="LoadShaders.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Menu.cpp" />
+    <ClCompile Include="Rect2D.cpp" />
     <ClCompile Include="Rigidbody3D.cpp" />
     <ClCompile Include="RigidBodyWorld.cpp" />
     <ClCompile Include="Satellite.cpp" />
     <ClCompile Include="Sphere.cpp" />
     <ClCompile Include="tiny_obj_loader.cc" />
+    <ClCompile Include="UI.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
@@ -163,12 +165,14 @@
     <ClInclude Include="loadobj.h" />
     <ClInclude Include="LoadShaders.h" />
     <ClInclude Include="Menu.h" />
+    <ClInclude Include="Rect2D.h" />
     <ClInclude Include="Rigidbody3D.h" />
     <ClInclude Include="RigidBodyWorld.h" />
     <ClInclude Include="Satellite.h" />
     <ClInclude Include="Sphere.h" />
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="tiny_obj_loader.h" />
+    <ClInclude Include="UI.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="earthMoonPhong.png" />

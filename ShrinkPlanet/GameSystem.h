@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Rigidbody3D.h"
-
+#include "UI.h"
 #include <vector>
 #include <iostream>
 #include <set>
@@ -13,12 +13,14 @@ class GameSystem{
 public:
 	GameSystem() {
 		towerBlock = 0;
+		producedBlock = 0;
 	}
 	static GameSystem* GetInstance();
 	int GetTowerBlock();
 
 	void AddTowerBlock(int a);
 	void SetInitBlock(dGeomID);
+	void BlockProduced();
 	dGeomID GetInitBlockGeom();
 
 	void SetGroundGeom(dGeomID);
@@ -31,6 +33,7 @@ private:
 	dGeomID initiBlock;
 	dGeomID ground;
 	set<dGeomID> deadBlock;
+	int producedBlock;
 	int towerBlock;
 
 

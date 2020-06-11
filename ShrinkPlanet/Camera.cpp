@@ -5,11 +5,11 @@
 mat4 Camera::GetViewing() {
 	if (isSatellite) {
 		mat4 m = satellite->GetObjectMatrix();
+
+
 		vec3 satellEye = vec3(m[3][0], m[3][1], m[3][2] );
-
-		//vec3 satellUp = vec3(m[1][0], m[1][1], m[1][2]);
-
 		vec3 satellUp = vec3(0,1,0);
+
 		return lookAt(satellEye, center, satellUp);
 	}
 	else {
@@ -150,4 +150,12 @@ void Camera::ResetEye(){
 	this->zFar = 100.0f;
 	this->fovy = ((float)(M_PI / 180.0 * (30.0f)));
 	this->xRight = (1.2f);
+}
+
+vec3 Camera::GetEye() {
+	return this->eye;
+}
+
+vec3 Camera::GetUp() {
+	return this->up;
 }

@@ -17,8 +17,7 @@
 #include "RigidBodyWorld.h"
 #include "Satellite.h"
 #include "GameSystem.h"
-
-
+#include "UI.h"
 
 #include "GravityAttractor.h"
 #include "GravityDependent.h"
@@ -47,7 +46,9 @@ dWorldID RigidBodyWorld::ode_world;
 dSpaceID RigidBodyWorld::ode_space;
 dJointGroupID RigidBodyWorld::ode_contactgroup;
 bool RigidBodyWorld::pause = false;
+
 GameSystem* GameSystem::instance = nullptr;
+UI* UI::instance = nullptr;
 
 
 //dGeomID RigidBodyWorld::ode_plane_geom;
@@ -90,7 +91,6 @@ void main(int argc, char** argv)
 }
 
 void init() {
-
 
 	curState = MENU;
 
@@ -174,6 +174,7 @@ void Render(int color_mode) {
 
 	}
 
+	UI::GetInstance()->Activate(mainCamera->GetProjection(aspect), mainCamera->GetViewing(), color_mode,mainCamera->GetEye(), mainCamera->GetUp());
 
 	if (color_mode != 2) {
 		glutSwapBuffers();
