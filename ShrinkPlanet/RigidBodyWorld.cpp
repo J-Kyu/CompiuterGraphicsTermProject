@@ -58,3 +58,9 @@ void RigidBodyWorld::CheckCollision() {
 void RigidBodyWorld::SetKinematic(bool) {
 	cout << "This is not Rigidbody3D Type Object...RigidBodyWorld Type.....should not be called" << endl;
 }
+
+dGeomID RigidBodyWorld::GetRigidGeomID() {
+
+	cout << "This object is not Rigidbody Component....Please use this function on TYPE Rigidbody" << endl;
+	return NULL;
+}

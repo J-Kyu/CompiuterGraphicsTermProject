@@ -16,6 +16,7 @@
 #include "Rigidbody3D.h"
 #include "RigidBodyWorld.h"
 #include "Satellite.h"
+#include "GameSystem.h"
 
 
 
@@ -46,6 +47,8 @@ dWorldID RigidBodyWorld::ode_world;
 dSpaceID RigidBodyWorld::ode_space;
 dJointGroupID RigidBodyWorld::ode_contactgroup;
 bool RigidBodyWorld::pause = false;
+GameSystem* GameSystem::instance = nullptr;
+
 
 //dGeomID RigidBodyWorld::ode_plane_geom;
 
@@ -87,6 +90,7 @@ void main(int argc, char** argv)
 }
 
 void init() {
+
 
 	curState = MENU;
 

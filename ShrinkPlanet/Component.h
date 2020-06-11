@@ -34,8 +34,10 @@ public:
 	int objectCode;
 	void SetTopT(mat4*);
 
+	virtual dGeomID GetRigidGeomID();
 	virtual dBodyID GetRigidBodyID();
 	virtual mat4 GetRigidBodyTrans();
+	
 	virtual void RotateRigidBody(float,vec3);
 	virtual void SetRigidBodyTrans(mat4);
 

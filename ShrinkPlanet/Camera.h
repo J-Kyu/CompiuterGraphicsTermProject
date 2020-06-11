@@ -26,7 +26,6 @@ class Camera{
 
 		Camera(Satellite* satellite) : eye(0, 0, 40), center(0, 0, 0), up(0, 1, 0), zoomFactor(3.0f), projectionMode(PERSPECTIVE), zNear(0.01f), zFar(100.0f), fovy((float)(M_PI / 180.0 * (30.0f))), xRight(1.2f) {
 			this->satellite = satellite;
-			//zoomFactor = 5.0f;
 
 		};
 		

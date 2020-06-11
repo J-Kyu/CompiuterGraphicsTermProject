@@ -28,7 +28,7 @@ void Satellite::Activate(mat4 p, mat4 v, int colorMode){
 	SetPerspectiveMatrix(p);
 	SetViewMatrix(v);
 
-	pTheta += (float)RigidBodyWorld::dsElapsedTime()/4;
+	pTheta += (float)RigidBodyWorld::dsElapsedTime();
 	pTheta = pTheta > 3.14f*2 ? 0 : pTheta;
 	
 

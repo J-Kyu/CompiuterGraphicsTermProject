@@ -1,6 +1,6 @@
 #pragma once
 #include "RigidBodyWorld.h"
-
+#include "GameSystem.h"
 
 
 
@@ -20,6 +20,7 @@ public:
 	void virtual ActivateComponent(mat4) override final;
 	void virtual ActivateComponent(int,mat4,mat4, mat4) override final;
 	virtual dBodyID GetRigidBodyID() override final;
+	virtual dGeomID GetRigidGeomID() override final;
 	virtual mat4 GetRigidBodyTrans() override final;
 	virtual void SetRigidBodyTrans(mat4) override final;
 

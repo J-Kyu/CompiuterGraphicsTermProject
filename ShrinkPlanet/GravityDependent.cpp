@@ -23,9 +23,10 @@ void GravityDependent::Activate(mat4 p, mat4 v, int color_mode) {
 
 	CalculateRigidbody();
 
+	blocks[0]->rigidbody->CheckCollision();
 
 	for (int i = 0; i < blocks.size(); i++) {
-		blocks[i]->rigidbody->CheckCollision();
+		//blocks[i]->rigidbody->CheckCollision();
 		blocks[i]->SetPerspectiveMatrix(p);
 		blocks[i]->SetViewMatrix(v);
 		blocks[i]->Activate(color_mode);
@@ -154,7 +155,7 @@ void GravityDependent::CalculateRigidbody() {
 
 
 		//gravity apply
-		double gravityCoe = -1;
+		double gravityCoe = -10;
 		dBodyAddForce(blocks[i]->rigidbody->GetRigidBodyID(), (dReal)gravityUp.x * gravityCoe, (dReal)gravityUp.y * gravityCoe, (dReal)gravityUp.z * gravityCoe);
 	}
 

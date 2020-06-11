@@ -79,3 +79,9 @@ void Component::TurnOnObjValid() {
 void Component::SetKinematic(bool) {
 	cout << "This is not Rigidbody Type Object...Component Type.....should not be called" << endl;
 }
+
+dGeomID Component::GetRigidGeomID() {
+
+	cout << "This object is not Rigidbody Component....Please use this function on TYPE Rigidbody" << endl;
+	return NULL;
+}

@@ -14,6 +14,7 @@
 #include "Rigidbody3D.h"
 #include "Coordinate.h"
 #include <queue>
+#include "GameSystem.h"
 
 class GravityDependent{
 
@@ -44,9 +45,8 @@ public:
 
 
 		Rigidbody3D* mainRD = new Rigidbody3D();
-		//mainRD->SphereRigidBodyInit(radius, mass, x, y,z);
 		mainRD->BoxRigidBodyInit(vec3(1.0f, 1.0f, 1.0f),vec3(0,5,0), mass);
-		//mainRD->TrimeshRigidbodyInit(mainGraphic->GetVertices(),mass,x,y,z);
+		GameSystem::GetInstance()->SetInitBlock(mainRD->GetRigidGeomID());
 		mainEntity->rigidbody = mainRD;
 
 		mainRD->SetKinematic(true);
@@ -58,7 +58,7 @@ public:
 		mainEntity->Init();
 		wow = 0;
 		elapsedTime = 0;
-		blockMaxNum = 1;
+		blockMaxNum = 10;
 
 		blocks.push_back(mainEntity);
 
@@ -80,6 +80,7 @@ public:
 	void GenerateBlock(vec3);
 
 private:
+
 	queue<EmptyObject*> readyBlock;
 
 	float mass;

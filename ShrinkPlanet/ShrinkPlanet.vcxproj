@@ -135,6 +135,7 @@
     <ClCompile Include="Cube.cpp" />
     <ClCompile Include="Cylinder.cpp" />
     <ClCompile Include="EmptyObject.cpp" />
+    <ClCompile Include="GameSystem.cpp" />
     <ClCompile Include="Graphic.cpp" />
     <ClCompile Include="GravityAttractor.cpp" />
     <ClCompile Include="GravityDependent.cpp" />
@@ -155,6 +156,7 @@
     <ClInclude Include="Cube.h" />
     <ClInclude Include="Cylinder.h" />
     <ClInclude Include="EmptyObject.h" />
+    <ClInclude Include="GameSystem.h" />
     <ClInclude Include="Graphic.h" />
     <ClInclude Include="GravityAttractor.h" />
     <ClInclude Include="GravityDependent.h" />

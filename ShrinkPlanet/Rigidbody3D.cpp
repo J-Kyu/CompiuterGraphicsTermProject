@@ -197,7 +197,10 @@ void Rigidbody3D::CheckCollision() {
 
 
 void Rigidbody3D::nearCallback(void* data, dGeomID o1, dGeomID o2) {
-	
+
+	 GameSystem::GetInstance()->CollideCheck(o1,o2);
+
+
 	const int N = 100;
 	dContact contact[N];
 	int n = dCollide(o1, o2, N, &(contact[0].geom), sizeof(dContact));
@@ -217,4 +220,9 @@ void Rigidbody3D::nearCallback(void* data, dGeomID o1, dGeomID o2) {
 			dJointAttach(c, body1, body2);
 		}
 	}
+}
+dGeomID Rigidbody3D::GetRigidGeomID() {
+
+	return geom;
+
 }

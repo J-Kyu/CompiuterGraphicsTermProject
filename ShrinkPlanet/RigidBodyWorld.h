@@ -33,6 +33,7 @@ protected:
 	virtual void ActivateComponent(mat4) override ;
 	virtual void ActivateComponent(int, mat4, mat4, mat4) override;
 	virtual dBodyID GetRigidBodyID() override;
+	virtual dGeomID GetRigidGeomID() override;
 	virtual void RotateRigidBody(float angle, vec3 vc) override;
 	virtual void SetRigidBodyTrans(mat4) override;
 };
