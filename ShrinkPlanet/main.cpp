@@ -40,6 +40,7 @@ void mouseWheel(int wheel, int dir, int x, int y);
 
 void keyboardSpecial(int key, int x, int y);
 
+void drawString(char* string);
 enum State { MENU, PLAYING, DONE };
 
 dWorldID RigidBodyWorld::ode_world;
@@ -155,6 +156,14 @@ void Render(int color_mode) {
 	endCredits->SetPerspectiveMatrix(mainCamera->GetProjection(aspect));
 	endCredits->SetViewMatrix(mainCamera->GetViewing());
 
+
+	glPushMatrix();
+	glLoadIdentity();
+	glRasterPos2f(0, 0); // 위치
+	sprintf_s(g_szMsg, "* Mouse Position"); // 텍스트
+	drawString(g_szMsg);
+	glPopMatrix();
+
 	switch (GameSystem::GetInstance()->GetState()) {
 	case GameSystem::MENU: {
 		menu->Activate(mainCamera->GetProjection(aspect), mainCamera->GetViewing(), color_mode);
@@ -195,7 +204,7 @@ void Render(int color_mode) {
 
 void display() {
 	Render();
-
+	glColor3f(1.0, 1.0, 1.0);
 	glFlush();
 	glutPostRedisplay();
 
@@ -284,4 +293,15 @@ void keyboardSpecial(int key, int x, int y) {
 	}
 
 
+}
+
+
+void drawString(char* string)
+{
+	int len, i;
+	len = (int)strlen(string);
+	for (i = 0; i < len; i++)
+	{
+		glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, string[i]);
+	}
 }
