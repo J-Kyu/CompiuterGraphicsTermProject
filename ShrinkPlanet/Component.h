@@ -51,6 +51,7 @@ public:
 	virtual void LoadObj(const char* filename, const char* basedir, attrib_t& attrib, real_t scale);
 	virtual vector<tinyobj::real_t> GetVertices();
 	virtual void SetKinematic(bool);
+	virtual void SetColor(float,float,float);
 
 	virtual void CheckCollision();
 

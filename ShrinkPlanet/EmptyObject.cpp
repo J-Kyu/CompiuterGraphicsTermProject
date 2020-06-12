@@ -94,18 +94,17 @@ void EmptyObject::RotatingYAxis() {
 
 	float theta = 0.001 * clock();
 
-	rotateT = rotate(rotateT, theta, vec3(0.0f,1.0f,0.0f));
+	rotateT = rotate(rotateT, theta, vec3(0.0f, 1.0f,0.0f));
 }
 
-void EmptyObject::RotatingYAxis(float angle) {
+void EmptyObject::RotatingYAxis(float dir) {
 
 	rotateT = mat4(1.0f);
 	GLfloat radian = M_PI / 180;
 	srand(clock());
-	//std::cout << glm::to_string(objectT) << std::endl;
 	float theta = 0.001 * clock();
 
-	rotateT = rotate(rotateT, theta*angle, vec3(0.0f, 1.0f, 0.0f));
+	rotateT = rotate(rotateT, theta, vec3(0.0f, dir, 0.0f));
 }
 
 

@@ -85,3 +85,9 @@ dGeomID Component::GetRigidGeomID() {
 	cout << "This object is not Rigidbody Component....Please use this function on TYPE Rigidbody" << endl;
 	return NULL;
 }
+
+
+void Component::SetColor(float, float, float) {
+
+	cout << "This object is not Graphic Component....Please use this function on TYPE Graphic" << endl;
+}

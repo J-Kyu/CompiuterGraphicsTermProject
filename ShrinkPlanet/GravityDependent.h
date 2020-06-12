@@ -53,8 +53,8 @@ public:
 		mainRD->SetKinematic(true);
 
 
-		Coordinate* coord = new Coordinate();
-		mainEntity->coordinate = coord;
+		//Coordinate* coord = new Coordinate();
+		//mainEntity->coordinate = coord;
 
 		mainEntity->Init();
 		wow = 0;

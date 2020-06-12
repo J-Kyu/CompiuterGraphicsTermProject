@@ -46,7 +46,7 @@ public:
 
 		Graphic* endGraphic = new Graphic();
 
-		endGraphic->LoadObj("models/end.obj", "models/", attrib, 1.0f);
+		endGraphic->LoadObj("models/exit.obj", "models/", attrib, 1.0f);
 		glActiveTexture(GL_TEXTURE0);
 		endGraphic->LoadTexture("models/", attrib.texcoords);
 		endGraphic->objectCode = 101;

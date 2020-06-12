@@ -10,7 +10,10 @@ using namespace std;
 
 class GameSystem{
 
+
 public:
+	enum State { MENU, PLAYING, DONE };
+
 	GameSystem() {
 		towerBlock = 0;
 		producedBlock = 0;
@@ -26,6 +29,8 @@ public:
 	void SetGroundGeom(dGeomID);
 	dGeomID GetGroundGeom();
 	void CollideCheck(dGeomID, dGeomID);
+	void SetState(GameSystem::State);
+	GameSystem::State GetState();
 
 private:
 	bool CheckDeadBlock(dGeomID);
@@ -35,6 +40,8 @@ private:
 	set<dGeomID> deadBlock;
 	int producedBlock;
 	int towerBlock;
+
+	State curState;
 
 
 };

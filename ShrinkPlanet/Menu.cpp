@@ -22,8 +22,8 @@ void Menu::Activate(mat4 p, mat4 v, int color_mode) {
 
 		
 
-		startObj->RotatingYAxis();
-		endObj->RotatingYAxis();
+		startObj->RotatingYAxis(-1.0f);
+		endObj->RotatingYAxis(-1.0f);
 
 		startObj->Activate(color_mode);
 		endObj->Activate(color_mode);

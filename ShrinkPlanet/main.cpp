@@ -30,8 +30,6 @@ using namespace glm;
 
 
 
-enum State{MENU,PLAYING,DONE};
-
 void init();
 void display();
 void Render(int color_mode = 0);
@@ -41,6 +39,8 @@ void mouseWheel(int wheel, int dir, int x, int y);
 
 
 void keyboardSpecial(int key, int x, int y);
+
+enum State { MENU, PLAYING, DONE };
 
 dWorldID RigidBodyWorld::ode_world;
 dSpaceID RigidBodyWorld::ode_space;
@@ -60,9 +60,10 @@ GravityDependent* characters;
 
 Camera* mainCamera;
 EmptyObject* bg = new EmptyObject();
+EmptyObject* endCredits = new EmptyObject();
 Menu* menu;
-State curState;
 
+char g_szMsg[100];
 
 void main(int argc, char** argv)
 {
@@ -92,7 +93,7 @@ void main(int argc, char** argv)
 
 void init() {
 
-	curState = MENU;
+	GameSystem::GetInstance()->SetState(GameSystem::MENU);
 
 	GravityDependent* character;
 
@@ -105,12 +106,16 @@ void init() {
 	glActiveTexture(GL_TEXTURE0);
 	bg->graphic->LoadTexture("models/", attrib.texcoords);
 	bg->graphic->objectCode = 0;
-
-	//Coordinate* coord = new Coordinate();
-	//bg->coordinate = coord;
-
 	bg->Init();
 
+	//endCredits
+	endCredits->graphic = new Graphic();
+	endCredits->graphic->LoadObj("models/done.obj", "models/", attrib, 5.0f);
+	glActiveTexture(GL_TEXTURE0);
+	endCredits->graphic->LoadTexture("models/", attrib.texcoords);
+	endCredits->graphic->objectCode = 102;
+	endCredits->Init();
+	endCredits->MoveObject(vec3(0, 0, 33));
 
 	//Menu
 
@@ -120,7 +125,7 @@ void init() {
 
 	satellite = new Satellite(earth->mainEntity,15.0f,0.0f,4.0f,0.0f);
 
-	characters = new GravityDependent(earth->mainEntity, "models/moon.obj", "models/", 1.0f, .5f, 5.0f, 0.0f, 11.0f, 0.0f);
+	characters = new GravityDependent(earth->mainEntity, "models/Crate.obj", "models/", 1.0f, .5f, 5.0f, 0.0f, 11.0f, 0.0f);
 
 	mainCamera = new Camera(satellite);
 
@@ -144,26 +149,34 @@ void Render(int color_mode) {
 	int height = glutGet(GLUT_WINDOW_HEIGHT);
 	double aspect = 1.0 * width / height;
 
-
 	bg->SetPerspectiveMatrix(mainCamera->GetProjection(aspect));
 	bg->SetViewMatrix(mainCamera->GetViewing());
-	bg->Activate(color_mode);
 
-	switch (curState) {
-	case MENU: {
+	endCredits->SetPerspectiveMatrix(mainCamera->GetProjection(aspect));
+	endCredits->SetViewMatrix(mainCamera->GetViewing());
+
+	switch (GameSystem::GetInstance()->GetState()) {
+	case GameSystem::MENU: {
 		menu->Activate(mainCamera->GetProjection(aspect), mainCamera->GetViewing(), color_mode);
 		break;
 	}
-	case PLAYING: {
-
+	case GameSystem::PLAYING: {
+		bg->Activate(color_mode);
 		earth->Activate(mainCamera->GetProjection(aspect), mainCamera->GetViewing(), color_mode);
 		satellite->Activate(mainCamera->GetProjection(aspect), mainCamera->GetViewing(), color_mode);
 		characters->Activate(mainCamera->GetProjection(aspect), mainCamera->GetViewing(), color_mode);
 
+		UI::GetInstance()->Activate(mainCamera->GetProjection(aspect), mainCamera->GetViewing(), color_mode, mainCamera->GetEye(), mainCamera->GetUp());
+
 
 		break;
 	}
-	case DONE:{
+	case GameSystem::DONE:{
+		//end credit
+		endCredits->RotatingYAxis(-1.0f);
+		endCredits->Activate(color_mode);
+		mainCamera->ResetEye();
+		UI::GetInstance()->Activate(mainCamera->GetProjection(aspect), mainCamera->GetViewing(), color_mode, mainCamera->GetEye(), mainCamera->GetUp());
 
 		break;
 	}
@@ -173,8 +186,6 @@ void Render(int color_mode) {
 	}
 
 	}
-
-	UI::GetInstance()->Activate(mainCamera->GetProjection(aspect), mainCamera->GetViewing(), color_mode,mainCamera->GetEye(), mainCamera->GetUp());
 
 	if (color_mode != 2) {
 		glutSwapBuffers();
@@ -206,11 +217,16 @@ void mouse(int button, int state, int x, int y) {
 		case 2: printf("The moon is clicked!\n"); break;
 		case 100: {
 			printf("Start\n"); 
-			curState = PLAYING;
+			GameSystem::GetInstance()->SetState(GameSystem::PLAYING);
 			break;
 		}		
 		case 101: {
-			printf("End\n"); 
+			printf("Exit\n"); 
+			exit(0);
+			break;
+		}
+		case 102: {
+			printf("To Mars\n");
 			exit(0);
 			break;
 		}
@@ -235,6 +251,9 @@ void keyboardSpecial(int key, int x, int y) {
 
 	switch (key) {
 	case GLUT_KEY_UP: {
+		if (GameSystem::GetInstance()->GetState() != GameSystem::PLAYING) {
+			break;
+		}
 		vec3 pos = satellite->GetPos();
 		characters->GenerateBlock(pos);
 		satellite->IncreaseRadius();
@@ -243,7 +262,7 @@ void keyboardSpecial(int key, int x, int y) {
 	case GLUT_KEY_DOWN: {
 
 		mainCamera->ResetEye();
-		curState = MENU;
+		GameSystem::GetInstance()->SetState(GameSystem::MENU);
 		break;
 	}
 	case GLUT_KEY_RIGHT: {

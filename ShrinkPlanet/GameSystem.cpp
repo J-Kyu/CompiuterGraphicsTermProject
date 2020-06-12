@@ -1,5 +1,6 @@
 #include "GameSystem.h"
 
+enum State { MENU, PLAYING, DONE };
 
 int GameSystem::GetTowerBlock() {
 	return towerBlock;
@@ -57,12 +58,20 @@ void GameSystem::CollideCheck(dGeomID geom1, dGeomID geom2) {
 			UI::GetInstance()->PopScoreBoard();
 		}
 	}
-
-	towerBlock = 10 - deadBlock.size() - producedBlock;
 }
 
 
 
 void GameSystem::BlockProduced() {
 	producedBlock++;
+}
+
+
+void GameSystem::SetState(GameSystem::State state) {
+
+	this->curState = state;
+}
+GameSystem::State GameSystem::GetState() {
+
+	return curState;
 }

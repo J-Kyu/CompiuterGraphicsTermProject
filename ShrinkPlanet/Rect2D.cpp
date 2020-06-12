@@ -1,7 +1,7 @@
 #include "Rect2D.h"
 
 void Rect2D::CalVertices() {
-	get_rect_2d(1,0.5);
+	get_rect_2d(width,height);
 }
 
 

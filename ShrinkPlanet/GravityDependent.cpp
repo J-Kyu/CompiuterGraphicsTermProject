@@ -241,10 +241,18 @@ void GravityDependent::PrintMatrix(mat4 m) {
 }
 
 void GravityDependent::GenerateBlock(vec3 pos){
+
+	//if (GameSystem::GetInstance()->Get) {
+	//	GameSystem::GetInstance()->SetState(GameSystem::DONE);
+	//}
+
 	if (readyBlock.size() < 1) {
+		GameSystem::GetInstance()->SetState(GameSystem::DONE);
 		cout << "Block has been sold out~!" << endl;
 		return;
 	}
+
+
 
 	UI::GetInstance()->GenerateScoreBoard();
 	GameSystem::GetInstance()->BlockProduced();

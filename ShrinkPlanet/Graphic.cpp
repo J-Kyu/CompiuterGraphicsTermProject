@@ -12,7 +12,7 @@ void Graphic::ActivateGraphic( mat4 p, mat4 v, mat4 m) {
 	SetShaderValue(program, "T", I);
 
 	glUniform1i(glGetUniformLocation(program, "ShadingMode"), 1);
-	//cout << "wow" << endl;
+
 
 	RenderGraphic();
 }
@@ -323,7 +323,7 @@ GLuint Graphic::generate_tex(const char* tex_file_path, GLint min_filter, GLint 
 	switch (num_of_components) {
 		case 3: {
 			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB,width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
-			break;
+			break; 
 		}
 
 		case 4: {

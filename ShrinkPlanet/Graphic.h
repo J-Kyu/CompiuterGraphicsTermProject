@@ -29,7 +29,7 @@ public:
 	bool is_obj_valid = false;
 	bool is_tex_valid = false;
 
-	void SetColor(GLfloat, GLfloat, GLfloat);
+	virtual void SetColor(GLfloat, GLfloat, GLfloat) override final;
 	virtual void InitGraphic();
 	virtual void ActivateComponent(mat4) override final;
 	virtual void ActivateComponent(int, mat4, mat4, mat4) override final;

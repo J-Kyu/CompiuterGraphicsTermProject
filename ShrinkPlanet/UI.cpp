@@ -39,7 +39,7 @@ void UI::Activate(mat4 p, mat4 v, int color_mode, vec3 cameraPos,vec3 cameraUp) 
 		t[2][1] = front.y;
 		t[2][2] = front.z;
 
-		t = translate(t, vec3(-4, (-4)+(0.5) * (i), -35));
+		t = translate(t, vec3(-4, (-4)+(0.6) * (i), -35));
 
 
 
