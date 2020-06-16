@@ -54,16 +54,15 @@ EmptyObject* GravityDependent::CopyBlock() {
 
 
 	Rigidbody3D* mainRD = new Rigidbody3D();
-	//mainRD->SphereRigidBodyInit(radius, mass, 0, 0, 0);
-	mainRD->BoxRigidBodyInit(vec3(0.5f, 0.5f, 0.5f),vec3(0,20,0), mass);
-	//mainRD->TrimeshRigidbodyInit(mainGraphic->GetVertices(),mass,0,0,0);
+	mainRD->BoxRigidBodyInit(vec3(2.0f, 2.0f, 2.0f),vec3(0,20,0), mass);
+
 	mainEntity->rigidbody = mainRD;
 
 	mainRD->SetKinematic(true);
 
 
-	Coordinate* coord = new Coordinate();
-	mainEntity->coordinate = coord;
+	//Coordinate* coord = new Coordinate();
+	//mainEntity->coordinate = coord;
 
 	mainEntity->Init();
 	wow = 0;

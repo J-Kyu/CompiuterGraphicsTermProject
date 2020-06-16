@@ -18,8 +18,6 @@ void Graphic::ActivateGraphic( mat4 p, mat4 v, mat4 m) {
 }
 
 void Graphic::CopyGraphic(Component* gp) {
-	//this->vertices.resize(gp->vertices.size());
-	//this->vertices.assign(gp->vertices.begin(), gp->vertices.end());
 
 	TurnOnObjValid();
 
@@ -39,7 +37,6 @@ void Graphic::CopyGraphic(Component* gp) {
 void Graphic::ActivateComponent(int colorMode,mat4 p, mat4 v, mat4 m) {
 	if (!is_obj_valid) {
 
-		//cout << "obj is not valid" << endl;
 		ActivateGraphic(p, v, m);
 		return;
 	}
@@ -81,7 +78,6 @@ void Graphic::ActivateComponent(int colorMode,mat4 p, mat4 v, mat4 m) {
 				glUniform1f(glGetUniformLocation(program, "n"), _materials[m_id].shininess);
 				glUniform3fv(glGetUniformLocation(program, "Ka"), 1, _materials[m_id].ambient);
 				glUniform3fv(glGetUniformLocation(program, "Kd"), 1, _materials[m_id].diffuse);
-				//glUniform3fv(glGetUniformLocation(program, "Ks"), 1, _materials[m_id].specular);
 				glUniform3f(glGetUniformLocation(program, "Ks"), 0.8f, 0.8f, 0.8f);
 
 				auto texitem = _texmap.find(_materials[m_id].diffuse_texname);

@@ -40,7 +40,6 @@ void mouseWheel(int wheel, int dir, int x, int y);
 
 void keyboardSpecial(int key, int x, int y);
 
-void drawString(char* string);
 enum State { MENU, PLAYING, DONE };
 
 dWorldID RigidBodyWorld::ode_world;
@@ -116,7 +115,7 @@ void init() {
 	endCredits->graphic->LoadTexture("models/", attrib.texcoords);
 	endCredits->graphic->objectCode = 102;
 	endCredits->Init();
-	endCredits->MoveObject(vec3(0, 0, 33));
+	endCredits->MoveObject(vec3(0, 0, 20));
 
 	//Menu
 
@@ -126,7 +125,7 @@ void init() {
 
 	satellite = new Satellite(earth->mainEntity,15.0f,0.0f,4.0f,0.0f);
 
-	characters = new GravityDependent(earth->mainEntity, "models/Crate.obj", "models/", 1.0f, .5f, 5.0f, 0.0f, 11.0f, 0.0f);
+	characters = new GravityDependent(earth->mainEntity, "models/Crate.obj", "models/", 2.0f, .5f, 5.0f, 0.0f, 11.0f, 0.0f);
 
 	mainCamera = new Camera(satellite);
 
@@ -157,13 +156,6 @@ void Render(int color_mode) {
 	endCredits->SetViewMatrix(mainCamera->GetViewing());
 
 
-	glPushMatrix();
-	glLoadIdentity();
-	glRasterPos2f(0, 0); // 위치
-	sprintf_s(g_szMsg, "* Mouse Position"); // 텍스트
-	drawString(g_szMsg);
-	glPopMatrix();
-
 	switch (GameSystem::GetInstance()->GetState()) {
 	case GameSystem::MENU: {
 		menu->Activate(mainCamera->GetProjection(aspect), mainCamera->GetViewing(), color_mode);
@@ -176,11 +168,12 @@ void Render(int color_mode) {
 		characters->Activate(mainCamera->GetProjection(aspect), mainCamera->GetViewing(), color_mode);
 
 		UI::GetInstance()->Activate(mainCamera->GetProjection(aspect), mainCamera->GetViewing(), color_mode, mainCamera->GetEye(), mainCamera->GetUp());
-
-
+		
 		break;
 	}
 	case GameSystem::DONE:{
+		mainCamera->ViewSatellite(false);
+		UI::GetInstance()->IsSatelliteOn(false);
 		//end credit
 		endCredits->RotatingYAxis(-1.0f);
 		endCredits->Activate(color_mode);
@@ -265,7 +258,7 @@ void keyboardSpecial(int key, int x, int y) {
 		}
 		vec3 pos = satellite->GetPos();
 		characters->GenerateBlock(pos);
-		satellite->IncreaseRadius();
+		satellite->IncreaseRadius(2.0f);
 		break;
 	}
 	case GLUT_KEY_DOWN: {
@@ -284,24 +277,15 @@ void keyboardSpecial(int key, int x, int y) {
 	}
 	case GLUT_KEY_HOME: {
 		mainCamera->ViewSatellite(true);
+		UI::GetInstance()->IsSatelliteOn(true);
 		break;
 	}
 	case GLUT_KEY_INSERT: {
 		mainCamera->ViewSatellite(false);
+		UI::GetInstance()->IsSatelliteOn(false);
 		break;
 	}
 	}
 
 
-}
-
-
-void drawString(char* string)
-{
-	int len, i;
-	len = (int)strlen(string);
-	for (i = 0; i < len; i++)
-	{
-		glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18, string[i]);
-	}
 }

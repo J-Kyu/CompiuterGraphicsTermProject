@@ -10,11 +10,11 @@ UI* UI::GetInstance() {
 }
 
 void UI::Activate(mat4 p, mat4 v, int color_mode, vec3 cameraPos,vec3 cameraUp) {
+	
 
 	vec3 newPos = vec3((0.9) * cameraPos.x, (0.9) * cameraPos.y, (0.9) * cameraPos.z);
 	vec3 front = normalize( vec3(newPos.x - cameraPos.x, newPos.y - cameraPos.y,  newPos.z - cameraPos.z ));
 	vec3 right = normalize(cross(front, cameraUp));
-
 
 
 	for (int i = 0; i < scoreBoards.size(); i++) {
@@ -22,7 +22,6 @@ void UI::Activate(mat4 p, mat4 v, int color_mode, vec3 cameraPos,vec3 cameraUp) 
 		scoreBoards[i]->SetViewMatrix(v);
 
 		mat4 t(1.0f);
-
 
 		t[0][0] = right.x;
 		t[0][1] = right.y;
@@ -39,15 +38,17 @@ void UI::Activate(mat4 p, mat4 v, int color_mode, vec3 cameraPos,vec3 cameraUp) 
 		t[2][1] = front.y;
 		t[2][2] = front.z;
 
-		t = translate(t, vec3(-4, (-4)+(0.6) * (i), -35));
-
-
+		if (isSatellite) {
+			t = translate(t, vec3(0, 0, 0));
+		}
+		else {
+			t = translate(t, vec3(-4, (-4) + (0.6) * (i), -25));
+		}
 
 		scoreBoards[i]->SetObjectT(t);
 		scoreBoards[i]->Activate(color_mode);
 
 	}
-
 }
 
 void UI::GenerateScoreBoard() {
@@ -60,6 +61,7 @@ void UI::GenerateScoreBoard() {
 	scoreBoard->Init();
 
 	scoreBoards.push_back(scoreBoard);
+	scoreBoard->graphic->SetColor(.3f, 0.5, 0.7);
 }
 
 void UI::PopScoreBoard() {
@@ -68,3 +70,6 @@ void UI::PopScoreBoard() {
 	}
 }
 
+void UI::IsSatelliteOn(bool is) {
+	isSatellite = is;
+}

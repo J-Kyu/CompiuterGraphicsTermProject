@@ -28,7 +28,7 @@ public:
 		//start
 		Graphic* startGraphic = new Graphic();
 
-		startGraphic->LoadObj("models/start.obj","models/", attrib, 1.0f);
+		startGraphic->LoadObj("models/start.obj","models/", attrib, 3.0f);
 		glActiveTexture(GL_TEXTURE0);
 		startGraphic->LoadTexture("models/", attrib.texcoords);
 		startGraphic->objectCode = 100;
@@ -46,7 +46,7 @@ public:
 
 		Graphic* endGraphic = new Graphic();
 
-		endGraphic->LoadObj("models/exit.obj", "models/", attrib, 1.0f);
+		endGraphic->LoadObj("models/exit.obj", "models/", attrib, 3.0f);
 		glActiveTexture(GL_TEXTURE0);
 		endGraphic->LoadTexture("models/", attrib.texcoords);
 		endGraphic->objectCode = 101;
@@ -57,8 +57,8 @@ public:
 		endObj->Init();
 
 
-		startObj->MoveObject(vec3(-3, 0, 35));
-		endObj->MoveObject(vec3(3, 0, 35));
+		startObj->MoveObject(vec3(-2, 0, 25));
+		endObj->MoveObject(vec3(2, 0, 25));
 	};
 
 	void Activate();

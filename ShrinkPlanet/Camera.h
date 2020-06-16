@@ -24,7 +24,7 @@ class Camera{
 
 		Camera(): eye(0,0,20),center(0,0,0),up(0,1,0),zoomFactor(1.0f), projectionMode(PERSPECTIVE),zNear(0.01f),zFar(100.0f),fovy((float)(M_PI/180.0*(30.0f))),xRight(1.2f){};
 
-		Camera(Satellite* satellite) : eye(0, 0, 40), center(0, 0, 0), up(0, 1, 0), zoomFactor(3.0f), projectionMode(PERSPECTIVE), zNear(0.01f), zFar(100.0f), fovy((float)(M_PI / 180.0 * (30.0f))), xRight(1.2f) {
+		Camera(Satellite* satellite) : eye(origEyePos.x, origEyePos.y, origEyePos.z), center(0, 0, 0), up(0, 1, 0), zoomFactor(3.0f), projectionMode(PERSPECTIVE), zNear(0.01f), zFar(100.0f), fovy((float)(M_PI / 180.0 * (30.0f))), xRight(1.2f) {
 			this->satellite = satellite;
 
 		};
@@ -46,7 +46,7 @@ class Camera{
 
 		Satellite* satellite;
 		bool isSatellite = false;
-
+		const vec3 origEyePos = vec3(0, 0, 30);
 
 		enum { ORTHOGRAPHIC, PERSPECTIVE };
 		vec3 eye;

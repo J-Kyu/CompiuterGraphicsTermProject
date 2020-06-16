@@ -6,9 +6,8 @@ mat4 Camera::GetViewing() {
 	if (isSatellite) {
 		mat4 m = satellite->GetObjectMatrix();
 
-
 		vec3 satellEye = vec3(m[3][0], m[3][1], m[3][2] );
-		vec3 satellUp = vec3(0,1,0);
+		vec3 satellUp = vec3(0,0,1);
 
 		return lookAt(satellEye, center, satellUp);
 	}
@@ -142,7 +141,7 @@ void Camera::ViewSatellite(bool is) {
 
 void Camera::ResetEye(){
 
-	this->eye = vec3(0, 0, 40);
+	this->eye = origEyePos;
 	this->center = vec3(0, 0, 0);
 	this->up = vec3(0, 1, 0);
 	this->zoomFactor = 3.0f;
@@ -153,9 +152,23 @@ void Camera::ResetEye(){
 }
 
 vec3 Camera::GetEye() {
+
+	if (isSatellite) {
+		mat4 m = satellite->GetObjectMatrix();
+
+		return vec3(m[3][0], m[3][1], m[3][2]);
+		
+	}
+	
 	return this->eye;
 }
 
 vec3 Camera::GetUp() {
+
+	if (isSatellite) {
+		mat4 m = satellite->GetObjectMatrix();
+
+		return normalize(vec3(m[1][0],m[1][1],m[1][2]));
+	}
 	return this->up;
 }

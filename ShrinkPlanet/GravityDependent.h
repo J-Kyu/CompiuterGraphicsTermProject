@@ -46,7 +46,7 @@ public:
 
 
 		Rigidbody3D* mainRD = new Rigidbody3D();
-		mainRD->BoxRigidBodyInit(vec3(1.0f, 1.0f, 1.0f),vec3(0,5,0), mass);
+		mainRD->BoxRigidBodyInit(vec3(2.0f, 2.0f, 2.0f),vec3(0,5,0), mass);
 		GameSystem::GetInstance()->SetInitBlock(mainRD->GetRigidGeomID());
 		mainEntity->rigidbody = mainRD;
 
