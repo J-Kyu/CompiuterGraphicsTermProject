@@ -59,12 +59,12 @@ public:
 		mainEntity->Init();
 		wow = 0;
 		elapsedTime = 0;
-		blockMaxNum = 10;
+
 
 		blocks.push_back(mainEntity);
 
 
-		for (int i = 0; i < blockMaxNum; i++) {
+		for (int i = 0; i < GameSystem::GetInstance()->maxBlock; i++) {
 			readyBlock.push(CopyBlock());
 		}
 
@@ -87,7 +87,7 @@ private:
 	float mass;
 	float scale;
 	float radius;
-	int blockMaxNum;
+
 
 	Component* defaultGraphic;
 	

@@ -120,25 +120,14 @@ void main()
 			break;
 		}
 		case 1:{
-			//default
-			gl_Position = V*M*T*vPosition;
-			fColor = vColor;
+			//phong shading
+			gouraud_shading();
 			break;
 		}
-	}
-
-
-	switch(2)
-	{
-	case 0:	// use vertex color data
-	case 3:	// use constant user color uColor
-		default_shading();
-		break;
-	case 1:
-		gouraud_shading();
-		break;
-	case 2:
-		phong_shading();
-		break;
+		case 2:{
+			//default
+			default_shading();
+			break;
+		}
 	}
 }

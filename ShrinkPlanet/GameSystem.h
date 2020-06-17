@@ -30,9 +30,14 @@ public:
 	dGeomID GetGroundGeom();
 	void CollideCheck(dGeomID, dGeomID);
 	void SetState(GameSystem::State);
+	set<dGeomID> GetDeadBlock();
 	GameSystem::State GetState();
 
+	const int maxBlock = 10;
+	int shadingMode = 0;
+
 private:
+
 	bool CheckDeadBlock(dGeomID);
 	static GameSystem* instance;
 	dGeomID initiBlock;
@@ -40,6 +45,7 @@ private:
 	set<dGeomID> deadBlock;
 	int producedBlock;
 	int towerBlock;
+
 
 	State curState;
 

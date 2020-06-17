@@ -50,18 +50,20 @@ void EmptyObject::Activate(int colorMode,mat4 p,mat4 v, mat4 parentT) {
 	Chil Object Activate
 	*/
 
+
 	mat4 rdMat(1.0f);
 	if (rigidbody != NULL) {
 		rdMat = rigidbody->GetRigidBodyTrans();
 	}
 
-	graphic-> ActivateComponent(colorMode, p, v, parentT * objectT * rotateT* rdMat);
-	//rigidbody-> ActivateComponent(colorMode, p, v, parentT * objectT * rotateT);
-	coordinate-> ActivateComponent(colorMode, p, v, parentT * objectT * rotateT* rdMat);
-
-	for (int i = 0; i < children.size(); i++) {
-		children[i]->Activate(colorMode,p,v,parentT * objectT * rotateT * objectT);
+	if (graphic != NULL) {
+		graphic->ActivateComponent(colorMode, p, v, parentT* rdMat * objectT * rotateT);
 	}
+
+	if (coordinate != NULL) {
+		coordinate->ActivateComponent(colorMode, p, v, parentT*rdMat * objectT * rotateT);
+	}
+
 }
 
 
@@ -97,14 +99,16 @@ void EmptyObject::RotatingYAxis() {
 	rotateT = rotate(rotateT, theta, vec3(0.0f, 1.0f,0.0f));
 }
 
-void EmptyObject::RotatingYAxis(float dir) {
+void EmptyObject::RotatingAxis(vec3 dir,float speed) {
+
+	speed = speed > 1 ? 1 : speed;
 
 	rotateT = mat4(1.0f);
 	GLfloat radian = M_PI / 180;
 	srand(clock());
-	float theta = 0.001 * clock();
+	float theta = 0.001 * clock()* speed;
 
-	rotateT = rotate(rotateT, theta, vec3(0.0f, dir, 0.0f));
+	rotateT = rotate(rotateT, theta, dir);
 }
 
 

@@ -23,6 +23,7 @@
 #include "GravityDependent.h"
 
 #include "Menu.h"
+#include "Meteor.h"
 
 
 using namespace std;
@@ -36,8 +37,8 @@ void Render(int color_mode = 0);
 void mouse(int button, int state, int x, int y);
 void motion(int x, int y);
 void mouseWheel(int wheel, int dir, int x, int y);
-
-
+void Option();
+void OptionFun(int a);
 void keyboardSpecial(int key, int x, int y);
 
 enum State { MENU, PLAYING, DONE };
@@ -60,9 +61,12 @@ GravityDependent* characters;
 
 Camera* mainCamera;
 EmptyObject* bg = new EmptyObject();
+EmptyObject* spaceStation = new EmptyObject();
 EmptyObject* endCredits = new EmptyObject();
 Menu* menu;
-
+Meteor* meteor_1;
+Meteor* meteor_2;
+Meteor* meteor_3;
 char g_szMsg[100];
 
 void main(int argc, char** argv)
@@ -92,6 +96,7 @@ void main(int argc, char** argv)
 }
 
 void init() {
+	Option();
 
 	GameSystem::GetInstance()->SetState(GameSystem::MENU);
 
@@ -100,22 +105,36 @@ void init() {
 	RigidBodyWorld::WorldInit();
 
 	//backgroudn
-	attrib_t attrib;
+	attrib_t attrib_1;
 	bg->graphic = new Graphic();
-	bg->graphic->LoadObj("models/universe.obj", "models/", attrib, 100.0f);
+	bg->graphic->LoadObj("models/universe.obj", "models/", attrib_1, 100.0f);
 	glActiveTexture(GL_TEXTURE0);
-	bg->graphic->LoadTexture("models/", attrib.texcoords);
+	bg->graphic->LoadTexture("models/", attrib_1.texcoords);
 	bg->graphic->objectCode = 0;
 	bg->Init();
 
 	//endCredits
+	attrib_t attrib_2;
 	endCredits->graphic = new Graphic();
-	endCredits->graphic->LoadObj("models/done.obj", "models/", attrib, 5.0f);
+	endCredits->graphic->LoadObj("models/done.obj", "models/", attrib_2, 5.0f);
 	glActiveTexture(GL_TEXTURE0);
-	endCredits->graphic->LoadTexture("models/", attrib.texcoords);
+	endCredits->graphic->LoadTexture("models/", attrib_2.texcoords);
 	endCredits->graphic->objectCode = 102;
 	endCredits->Init();
 	endCredits->MoveObject(vec3(0, 0, 20));
+
+	//spaceStation
+	attrib_t attrib_3;
+	spaceStation->graphic = new Graphic();
+	spaceStation->graphic->LoadObj("models/UFO_Empty.obj", "models/", attrib_3, 5.0f);
+	glActiveTexture(GL_TEXTURE0);
+	spaceStation->graphic->LoadTexture("models/", attrib_3.texcoords);
+	spaceStation->graphic->objectCode = 0;
+	spaceStation->Init();
+	spaceStation->MoveObject(vec3(0, 25, 0));
+
+
+
 
 	//Menu
 
@@ -128,6 +147,10 @@ void init() {
 	characters = new GravityDependent(earth->mainEntity, "models/Crate.obj", "models/", 2.0f, .5f, 5.0f, 0.0f, 11.0f, 0.0f);
 
 	mainCamera = new Camera(satellite);
+
+	meteor_1 =  new Meteor("models/rock1.obj", "models/",vec3(30,30,-15),vec3(-1,-1,0),4 ,4.0f);
+	meteor_2 = new Meteor("models/rock1.obj", "models/", vec3(-25, -30, 15),vec3(1,1,-1), 3, 2.0f);
+	meteor_3 = new Meteor("models/rock1.obj", "models/", vec3(-30, -10, 10), vec3(1,0,-1),1, 5.0f);
 
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
@@ -152,21 +175,36 @@ void Render(int color_mode) {
 	bg->SetPerspectiveMatrix(mainCamera->GetProjection(aspect));
 	bg->SetViewMatrix(mainCamera->GetViewing());
 
+
+	spaceStation->SetPerspectiveMatrix(mainCamera->GetProjection(aspect));
+	spaceStation->SetViewMatrix(mainCamera->GetViewing());
+
+
 	endCredits->SetPerspectiveMatrix(mainCamera->GetProjection(aspect));
 	endCredits->SetViewMatrix(mainCamera->GetViewing());
 
 
 	switch (GameSystem::GetInstance()->GetState()) {
 	case GameSystem::MENU: {
+		mainCamera->ViewSatellite(false);
+		UI::GetInstance()->IsSatelliteOn(false);
 		menu->Activate(mainCamera->GetProjection(aspect), mainCamera->GetViewing(), color_mode);
 		break;
 	}
-	case GameSystem::PLAYING: {
+	case GameSystem::PLAYING: {;
+		bg->RotatingAxis(vec3(0.0, -1.0f, 0.0f),0.1f);
 		bg->Activate(color_mode);
+
+		spaceStation->RotatingAxis(vec3(0.0, 1.0f, 0.0f));
+		spaceStation->Activate(color_mode);
+
+
 		earth->Activate(mainCamera->GetProjection(aspect), mainCamera->GetViewing(), color_mode);
 		satellite->Activate(mainCamera->GetProjection(aspect), mainCamera->GetViewing(), color_mode);
 		characters->Activate(mainCamera->GetProjection(aspect), mainCamera->GetViewing(), color_mode);
-
+		meteor_1->Activate(mainCamera->GetProjection(aspect), mainCamera->GetViewing(), color_mode);
+		meteor_2->Activate(mainCamera->GetProjection(aspect), mainCamera->GetViewing(), color_mode);
+		meteor_3->Activate(mainCamera->GetProjection(aspect), mainCamera->GetViewing(), color_mode);
 		UI::GetInstance()->Activate(mainCamera->GetProjection(aspect), mainCamera->GetViewing(), color_mode, mainCamera->GetEye(), mainCamera->GetUp());
 		
 		break;
@@ -175,7 +213,7 @@ void Render(int color_mode) {
 		mainCamera->ViewSatellite(false);
 		UI::GetInstance()->IsSatelliteOn(false);
 		//end credit
-		endCredits->RotatingYAxis(-1.0f);
+		endCredits->RotatingAxis(vec3(0.0, -1.0f, 0.0f));
 		endCredits->Activate(color_mode);
 		mainCamera->ResetEye();
 		UI::GetInstance()->Activate(mainCamera->GetProjection(aspect), mainCamera->GetViewing(), color_mode, mainCamera->GetEye(), mainCamera->GetUp());
@@ -268,7 +306,7 @@ void keyboardSpecial(int key, int x, int y) {
 		break;
 	}
 	case GLUT_KEY_RIGHT: {
-
+		//mainCamera->SwitchProjection();
 		break;
 	}
 	case GLUT_KEY_LEFT: {
@@ -288,4 +326,17 @@ void keyboardSpecial(int key, int x, int y) {
 	}
 
 
+}
+
+void Option() {
+	int menu_id = glutCreateMenu(OptionFun);
+	glutAddMenuEntry("Phong Shading", 0);
+	glutAddMenuEntry("Gouraud Shading", 1);
+	glutAttachMenu(GLUT_RIGHT_BUTTON);
+
+}
+
+void OptionFun(int a) {
+
+	GameSystem::GetInstance()->shadingMode = a;
 }

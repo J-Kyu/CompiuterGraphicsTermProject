@@ -39,6 +39,7 @@ class Camera{
 		void MouseWheel(int, int,int,int);
 		void ViewSatellite(bool);
 		void ResetEye();
+		void SwitchProjection();
 
 		int projectionMode;
 

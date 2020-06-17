@@ -79,11 +79,11 @@ void GravityDependent::CalculateRigidbody() {
 		* gravity
 		* quaternion
 	*/
-	if (elapsedTime > 5.0f) {
-		cout << "Passed 5 secs" << endl;
-		elapsedTime = 0.0f;
-		//dBodyDestroy(blocks[i]->rigidbody->GetRigidBodyID());
-	}
+	//if (elapsedTime > 5.0f) {
+	//	cout << "Passed 5 secs" << endl;
+	//	elapsedTime = 0.0f;
+	//	//dBodyDestroy(blocks[i]->rigidbody->GetRigidBodyID());
+	//}
 
 	for (int i = 0; i < blocks.size(); i++) {
 		elapsedTime += (float)RigidBodyWorld::dsElapsedTime();
@@ -241,11 +241,10 @@ void GravityDependent::PrintMatrix(mat4 m) {
 
 void GravityDependent::GenerateBlock(vec3 pos){
 
-	//if (GameSystem::GetInstance()->Get) {
-	//	GameSystem::GetInstance()->SetState(GameSystem::DONE);
-	//}
 
-	if (readyBlock.size() < 1) {
+	GameSystem* gm = GameSystem::GetInstance();
+
+	if (readyBlock.size() < 1 && gm->GetTowerBlock()+ gm->GetDeadBlock().size() >= gm->maxBlock) {
 		GameSystem::GetInstance()->SetState(GameSystem::DONE);
 		cout << "Block has been sold out~!" << endl;
 		return;
@@ -255,10 +254,11 @@ void GravityDependent::GenerateBlock(vec3 pos){
 
 	UI::GetInstance()->GenerateScoreBoard();
 	GameSystem::GetInstance()->BlockProduced();
+	GameSystem::GetInstance()->AddTowerBlock(1);
 	EmptyObject* tempObj = readyBlock.front();
 	readyBlock.pop();
 
-	//tempObj->rigidbody->SphereRigidBodyInit(radius, mass, 10, 10, 10);
+
 	dBodySetPosition(tempObj->rigidbody->GetRigidBodyID(), (0.7)*pos.x, (0.7) * pos.y, (0.7) * pos.z);
 	tempObj->rigidbody->SetKinematic(false);
 	blocks.push_back(tempObj);

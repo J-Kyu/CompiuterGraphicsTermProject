@@ -143,6 +143,7 @@
     <ClCompile Include="LoadShaders.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Menu.cpp" />
+    <ClCompile Include="Meteor.cpp" />
     <ClCompile Include="Rect2D.cpp" />
     <ClCompile Include="Rigidbody3D.cpp" />
     <ClCompile Include="RigidBodyWorld.cpp" />
@@ -165,6 +166,7 @@
     <ClInclude Include="loadobj.h" />
     <ClInclude Include="LoadShaders.h" />
     <ClInclude Include="Menu.h" />
+    <ClInclude Include="Meteor.h" />
     <ClInclude Include="Rect2D.h" />
     <ClInclude Include="Rigidbody3D.h" />
     <ClInclude Include="RigidBodyWorld.h" />

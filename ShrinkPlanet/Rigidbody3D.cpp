@@ -198,7 +198,7 @@ void Rigidbody3D::CheckCollision() {
 
 void Rigidbody3D::nearCallback(void* data, dGeomID o1, dGeomID o2) {
 
-	 GameSystem::GetInstance()->CollideCheck(o1,o2);
+	GameSystem::GetInstance()->CollideCheck(o1,o2);
 
 
 	const int N = 100;

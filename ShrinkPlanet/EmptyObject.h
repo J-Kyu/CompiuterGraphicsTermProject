@@ -27,7 +27,7 @@ public:
 	void AddChildren(EmptyObject* eo);
 	void MoveObject(vec3);
 	void RotateObject(float, vec3);
-	void RotatingYAxis(float);
+	void RotatingAxis(vec3,float speed = 1.0f);
 	void RotatingYAxis();
 	void SetPerspectiveMatrix(mat4);
 	void SetViewMatrix(mat4);

@@ -172,3 +172,13 @@ vec3 Camera::GetUp() {
 	}
 	return this->up;
 }
+
+void Camera::SwitchProjection() {
+	if (projectionMode == ORTHOGRAPHIC) {
+		projectionMode = PERSPECTIVE;
+		return;
+	}
+
+	projectionMode = ORTHOGRAPHIC;
+	return;
+}

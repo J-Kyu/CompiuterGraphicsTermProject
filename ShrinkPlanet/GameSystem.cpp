@@ -75,3 +75,8 @@ GameSystem::State GameSystem::GetState() {
 
 	return curState;
 }
+
+set<dGeomID> GameSystem::GetDeadBlock() {
+	return deadBlock;
+
+}

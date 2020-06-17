@@ -2,6 +2,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 #include "glm/gtx/string_cast.hpp"
+#include "GameSystem.h"
 
 void Graphic::ActivateGraphic( mat4 p, mat4 v, mat4 m) {
 	mat4 I(1.0f);
@@ -11,7 +12,7 @@ void Graphic::ActivateGraphic( mat4 p, mat4 v, mat4 m) {
 	SetShaderValue(program, "P", p);
 	SetShaderValue(program, "T", I);
 
-	glUniform1i(glGetUniformLocation(program, "ShadingMode"), 1);
+	glUniform1i(glGetUniformLocation(program, "ShadingMode"), 2);
 
 
 	RenderGraphic();
@@ -50,7 +51,7 @@ void Graphic::ActivateComponent(int colorMode,mat4 p, mat4 v, mat4 m) {
 
 
 	//cout << colorMode << endl;
-	glUniform1i(glGetUniformLocation(program, "ShadingMode"), 0);
+	glUniform1i(glGetUniformLocation(program, "ShadingMode"), GameSystem::GetInstance()->shadingMode);
 	glUniform1i(glGetUniformLocation(program, "ColorMode"), colorMode);
 	glUniform1i(glGetUniformLocation(program, "ObjectCode"), objectCode);
 

@@ -127,6 +127,11 @@ void main()
 			break;
 		}
 		case 1:{
+			//goraud
+			gouraud_shading();
+			break;
+		}
+		case 2:{
 			//default
 			FragColor = fColor;
 			break;
