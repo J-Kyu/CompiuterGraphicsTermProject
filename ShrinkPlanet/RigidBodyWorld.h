@@ -18,7 +18,7 @@ public:
 	static dWorldID ode_world; // simulation world
 	static dSpaceID ode_space; // collision space
 	static dJointGroupID ode_contactgroup; // a group of contact joints
-	//static dGeomID ode_plane_geom;
+	static dGeomID ode_plane_geom;
 
 
 	virtual void CheckCollision() override;
@@ -28,9 +28,12 @@ public:
 
 	static double dsElapsedTime();
 protected:
+	
+	void SetKinematic(bool) override;
 	virtual void ActivateComponent(mat4) override ;
 	virtual void ActivateComponent(int, mat4, mat4, mat4) override;
 	virtual dBodyID GetRigidBodyID() override;
+	virtual dGeomID GetRigidGeomID() override;
 	virtual void RotateRigidBody(float angle, vec3 vc) override;
 	virtual void SetRigidBodyTrans(mat4) override;
 };

@@ -15,23 +15,20 @@
 #include <cmath>
 #include "Rigidbody3D.h"
 #include "RigidBodyWorld.h"
-
-
-
+#include "Satellite.h"
+#include "GameSystem.h"
+#include "UI.h"
 
 #include "GravityAttractor.h"
 #include "GravityDependent.h"
 
+#include "Menu.h"
+#include "Meteor.h"
 
 
 using namespace std;
 using namespace glm;
 
-GravityAttractor* earth;
-
-vector< GravityDependent*> characters;
-
-Camera* mainCamera = new Camera();
 
 
 void init();
@@ -40,24 +37,43 @@ void Render(int color_mode = 0);
 void mouse(int button, int state, int x, int y);
 void motion(int x, int y);
 void mouseWheel(int wheel, int dir, int x, int y);
-
-
+void Option();
+void OptionFun(int a);
 void keyboardSpecial(int key, int x, int y);
+
+enum State { MENU, PLAYING, DONE };
 
 dWorldID RigidBodyWorld::ode_world;
 dSpaceID RigidBodyWorld::ode_space;
 dJointGroupID RigidBodyWorld::ode_contactgroup;
 bool RigidBodyWorld::pause = false;
 
+GameSystem* GameSystem::instance = nullptr;
+UI* UI::instance = nullptr;
+Menu* Menu::instance = nullptr;
+
+
 //dGeomID RigidBodyWorld::ode_plane_geom;
 
+
+GravityAttractor* earth;
+Satellite* satellite;
+GravityDependent* characters;
+
+Camera* mainCamera;
+EmptyObject* bg = new EmptyObject();
+EmptyObject* spaceStation = new EmptyObject();
+EmptyObject* endCredits = new EmptyObject();
+Meteor* meteor_1;
+Meteor* meteor_2;
+Meteor* meteor_3;
+char g_szMsg[100];
 
 void main(int argc, char** argv)
 {
 
 	//Display Setting
 	glutInit(&argc, argv);
-	//glutInitDisplayMode(GLUT_RGBA);
 	glutInitDisplayMode(GLUT_RGBA | GLUT_DOUBLE);
 	glutInitWindowSize(512, 512);
 	glutCreateWindow("VAO example");
@@ -80,27 +96,56 @@ void main(int argc, char** argv)
 }
 
 void init() {
+	Option();
+
+	GameSystem::GetInstance()->SetState(GameSystem::MENU);
+
 	GravityDependent* character;
 
 	RigidBodyWorld::WorldInit();
-	
-	
-	earth = new GravityAttractor("models/earth.obj", "models/", 5.0f,2.5f,20.0f);
+
+	//backgroudn
+	attrib_t attrib_1;
+	bg->graphic = new Graphic();
+	bg->graphic->LoadObj("models/universe.obj", "models/", attrib_1, 100.0f);
+	glActiveTexture(GL_TEXTURE0);
+	bg->graphic->LoadTexture("models/", attrib_1.texcoords);
+	bg->graphic->objectCode = 0;
+	bg->Init();
+
+	//endCredits
+	attrib_t attrib_2;
+	endCredits->graphic = new Graphic();
+	endCredits->graphic->LoadObj("models/done.obj", "models/", attrib_2, 5.0f);
+	glActiveTexture(GL_TEXTURE0);
+	endCredits->graphic->LoadTexture("models/", attrib_2.texcoords);
+	endCredits->graphic->objectCode = 102;
+	endCredits->Init();
+	endCredits->MoveObject(vec3(0, 0, 20));
+
+	//spaceStation
+	attrib_t attrib_3;
+	spaceStation->graphic = new Graphic();
+	spaceStation->graphic->LoadObj("models/UFO_Empty.obj", "models/", attrib_3, 5.0f);
+	glActiveTexture(GL_TEXTURE0);
+	spaceStation->graphic->LoadTexture("models/", attrib_3.texcoords);
+	spaceStation->graphic->objectCode = 0;
+	spaceStation->Init();
+	spaceStation->MoveObject(vec3(0, 25, 0));
+
 
 	
-	//characters.push_back(new GravityDependent(earth->mainEntity, "models/moon.obj", "models/", 0.2f, 0.1f, 1.0f, 0.0f, 5.0f, 0.0f));
-	//characters.push_back(new GravityDependent(earth->mainEntity, "models/moon.obj", "models/", 0.2f, 0.1f, 10.0f, 5.0f, 0.0f, 0.0f));
-	//characters.push_back(new GravityDependent(earth->mainEntity, "models/moon.obj", "models/", 0.2f, 0.1f, 10.0f, 0.0f, 0.0f, 5.0f));
+	earth = new GravityAttractor("models/earth.obj", "models/", 10.0f,5.0f,20.0f);
 
-	characters.push_back(new GravityDependent(earth->mainEntity, "models/moon.obj", "models/", 0.2f, 0.1f, 10.0f, 0.0f, -5.0f, 0.0f));
-	//characters.push_back(new GravityDependent(earth->mainEntity, "models/moon.obj", "models/", 0.2f, 0.1f, 10.0f, -5.0f, 0.0f, 0.0f));
-	//characters.push_back(new GravityDependent(earth->mainEntity, "models/moon.obj", "models/", 0.2f, 0.1f, 10.0f, 0.0f, 0.0f, -5.0f));
+	satellite = new Satellite(earth->mainEntity,15.0f,0.0f,4.0f,0.0f);
 
+	characters = new GravityDependent(earth->mainEntity, "models/Crate.obj", "models/", 2.0f, .5f, 5.0f, 0.0f, 11.0f, 0.0f);
 
+	mainCamera = new Camera(satellite);
 
-
-	//character = new GravityDependent(earth->mainEntity, "models/moon.obj", "models/", 0.2f,0.1f,10.0f);
-	//character->mainEntity->MoveObject(vec3(.0f, 3.0f, 0.0f));
+	meteor_1 =  new Meteor("models/rock1.obj", "models/",vec3(30,30,-15),vec3(-1,-1,0),4 ,4.0f);
+	meteor_2 = new Meteor("models/rock1.obj", "models/", vec3(-25, -30, 15),vec3(1,1,-1), 3, 2.0f);
+	meteor_3 = new Meteor("models/rock1.obj", "models/", vec3(-30, -10, 10), vec3(1,0,-1),1, 5.0f);
 
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
@@ -122,14 +167,60 @@ void Render(int color_mode) {
 	int height = glutGet(GLUT_WINDOW_HEIGHT);
 	double aspect = 1.0 * width / height;
 
+	bg->SetPerspectiveMatrix(mainCamera->GetProjection(aspect));
+	bg->SetViewMatrix(mainCamera->GetViewing());
 
 
-	earth->Activate(mainCamera->GetProjection(aspect), mainCamera->GetViewing(),color_mode);
+	spaceStation->SetPerspectiveMatrix(mainCamera->GetProjection(aspect));
+	spaceStation->SetViewMatrix(mainCamera->GetViewing());
 
-	for (int i = 0; i < characters.size(); i++) {
-		characters[i]->Activate(mainCamera->GetProjection(aspect), mainCamera->GetViewing(), color_mode);
+
+	endCredits->SetPerspectiveMatrix(mainCamera->GetProjection(aspect));
+	endCredits->SetViewMatrix(mainCamera->GetViewing());
+
+
+	switch (GameSystem::GetInstance()->GetState()) {
+	case GameSystem::MENU: {
+		mainCamera->ViewSatellite(false);
+		UI::GetInstance()->IsSatelliteOn(false);
+		Menu::GetInstance()->Activate(mainCamera->GetProjection(aspect), mainCamera->GetViewing(), color_mode);
+		break;
 	}
-	//character->Activate(mainCamera->GetProjection(aspect), mainCamera->GetViewing(), color_mode);
+	case GameSystem::PLAYING: {;
+		bg->RotatingAxis(vec3(0.0, -1.0f, 0.0f),0.1f);
+		bg->Activate(color_mode);
+
+		spaceStation->RotatingAxis(vec3(0.0, 1.0f, 0.0f));
+		spaceStation->Activate(color_mode);
+
+
+		earth->Activate(mainCamera->GetProjection(aspect), mainCamera->GetViewing(), color_mode);
+		satellite->Activate(mainCamera->GetProjection(aspect), mainCamera->GetViewing(), color_mode);
+		characters->Activate(mainCamera->GetProjection(aspect), mainCamera->GetViewing(), color_mode);
+		meteor_1->Activate(mainCamera->GetProjection(aspect), mainCamera->GetViewing(), color_mode);
+		meteor_2->Activate(mainCamera->GetProjection(aspect), mainCamera->GetViewing(), color_mode);
+		meteor_3->Activate(mainCamera->GetProjection(aspect), mainCamera->GetViewing(), color_mode);
+		UI::GetInstance()->Activate(mainCamera->GetProjection(aspect), mainCamera->GetViewing(), color_mode, mainCamera->GetEye(), mainCamera->GetUp());
+		
+		break;
+	}
+	case GameSystem::DONE:{
+		mainCamera->ViewSatellite(false);
+		UI::GetInstance()->IsSatelliteOn(false);
+		//end credit
+		endCredits->RotatingAxis(vec3(0.0, -1.0f, 0.0f));
+		endCredits->Activate(color_mode);
+		mainCamera->ResetEye();
+		UI::GetInstance()->Activate(mainCamera->GetProjection(aspect), mainCamera->GetViewing(), color_mode, mainCamera->GetEye(), mainCamera->GetUp());
+
+		break;
+	}
+	default: {
+
+		break;
+	}
+
+	}
 
 	if (color_mode != 2) {
 		glutSwapBuffers();
@@ -139,7 +230,7 @@ void Render(int color_mode) {
 
 void display() {
 	Render();
-
+	glColor3f(1.0, 1.0, 1.0);
 	glFlush();
 	glutPostRedisplay();
 
@@ -159,6 +250,21 @@ void mouse(int button, int state, int x, int y) {
 		{
 		case 1: printf("The earth is clicked!\n"); break;
 		case 2: printf("The moon is clicked!\n"); break;
+		case 100: {
+			printf("Start\n"); 
+			GameSystem::GetInstance()->SetState(GameSystem::PLAYING);
+			break;
+		}		
+		case 101: {
+			printf("Exit\n"); 
+			exit(0);
+			break;
+		}
+		case 102: {
+			printf("To Mars\n");
+			exit(0);
+			break;
+		}
 		}
 	}
 }
@@ -180,33 +286,52 @@ void keyboardSpecial(int key, int x, int y) {
 
 	switch (key) {
 	case GLUT_KEY_UP: {
-
-		//character->MoveDamObject(15);
+		if (GameSystem::GetInstance()->GetState() != GameSystem::PLAYING) {
+			break;
+		}
+		vec3 pos = satellite->GetPos();
+		characters->GenerateBlock(pos);
+		satellite->IncreaseRadius(2.0f);
 		break;
 	}
 	case GLUT_KEY_DOWN: {
-		//character->MoveDamObject(-15);
+
+		mainCamera->ResetEye();
+		GameSystem::GetInstance()->SetState(GameSystem::MENU);
 		break;
 	}
 	case GLUT_KEY_RIGHT: {
-		//character->mainEntity->rigidbody->RotateRigidBody(50, vec3(0.0f, -1.0f, 0.0f));
-		//character->mainEntity->RotateObject(10, vec3(0.0f, 1.0f, 0.0f));
+		//mainCamera->SwitchProjection();
 		break;
 	}
 	case GLUT_KEY_LEFT: {
-		//character->mainEntity->rigidbody->RotateRigidBody(50, vec3(0.0f, 1.0f, 0.0f));
-		//character->mainEntity->RotateObject(10, vec3(0.0f, -1.0f, 0.0f));
+
 		break;
 	}
 	case GLUT_KEY_HOME: {
-	
+		mainCamera->ViewSatellite(true);
+		UI::GetInstance()->IsSatelliteOn(true);
 		break;
 	}
 	case GLUT_KEY_INSERT: {
-
+		mainCamera->ViewSatellite(false);
+		UI::GetInstance()->IsSatelliteOn(false);
 		break;
 	}
 	}
 
 
+}
+
+void Option() {
+	int menu_id = glutCreateMenu(OptionFun);
+	glutAddMenuEntry("Phong Shading", 0);
+	glutAddMenuEntry("Gouraud Shading", 1);
+	glutAttachMenu(GLUT_RIGHT_BUTTON);
+
+}
+
+void OptionFun(int a) {
+
+	GameSystem::GetInstance()->shadingMode = a;
 }

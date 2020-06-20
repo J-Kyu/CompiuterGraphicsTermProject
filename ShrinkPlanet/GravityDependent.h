@@ -9,10 +9,13 @@
 #include <vector>
 #include "glm/gtx/string_cast.hpp"
 #include "Component.h"
-#include "Graphic.h"
+//#include "Graphic.h"
 #include <string>
 #include "Rigidbody3D.h"
 #include "Coordinate.h"
+#include <queue>
+#include "GameSystem.h"
+#include "UI.h"
 
 class GravityDependent{
 
@@ -23,47 +26,72 @@ public:
 	}
 	GravityDependent(EmptyObject* attr, const char* objPath, const char* path, float scale = 1.0f, float radius = 1.0f, float mass = 20.0f, float x = 0.0f, float y = 0.0f, float z = 0.0f) {
 		attractor = attr;
+		this->mass = mass;
+		this->scale = scale;
+		this->radius = radius;
+
+		EmptyObject* mainEntity;
 
 		attrib_t attrib;
 		mainEntity = new EmptyObject();
 
-		Component* mainGraphic = new Graphic();
+		defaultGraphic = new Graphic();
 
 
-		mainGraphic->LoadObj(objPath, path, attrib, scale);
+		defaultGraphic->LoadObj(objPath, path, attrib, scale);
 		glActiveTexture(GL_TEXTURE0);
-		mainGraphic->LoadTexture(path, attrib.texcoords);
-		mainGraphic->kyu = 1;
-		mainEntity->graphic = mainGraphic;
+		defaultGraphic->LoadTexture(path, attrib.texcoords);
+		defaultGraphic->objectCode = 1;
+		mainEntity->graphic = defaultGraphic;
 
 
 		Rigidbody3D* mainRD = new Rigidbody3D();
-		mainRD->SphereRigidBodyInit(radius, mass, x, y,z);
-		//mainRD->RotateRigidBody(90, vec3(0.0f, 1.0f, 0.0f));
-		//mainRD->ActivateComponent(mat4(1.0f));
+		mainRD->BoxRigidBodyInit(vec3(2.0f, 2.0f, 2.0f),vec3(0,5,0), mass);
+		GameSystem::GetInstance()->SetInitBlock(mainRD->GetRigidGeomID());
 		mainEntity->rigidbody = mainRD;
 
-		//mainRD->SetKinematic(true);
+		mainRD->SetKinematic(true);
 
 
-		Coordinate* coord = new Coordinate();
-		mainEntity->coordinate = coord;
+		//Coordinate* coord = new Coordinate();
+		//mainEntity->coordinate = coord;
 
 		mainEntity->Init();
 		wow = 0;
 		elapsedTime = 0;
+
+
+		blocks.push_back(mainEntity);
+
+
+		for (int i = 0; i < GameSystem::GetInstance()->maxBlock; i++) {
+			readyBlock.push(CopyBlock());
+		}
+
 	}
 
-	EmptyObject* mainEntity;
+
 	EmptyObject* attractor;
+
+	vector <EmptyObject*> blocks;
 	int wow;
 
 	void Activate();
 	void Activate(mat4 p, mat4 v, int color_mode = 0);
+	void GenerateBlock(vec3);
 
-	void MoveDamObject(int);
 private:
 
+	queue<EmptyObject*> readyBlock;
+
+	float mass;
+	float scale;
+	float radius;
+
+
+	Component* defaultGraphic;
+	
+	EmptyObject* CopyBlock();
 	float elapsedTime;
 	void CalculateRigidbody();
 	quat HemiltonProduct(quat v1, quat v2);

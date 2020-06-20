@@ -3,7 +3,17 @@
 
 
 mat4 Camera::GetViewing() {
-	return lookAt(eye, center, up);
+	if (isSatellite) {
+		mat4 m = satellite->GetObjectMatrix();
+
+		vec3 satellEye = vec3(m[3][0], m[3][1], m[3][2] );
+		vec3 satellUp = vec3(0,0,1);
+
+		return lookAt(satellEye, center, satellUp);
+	}
+	else {
+		return lookAt(eye, center, up);
+	}
 }
 
 mat4 Camera::GetProjection(GLfloat aspect) {
@@ -108,13 +118,67 @@ void Camera::MouseWheel(int wheel, int dir, int x, int y) {
 	}
 	else {
 		if (dir > 0) {
-			zoomFactor *= 0.95f;
+			if (zoomFactor > 0.5f){
+				zoomFactor *= 0.95f;
+
+			}
 		}
 		else {
-			zoomFactor *= 1.05f;
+			if (zoomFactor < 4.0f) {
+				zoomFactor *= 1.05f;
+			}
 		}
 	}
 
 	glutPostRedisplay();
 	
+}
+
+void Camera::ViewSatellite(bool is) {
+	isSatellite = is;
+}
+
+
+void Camera::ResetEye(){
+
+	this->eye = origEyePos;
+	this->center = vec3(0, 0, 0);
+	this->up = vec3(0, 1, 0);
+	this->zoomFactor = 3.0f;
+	this->zNear = 0.01f;
+	this->zFar = 100.0f;
+	this->fovy = ((float)(M_PI / 180.0 * (30.0f)));
+	this->xRight = (1.2f);
+}
+
+vec3 Camera::GetEye() {
+
+	if (isSatellite) {
+		mat4 m = satellite->GetObjectMatrix();
+
+		return vec3(m[3][0], m[3][1], m[3][2]);
+		
+	}
+	
+	return this->eye;
+}
+
+vec3 Camera::GetUp() {
+
+	if (isSatellite) {
+		mat4 m = satellite->GetObjectMatrix();
+
+		return normalize(vec3(m[1][0],m[1][1],m[1][2]));
+	}
+	return this->up;
+}
+
+void Camera::SwitchProjection() {
+	if (projectionMode == ORTHOGRAPHIC) {
+		projectionMode = PERSPECTIVE;
+		return;
+	}
+
+	projectionMode = ORTHOGRAPHIC;
+	return;
 }

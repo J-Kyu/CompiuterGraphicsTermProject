@@ -12,6 +12,7 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 #include "LoadShaders.h"
+#include "Satellite.h"
 
 using namespace glm;
 using namespace std;
@@ -21,16 +22,32 @@ class Camera{
 	public:
 	
 
-		Camera(): eye(0,0,8),center(0,0,0),up(0,1,0),zoomFactor(1.0f), projectionMode(PERSPECTIVE),zNear(0.01f),zFar(100.0f),fovy((float)(M_PI/180.0*(30.0f))),xRight(1.2f){};
+		Camera(): eye(0,0,20),center(0,0,0),up(0,1,0),zoomFactor(1.0f), projectionMode(PERSPECTIVE),zNear(0.01f),zFar(100.0f),fovy((float)(M_PI/180.0*(30.0f))),xRight(1.2f){};
+
+		Camera(Satellite* satellite) : eye(origEyePos.x, origEyePos.y, origEyePos.z), center(0, 0, 0), up(0, 1, 0), zoomFactor(3.0f), projectionMode(PERSPECTIVE), zNear(0.01f), zFar(100.0f), fovy((float)(M_PI / 180.0 * (30.0f))), xRight(1.2f) {
+			this->satellite = satellite;
+
+		};
 		
 		mat4 GetViewing();
 		mat4 GetProjection(GLfloat);
+		vec3 GetEye();
+		vec3 GetUp();
+
 		void Motion(int, int);
 		void Mouse(int button, int state, int x, int y);
 		void MouseWheel(int, int,int,int);
+		void ViewSatellite(bool);
+		void ResetEye();
+		void SwitchProjection();
+
 		int projectionMode;
 
 	private:
+
+		Satellite* satellite;
+		bool isSatellite = false;
+		const vec3 origEyePos = vec3(0, 0, 30);
 
 		enum { ORTHOGRAPHIC, PERSPECTIVE };
 		vec3 eye;
@@ -44,7 +61,7 @@ class Camera{
 
 		int button_pressed[3] = { GLUT_UP,GLUT_UP,GLUT_UP };
 		int mouse_pos[2] = { 0,0 };
-
+		
 
 		mat4 Parallel(double r, double aspect, double n, double f);
 

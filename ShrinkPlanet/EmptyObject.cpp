@@ -3,9 +3,15 @@
 
 void EmptyObject::Init() {
 
-	graphic->InitComponent();
-	rigidbody->InitComponent();
-	coordinate->InitComponent();
+	if (graphic != NULL) {
+		graphic->InitComponent();
+	}
+	if (rigidbody != NULL) {
+		rigidbody->InitComponent();
+	}
+	if (coordinate != NULL) {
+		coordinate->InitComponent();
+	}
 
 	for (int i = 0; i < children.size(); i++) {
 		children[i]->Init();
@@ -17,17 +23,23 @@ void EmptyObject::Activate(int colorMode){
 	Top paretn Activate
 	*/
 
+	mat4 rdMat(1.0f);
+	if (rigidbody != NULL) {
+		rdMat = rigidbody->GetRigidBodyTrans();
+	}
 
-//	cout << "obejct T: \t" << to_string(objectT) << endl;
-	graphic->ActivateComponent(colorMode, perspectiveT, viewT,  rigidbody->GetRigidBodyTrans()* objectT * rotateT);
-	//rigidbody->ActivateComponent(colorMode, perspectiveT, viewT, objectT * rotateT);
-	coordinate->ActivateComponent(colorMode, perspectiveT, viewT, rigidbody->GetRigidBodyTrans() * objectT* rotateT);
+	if (graphic != NULL) {
+		graphic->ActivateComponent(colorMode, perspectiveT, viewT, rdMat * objectT * rotateT);
+	}
+
+	if (coordinate != NULL) {
+		coordinate->ActivateComponent(colorMode, perspectiveT, viewT, rdMat * objectT * rotateT);
+	}
 
 	for (int i = children.size() - 1; i >= 0; i--) {
 		children[i]->Activate(colorMode, perspectiveT, viewT, objectT * rotateT);
 	}
 
-	//objectT = mat4(1.0f);
 
 }
 
@@ -38,13 +50,20 @@ void EmptyObject::Activate(int colorMode,mat4 p,mat4 v, mat4 parentT) {
 	Chil Object Activate
 	*/
 
-	graphic-> ActivateComponent(colorMode, p, v, parentT * objectT * rotateT* rigidbody->GetRigidBodyTrans());
-	//rigidbody-> ActivateComponent(colorMode, p, v, parentT * objectT * rotateT);
-	coordinate-> ActivateComponent(colorMode, p, v, parentT * objectT * rotateT* rigidbody->GetRigidBodyTrans());
 
-	for (int i = 0; i < children.size(); i++) {
-		children[i]->Activate(colorMode,p,v,parentT * objectT * rotateT * objectT);
+	mat4 rdMat(1.0f);
+	if (rigidbody != NULL) {
+		rdMat = rigidbody->GetRigidBodyTrans();
 	}
+
+	if (graphic != NULL) {
+		graphic->ActivateComponent(colorMode, p, v, parentT* rdMat * objectT * rotateT);
+	}
+
+	if (coordinate != NULL) {
+		coordinate->ActivateComponent(colorMode, p, v, parentT*rdMat * objectT * rotateT);
+	}
+
 }
 
 
@@ -77,18 +96,19 @@ void EmptyObject::RotatingYAxis() {
 
 	float theta = 0.001 * clock();
 
-	rotateT = rotate(rotateT, theta, vec3(0.0f,1.0f,0.0f));
+	rotateT = rotate(rotateT, theta, vec3(0.0f, 1.0f,0.0f));
 }
 
-void EmptyObject::RotatingYAxis(float angle) {
+void EmptyObject::RotatingAxis(vec3 dir,float speed) {
+
+	speed = speed > 1 ? 1 : speed;
 
 	rotateT = mat4(1.0f);
 	GLfloat radian = M_PI / 180;
 	srand(clock());
-	//std::cout << glm::to_string(objectT) << std::endl;
-	float theta = 0.001 * clock();
+	float theta = 0.001 * clock()* speed;
 
-	rotateT = rotate(rotateT, theta*angle, vec3(0.0f, 1.0f, 0.0f));
+	rotateT = rotate(rotateT, theta, dir);
 }
 
 

@@ -7,7 +7,10 @@
 //using namespace glm;
 
 void GravityDependent::Activate() {
-	mainEntity->Activate();
+
+	for (int i = 0; i < blocks.size(); i++) {
+		blocks[i]->Activate();
+	}
 }
 
 void GravityDependent::Activate(mat4 p, mat4 v, int color_mode) {
@@ -17,112 +20,145 @@ void GravityDependent::Activate(mat4 p, mat4 v, int color_mode) {
 		exit(0);
 	}
 
-	mainEntity->rigidbody->CheckCollision();
+
 	CalculateRigidbody();
 
-	mainEntity->SetPerspectiveMatrix(p);
-	mainEntity->SetViewMatrix(v);
-	mainEntity->Activate(color_mode);
-	//apply rigid body topT*rigidbodyT
+	//blocks[0]->rigidbody->CheckCollision();
+
+	for (int i = 0; i < blocks.size(); i++) {
+		blocks[i]->rigidbody->CheckCollision();
+		blocks[i]->SetPerspectiveMatrix(p);
+		blocks[i]->SetViewMatrix(v);
+		blocks[i]->Activate(color_mode);
+	}
+
+
+
+}
+
+EmptyObject* GravityDependent::CopyBlock() {
+
+	EmptyObject* mainEntity;
+
+	attrib_t attrib;
+	mainEntity = new EmptyObject();
+
+	Component* mainGraphic = new Graphic();
+
+
+	mainGraphic->CopyGraphic(defaultGraphic);
+	glActiveTexture(GL_TEXTURE0);
+
+	mainGraphic->objectCode = 1;
+	mainEntity->graphic = mainGraphic;
+
+
+	Rigidbody3D* mainRD = new Rigidbody3D();
+	mainRD->BoxRigidBodyInit(vec3(2.0f, 2.0f, 2.0f),vec3(0,20,0), mass);
+
+	mainEntity->rigidbody = mainRD;
+
+	mainRD->SetKinematic(true);
+
+
+	//Coordinate* coord = new Coordinate();
+	//mainEntity->coordinate = coord;
+
+	mainEntity->Init();
+	wow = 0;
+	elapsedTime = 0;
+
+	return mainEntity;
+
+
 }
 
 void GravityDependent::CalculateRigidbody() {
-
-
-
-	elapsedTime += (float)RigidBodyWorld::dsElapsedTime();
-
-	if (elapsedTime > 5.0f) {
-		cout << "Passed 5 secs" << endl;
-		elapsedTime = 0.0f;
-		//dBodyDestroy(mainEntity->rigidbody->GetRigidBodyID());
-	}
-
-	//move position
-
-	const mat4 mainT = mainEntity->GetObjectT();
-	const mat4 attT = attractor->GetObjectT();
-	const mat4 rotateT = mainEntity->GetRotateT();
-
-	const dReal* mainRigidbodyPos = dBodyGetPosition(mainEntity->rigidbody->GetRigidBodyID());
-
-
-
-	const mat4 rigidbodyT = mainEntity->rigidbody->GetRigidBodyTrans();
-
-
-	const mat4 bodyT = rigidbodyT*(mainT* rotateT);
-	const dReal* newMainRigidbodyPos = dBodyGetPosition(mainEntity->rigidbody->GetRigidBodyID());
-	
-	//vec3 forward = (5)*(float)RigidBodyWorld::dsElapsedTime() * normalize(vec3(bodyT[2][0],bodyT[2][1], bodyT[2][2]));
-	//vec3 right = (float)RigidBodyWorld::dsElapsedTime() * normalize(vec3(bodyT[0][0], bodyT[0][1], bodyT[0][2]));
-	//dBodySetPosition(mainEntity->rigidbody->GetRigidBodyID(), mainRigidbodyPos[0] + forward.x, mainRigidbodyPos[1] + forward.y, mainRigidbodyPos[2] + forward.z);	
-	//dBodySetPosition(mainEntity->rigidbody->GetRigidBodyID(), mainRigidbodyPos[0] + right.x, mainRigidbodyPos[1] + right.y, mainRigidbodyPos[2] + right.z);
-
-	//quaternion
-	const dReal* attRigidbodyPos = dBodyGetPosition(attractor->rigidbody->GetRigidBodyID());
-
-	vec3 gravityUp = vec3(newMainRigidbodyPos[0] - attRigidbodyPos[0], newMainRigidbodyPos[1] - attRigidbodyPos[1], newMainRigidbodyPos[2] - attRigidbodyPos[2]);
-
-	gravityUp = normalize(gravityUp);
-
-	vec3 localUp = vec3(bodyT[1][0], bodyT[1][1], bodyT[1][2]);
-	localUp = normalize(localUp);
-
-
-
-
-	vec3 axis = normalize(cross(localUp, gravityUp));
-
-
-	float phi = angle(localUp, gravityUp);
-
-
-	float rad = phi / 2;
-	axis *= sin(rad);
-
-	//quat[i]ÀÇ ¼øÀº w,x,y,zÀÌ´Ù
-
-	quat targetQ;
-	targetQ.w = cos(rad);
-	targetQ.x = axis.x;
-	targetQ.y = axis.y;
-	targetQ.z = axis.z;
-
-	for (int i = 0; i < 4; i++) {
-		if (isnan(targetQ[i])) {
-			targetQ[i] = 0;
-		}
-	}
-
 	/*
-	quaternionÀ» Àû¿ëÇÏÁö ¾ÊÀ¸¸é Àß µÈ´Ù.....
-	±Ùµ¥ ´Ù¸¥ °ÍµéÀº ¾î¶±ÇÏÁö....?
-	quaternion ÀÌ ¹®Á¦ÀÎ °Í°°´Ù.
-	
-	
+		Physic Engine:
+		* gravity
+		* quaternion
 	*/
+	//if (elapsedTime > 5.0f) {
+	//	cout << "Passed 5 secs" << endl;
+	//	elapsedTime = 0.0f;
+	//	//dBodyDestroy(blocks[i]->rigidbody->GetRigidBodyID());
+	//}
+
+	for (int i = 0; i < blocks.size(); i++) {
+		elapsedTime += (float)RigidBodyWorld::dsElapsedTime();
+
+
+		//move position
+
+		const mat4 mainT = blocks[i]->GetObjectT();
+		const mat4 attT = attractor->GetObjectT();
+		const mat4 rotateT = blocks[i]->GetRotateT();
+
+		const dReal* mainRigidbodyPos = dBodyGetPosition(blocks[i]->rigidbody->GetRigidBodyID());
 
 
 
-	//quat´Â (x,y,z,w) ¼øÀÌ´Ù........qQuaternion°ú ¼ø¼­°¡ ´Ù¸£´Ù´Â Á¡À» ÀÌÇØÇÏÀÚ!!
-	quat qr = quat_cast(mainT);
-
-	//quat (x,y,z,w)
-	quat calculatedQ = HemiltonProduct(targetQ, qr);
-
-	mat4 calculatedQT = QuatToMat4(calculatedQ);
-
-	mainEntity->SetObjectT(calculatedQT);
-	//cout << "----------------------------------??-----------------" << endl;
-	//PrintMatrix(rigidbodyT*calculatedQT);
-	//PrintMatrix();
-	//cout << "----------------------------------??-----------------" << endl;
+		const mat4 rigidbodyT = blocks[i]->rigidbody->GetRigidBodyTrans();
 
 
-	//gravity apply
-	double gravityCoe = -1;
-	dBodyAddForce(mainEntity->rigidbody->GetRigidBodyID(), (dReal)gravityUp.x * gravityCoe, (dReal)gravityUp.y * gravityCoe, (dReal)gravityUp.z * gravityCoe);
+		const mat4 bodyT = rigidbodyT * (mainT * rotateT);
+		const dReal* newMainRigidbodyPos = dBodyGetPosition(blocks[i]->rigidbody->GetRigidBodyID());
+
+		//quaternion
+		const dReal* attRigidbodyPos = dBodyGetPosition(attractor->rigidbody->GetRigidBodyID());
+
+		vec3 gravityUp = vec3(newMainRigidbodyPos[0] - attRigidbodyPos[0], newMainRigidbodyPos[1] - attRigidbodyPos[1], newMainRigidbodyPos[2] - attRigidbodyPos[2]);
+
+		gravityUp = normalize(gravityUp);
+
+		vec3 localUp = vec3(bodyT[1][0], bodyT[1][1], bodyT[1][2]);
+		localUp = normalize(localUp);
+
+
+
+
+		vec3 axis = normalize(cross(localUp, gravityUp));
+
+
+		float phi = angle(localUp, gravityUp);
+
+
+		float rad = phi / 2;
+		axis *= sin(rad);
+
+		//quat[i]ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ w,x,y,zï¿½Ì´ï¿½
+
+		quat targetQ;
+		targetQ.w = cos(rad);
+		targetQ.x = axis.x;
+		targetQ.y = axis.y;
+		targetQ.z = axis.z;
+
+		for (int i = 0; i < 4; i++) {
+			if (isnan(targetQ[i])) {
+				targetQ[i] = 0;
+			}
+		}
+
+
+		//quatï¿½ï¿½ (x,y,z,w) ï¿½ï¿½ï¿½Ì´ï¿½........qQuaternionï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ù¸ï¿½ï¿½Ù´ï¿½ ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½!!
+		quat qr = quat_cast(mainT);
+
+		//quat (x,y,z,w)
+		quat calculatedQ = HemiltonProduct(targetQ, qr);
+
+		mat4 calculatedQT = QuatToMat4(calculatedQ);
+
+		//blocks[i]->SetObjectT(calculatedQT);
+
+
+		//gravity apply
+		double gravityCoe = -10;
+		dBodyAddForce(blocks[i]->rigidbody->GetRigidBodyID(), (dReal)gravityUp.x * gravityCoe, (dReal)gravityUp.y * gravityCoe, (dReal)gravityUp.z * gravityCoe);
+	}
+
+	
 }
 
 
@@ -187,23 +223,6 @@ mat4 GravityDependent::QuatToMat4(quat q) {
 }
 
 
-void GravityDependent::MoveDamObject(int a) {
-
-	const mat4 rigidbodyT = mainEntity->rigidbody->GetRigidBodyTrans();
-	const mat4 mainT = mainEntity->GetObjectT();
-	const dReal* mainRigidbodyPos = dBodyGetPosition(mainEntity->rigidbody->GetRigidBodyID());
-	const mat4 rotateT = mainEntity->GetRotateT();
-
-
-	const mat4 bodyT = rigidbodyT * (mainT * rotateT);
-	vec3 forward =(a) *(float)RigidBodyWorld::dsElapsedTime() * normalize(vec3(bodyT[2][0], bodyT[2][1], bodyT[2][2]));
-	dBodySetPosition(mainEntity->rigidbody->GetRigidBodyID(), mainRigidbodyPos[0] + forward.x, mainRigidbodyPos[1] + forward.y, mainRigidbodyPos[2] + forward.z);
-
-
-	
-
-}
-
 void GravityDependent::PrintMatrix(mat4 m) {
 
 	cout << "---------------matrix------- " << endl;
@@ -218,4 +237,29 @@ void GravityDependent::PrintMatrix(mat4 m) {
 
 	cout << "\n" << endl;
 
+}
+
+void GravityDependent::GenerateBlock(vec3 pos){
+
+
+	GameSystem* gm = GameSystem::GetInstance();
+
+	if (readyBlock.size() < 1 && gm->GetTowerBlock()+ gm->GetDeadBlock().size() >= gm->maxBlock) {
+		GameSystem::GetInstance()->SetState(GameSystem::DONE);
+		cout << "Block has been sold out~!" << endl;
+		return;
+	}
+
+
+
+	UI::GetInstance()->GenerateScoreBoard();
+	GameSystem::GetInstance()->BlockProduced();
+	GameSystem::GetInstance()->AddTowerBlock(1);
+	EmptyObject* tempObj = readyBlock.front();
+	readyBlock.pop();
+
+
+	dBodySetPosition(tempObj->rigidbody->GetRigidBodyID(), (0.7)*pos.x, (0.7) * pos.y, (0.7) * pos.z);
+	tempObj->rigidbody->SetKinematic(false);
+	blocks.push_back(tempObj);
 }

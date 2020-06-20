@@ -135,16 +135,22 @@
     <ClCompile Include="Cube.cpp" />
     <ClCompile Include="Cylinder.cpp" />
     <ClCompile Include="EmptyObject.cpp" />
+    <ClCompile Include="GameSystem.cpp" />
     <ClCompile Include="Graphic.cpp" />
     <ClCompile Include="GravityAttractor.cpp" />
     <ClCompile Include="GravityDependent.cpp" />
     <ClCompile Include="loadobj.cpp" />
     <ClCompile Include="LoadShaders.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Menu.cpp" />
+    <ClCompile Include="Meteor.cpp" />
+    <ClCompile Include="Rect2D.cpp" />
     <ClCompile Include="Rigidbody3D.cpp" />
     <ClCompile Include="RigidBodyWorld.cpp" />
+    <ClCompile Include="Satellite.cpp" />
     <ClCompile Include="Sphere.cpp" />
     <ClCompile Include="tiny_obj_loader.cc" />
+    <ClCompile Include="UI.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
@@ -153,16 +159,22 @@
     <ClInclude Include="Cube.h" />
     <ClInclude Include="Cylinder.h" />
     <ClInclude Include="EmptyObject.h" />
+    <ClInclude Include="GameSystem.h" />
     <ClInclude Include="Graphic.h" />
     <ClInclude Include="GravityAttractor.h" />
     <ClInclude Include="GravityDependent.h" />
     <ClInclude Include="loadobj.h" />
     <ClInclude Include="LoadShaders.h" />
+    <ClInclude Include="Menu.h" />
+    <ClInclude Include="Meteor.h" />
+    <ClInclude Include="Rect2D.h" />
     <ClInclude Include="Rigidbody3D.h" />
     <ClInclude Include="RigidBodyWorld.h" />
+    <ClInclude Include="Satellite.h" />
     <ClInclude Include="Sphere.h" />
     <ClInclude Include="stb_image.h" />
     <ClInclude Include="tiny_obj_loader.h" />
+    <ClInclude Include="UI.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="earthMoonPhong.png" />

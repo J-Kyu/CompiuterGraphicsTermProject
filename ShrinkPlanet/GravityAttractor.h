@@ -11,6 +11,7 @@
 #include <string>
 #include "Rigidbody3D.h"
 #include "Coordinate.h"
+#include "GameSystem.h"
 
 using namespace std;
 using namespace glm;
@@ -31,7 +32,7 @@ public:
 		mainGraphic->LoadObj(objPath, path, attrib, scale);
 		glActiveTexture(GL_TEXTURE0);
 		mainGraphic->LoadTexture(path, attrib.texcoords);
-		mainGraphic->kyu = 1;
+		mainGraphic->objectCode = 1;
 
 		mainEntity->graphic = mainGraphic;
 
@@ -39,6 +40,7 @@ public:
 		Rigidbody3D* mainRD = new Rigidbody3D();
 		mainRD->SphereRigidBodyInit(radius, mass, x, y, z);
 		mainRD->SetKinematic(true);
+		GameSystem::GetInstance()->SetGroundGeom(mainRD->GetRigidGeomID());
 		//mainRD->RotateRigidbody(90, vec3(0.0f, 1.0f, 0.0f));
 		mainEntity->rigidbody = mainRD;
 

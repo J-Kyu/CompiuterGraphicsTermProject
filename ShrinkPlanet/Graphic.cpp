@@ -2,6 +2,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 #include "glm/gtx/string_cast.hpp"
+#include "GameSystem.h"
 
 void Graphic::ActivateGraphic( mat4 p, mat4 v, mat4 m) {
 	mat4 I(1.0f);
@@ -11,16 +12,32 @@ void Graphic::ActivateGraphic( mat4 p, mat4 v, mat4 m) {
 	SetShaderValue(program, "P", p);
 	SetShaderValue(program, "T", I);
 
-	glUniform1i(glGetUniformLocation(program, "ShadingMode"), 1);
+	glUniform1i(glGetUniformLocation(program, "ShadingMode"), 2);
 
 
 	RenderGraphic();
 }
 
+void Graphic::CopyGraphic(Component* gp) {
+
+	TurnOnObjValid();
+
+	this->vertices = gp->vertices;
+	this->colors = gp->colors;
+	this->normals=gp->normals;
+	this->vertex_map=gp->vertex_map;
+	this->material_map=gp->material_map;
+	this->shapes = gp->shapes;
+	this->materials=gp->materials;
+	this->texcoords=gp->texcoords;
+	this->texmap=gp->texmap;
+
+}
+
+
 void Graphic::ActivateComponent(int colorMode,mat4 p, mat4 v, mat4 m) {
 	if (!is_obj_valid) {
 
-		//cout << "obj is not valid" << endl;
 		ActivateGraphic(p, v, m);
 		return;
 	}
@@ -34,9 +51,9 @@ void Graphic::ActivateComponent(int colorMode,mat4 p, mat4 v, mat4 m) {
 
 
 	//cout << colorMode << endl;
-	glUniform1i(glGetUniformLocation(program, "ShadingMode"), 0);
+	glUniform1i(glGetUniformLocation(program, "ShadingMode"), GameSystem::GetInstance()->shadingMode);
 	glUniform1i(glGetUniformLocation(program, "ColorMode"), colorMode);
-	glUniform1i(glGetUniformLocation(program, "ObjectCode"), kyu);
+	glUniform1i(glGetUniformLocation(program, "ObjectCode"), objectCode);
 
 
 	glBindVertexArray(vao);
@@ -62,7 +79,6 @@ void Graphic::ActivateComponent(int colorMode,mat4 p, mat4 v, mat4 m) {
 				glUniform1f(glGetUniformLocation(program, "n"), _materials[m_id].shininess);
 				glUniform3fv(glGetUniformLocation(program, "Ka"), 1, _materials[m_id].ambient);
 				glUniform3fv(glGetUniformLocation(program, "Kd"), 1, _materials[m_id].diffuse);
-				//glUniform3fv(glGetUniformLocation(program, "Ks"), 1, _materials[m_id].specular);
 				glUniform3f(glGetUniformLocation(program, "Ks"), 0.8f, 0.8f, 0.8f);
 
 				auto texitem = _texmap.find(_materials[m_id].diffuse_texname);
@@ -95,7 +111,6 @@ void Graphic::InitGraphic() {
 		cal nomral
 	*/
 	
-
 	program = BuildProgram();
 	CalVertices();
 	CalColor(colors, vertices);
@@ -305,7 +320,7 @@ GLuint Graphic::generate_tex(const char* tex_file_path, GLint min_filter, GLint 
 	switch (num_of_components) {
 		case 3: {
 			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB,width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, image);
-			break;
+			break; 
 		}
 
 		case 4: {
@@ -374,5 +389,11 @@ void Graphic::BindElements() {
 
 void Graphic::RenderGraphic() {
 	cout << "RenderGraphic: None graphic object is assigned..." << endl;
+
+}
+
+
+void Graphic::TurnOnObjValid() {
+	is_obj_valid = true;
 
 }
