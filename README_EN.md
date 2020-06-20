@@ -41,9 +41,9 @@
 
 * There are 4 instance that is based on EmptyObject.
 
-| Meteor                                                      | Satellite                                                   |                      Gravity Attractor                      | Gravity Dependent                                           |
-| ----------------------------------------------------------- | ----------------------------------------------------------- | :---------------------------------------------------------: | ----------------------------------------------------------- |
-| ![image-20200620151814151](src\image-20200620151814151.png) | ![image-20200620151828957](src\image-20200620151828957.png) | ![image-20200620151836642](src\image-20200620151836642.png) | ![image-20200620151843174](src\image-20200620151843174.png) |
+| Meteor                                                       | Satellite                                                    |                      Gravity Attractor                       | Gravity Dependent                                            |
+| ------------------------------------------------------------ | ------------------------------------------------------------ | :----------------------------------------------------------: | ------------------------------------------------------------ |
+| <img src="src\image-20200620151814151.png" alt="image-20200620151814151" style="zoom:100%;" /> | <img src="src\image-20200620151828957.png" alt="image-20200620151828957" style="zoom:100%;" /> | <img src="src\image-20200620151836642.png" alt="image-20200620151836642" style="zoom:100%;" /> | <img src="src\image-20200620151843174.png" alt="image-20200620151843174" style="zoom:100%;" /> |
 
 ## Technical Details
 
@@ -55,9 +55,9 @@
 
 * The methods are as follows.
 
-  |                1.Find Satellite's Up vector                 | 2. Find the angle between Up vector of satellite and y axis of satellite. |            3. Do Cross Product with the vectors             |
-  | :---------------------------------------------------------: | :----------------------------------------------------------: | :---------------------------------------------------------: |
-  | ![image-20200620152742725](src\image-20200620152742725.png) | ![image-20200620152747926](src\image-20200620152747926.png)  | ![image-20200620152755599](src\image-20200620152755599.png) |
+  |                 1.Find Satellite's Up vector                 | 2. Find the angle between Up vector of satellite and y axis of satellite. |             3. Do Cross Product with the vectors             |
+  | :----------------------------------------------------------: | :----------------------------------------------------------: | :----------------------------------------------------------: |
+  | <img src="src\image-20200620152742725.png" alt="image-20200620152742725" style="zoom:100%;" /> | <img src="src\image-20200620152747926.png" alt="image-20200620152747926" style="zoom:100%;" /> | <img src="src\image-20200620152755599.png" alt="image-20200620152755599" style="zoom:100%;" /> |
 
   4. Based on the values obtained, the quantitation value is obtained through the formula below.
 
@@ -77,7 +77,7 @@
 
 |                    1. Find Gravity Vector                    |                        2. Apply Force                        |
 | :----------------------------------------------------------: | :----------------------------------------------------------: |
-| ![image-20200620153049874](src\image-20200620153049874.png)<br />$$\text{vec3}(a.x-w.x,a.y-w.y,a.z-w.z)$$ | ![image-20200620153057228](src\image-20200620153057228.png)<br />Add Force: Gravity Vector $$\times \beta$$ |
+| <img src="src\image-20200620153049874.png" alt="image-20200620153049874" style="zoom:100%;" /><br />$$\text{vec3}(a.x-w.x,a.y-w.y,a.z-w.z)$$ | <img src="src\image-20200620153057228.png" alt="image-20200620153057228" style="zoom:100%;" /><br />Add Force: Gravity Vector $$\times \beta$$ |
 
 
 
@@ -89,7 +89,7 @@
 
   |                        Increase Score                        |                        Decrease Score                        |
   | :----------------------------------------------------------: | :----------------------------------------------------------: |
-  | ![image-20200620153603799](src\image-20200620153603799.png)  | ![image-20200620153627705](src\image-20200620153627705.png)  |
+  | <img src="src\image-20200620153603799.png" alt="image-20200620153603799" style="zoom:100%;" /> | <img src="src\image-20200620153627705.png" alt="image-20200620153627705" style="zoom:100%;" /> |
   | The score increases at the time of creation of the cube in the above. | If the generated cube does not settle on the default cube and collided with earth, the score will decrease. |
 
   * The generated cube may collide with earth multiple times. In this case, the score can be continuously reduced, but at the same time as earth, adds the cube's geom id to the set-type variable, ensuring that it has always been a collided to reduce the score. Therefore, even if it has collided with redundancy, it can prevent points from being reduced because of  redundancy.
