@@ -1,5 +1,7 @@
 # Space Elevator
 
+> [English](./README_EN.md)
+
 ## Background
 
 * 최근 Space X에서 Falcon 9을 발사하면서 대중들이 다시 한번 우주 관련 사업에 관심을 갖게 되었다. 이것을 기점으로 우주에 대해서 조사 해보니, "Space Debris"에 대하여 관심을 갖게 되었다.
