@@ -1,6 +1,15 @@
 #include "Menu.h"
 #include "time.h"
 
+
+Menu* Menu::GetInstance() {
+	if (instance == nullptr) {
+		instance = new Menu();
+	}
+	return instance;
+}
+
+
 void Menu::Activate() {
 
 	startObj->Activate();

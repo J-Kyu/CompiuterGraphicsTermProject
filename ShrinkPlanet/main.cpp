@@ -50,6 +50,7 @@ bool RigidBodyWorld::pause = false;
 
 GameSystem* GameSystem::instance = nullptr;
 UI* UI::instance = nullptr;
+Menu* Menu::instance = nullptr;
 
 
 //dGeomID RigidBodyWorld::ode_plane_geom;
@@ -63,7 +64,6 @@ Camera* mainCamera;
 EmptyObject* bg = new EmptyObject();
 EmptyObject* spaceStation = new EmptyObject();
 EmptyObject* endCredits = new EmptyObject();
-Menu* menu;
 Meteor* meteor_1;
 Meteor* meteor_2;
 Meteor* meteor_3;
@@ -134,11 +134,6 @@ void init() {
 	spaceStation->MoveObject(vec3(0, 25, 0));
 
 
-
-
-	//Menu
-
-	menu = new Menu();
 	
 	earth = new GravityAttractor("models/earth.obj", "models/", 10.0f,5.0f,20.0f);
 
@@ -188,7 +183,7 @@ void Render(int color_mode) {
 	case GameSystem::MENU: {
 		mainCamera->ViewSatellite(false);
 		UI::GetInstance()->IsSatelliteOn(false);
-		menu->Activate(mainCamera->GetProjection(aspect), mainCamera->GetViewing(), color_mode);
+		Menu::GetInstance()->Activate(mainCamera->GetProjection(aspect), mainCamera->GetViewing(), color_mode);
 		break;
 	}
 	case GameSystem::PLAYING: {;

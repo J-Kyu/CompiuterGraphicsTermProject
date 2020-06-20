@@ -18,6 +18,9 @@
 
 class Menu {
 public:
+
+	static Menu* GetInstance();
+
 	Menu() {
 		isShown = true;
 
@@ -66,6 +69,8 @@ public:
 
 private:
 	bool isShown;
+	static Menu* instance;
+
 
 	EmptyObject* startObj;
 	EmptyObject* endObj;
