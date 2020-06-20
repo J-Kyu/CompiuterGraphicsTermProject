@@ -8,7 +8,13 @@
 * "Space Debris"는 우주 쓰레기라는 의미로, 인간이 지속적인 로켓 발사로 우주에 버려진 쓰레기를 의미한다. 이러한 쓰레기들은 앞으로의 우주 발사에 있어서 문제가 될 수 있다는 생각이 들었다. 그래서 이 우주 쓰레기를 치울 아이디어를 고민하다가 우주 엘레베이터를 생각하게 되었다.
 * 우주 엘레베이터의 영감을 받아, "Stack Tower"와 비슷한 게임을 만들어보면 좋지 않을 까 생각하여 Space Elevator를 제작하게 되었다.
 
+## Env
 
+* OS: Window
+* Visual Studio: 2019
+* [Freeglut](http://freeglut.sourceforge.net/)
+* [Freeglew](http://glew.sourceforge.net/)
+* [ode-0.16.1](https://bitbucket.org/odedevs/ode/downloads/)
 
 ## System Architecture
 

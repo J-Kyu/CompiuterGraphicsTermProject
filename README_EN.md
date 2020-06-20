@@ -8,6 +8,14 @@
 * Space debris is usually any artificial object that orbits the Earth. The types of space waste mostly include satellites parts and rocket bodies. The debris were produced by separation of multiple rockets. 
 * So how can we reduce this space junk problem. We found that a space elevator was being studied.  By inspired by Space Elevator, we have combined the concept of "Stack Tower" with Space Elevator.
 
+## ENV
+
+* OS: Window
+* Visual Studio: 2019
+* [Freeglut](http://freeglut.sourceforge.net/)
+* [Freeglew](http://glew.sourceforge.net/)
+* [ode-0.16.1](https://bitbucket.org/odedevs/ode/downloads/)
+
 ## System Architecture
 
 ### Component Hierarchy
